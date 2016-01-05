@@ -3,4 +3,24 @@
     <string name="title_activity_maps">Map</string>
     <string name="app_name_small">funfit</string>
 
+    <string-array name="activity_level">
+        <item>Sendentary</item>
+        <item>Low Active</item>
+        <item>Active</item>
+        <item>Very Active</item>
+    </string-array>
+
+    <string name="sedentary">⦿ Sedentary – primarily daily living activities such as resting,
+        desk work or driving. May include moderate housework and standing but no light exercise performed.</string>
+
+    <string name="low_active">⦿ Low Active – in addition to daily living activities, undertake more strenuous activities,
+        such as longer periods of standing or housework. Some form of light exercise performed, such as slow walking,
+        leisurely bicycling or gardening.</string>
+
+    <string name="active">⦿ Active – minimal sitting and/or resting and may work in an environment requiring standing and/or
+        some physical work. Regularly perform moderate exercise, such as dancing, brisk walking or swimming.</string>
+
+    <string name="very_active">⦿ Very Active – physically intensive work environment such as construction and/or perform
+        vigorous activities most days of the week, such as jogging, using gym equipment or participating in physical sports.</string>
+    <string name="login">Login</string>
 </resources>

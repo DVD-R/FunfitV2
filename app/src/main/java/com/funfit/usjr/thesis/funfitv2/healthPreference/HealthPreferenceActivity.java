@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -23,6 +24,8 @@ import butterknife.OnClick;
 public class HealthPreferenceActivity extends AppCompatActivity {
 
     @Bind(R.id.heightSpnr)Spinner mHeightSpinner;
+    @Bind(R.id.heightEdt)EditText mHeightEdt;
+    @Bind(R.id.ftValueSpnr)Spinner mFtValue;
     GestureDetectorCompat gestureDetectorCompat;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,7 +38,16 @@ public class HealthPreferenceActivity extends AppCompatActivity {
         mHeightSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplication(),parent.getSelectedItem().toString(), Toast.LENGTH_LONG).show();
+                    switch (parent.getSelectedItem().toString()){
+                        case "ft/in":
+                            mHeightEdt.setVisibility(View.GONE);
+                            mFtValue.setVisibility(View.VISIBLE);
+                            break;
+                        case "cm":
+                            mHeightEdt.setVisibility(View.VISIBLE);
+                            mFtValue.setVisibility(View.GONE);
+                            break;
+                    }
             }
 
             @Override

@@ -32,9 +32,16 @@
             android:orientation="horizontal"
             android:gravity="center">
             <EditText
+                android:id="@+id/heightEdt"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:hint="Height"/>
+            <Spinner
+                android:id="@+id/ftValueSpnr"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:entries="@array/ft_values"
+                android:visibility="gone"></Spinner>
             <Spinner
                 android:id="@+id/heightSpnr"
                 android:layout_width="wrap_content"

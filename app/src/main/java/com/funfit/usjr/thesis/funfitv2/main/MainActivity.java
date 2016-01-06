@@ -1,5 +1,6 @@
 package com.funfit.usjr.thesis.funfitv2.main;
 
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -11,8 +12,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.funfit.usjr.thesis.funfitv2.MapsActivity;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanActivity;
+import com.funfit.usjr.thesis.funfitv2.search.SearchActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -44,25 +47,53 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         if (null == savedInstanceState) {
-//            mNavItemId = R.id.drawer_item_1;
+            mNavItemId = R.id.home;
         } else {
             mNavItemId = savedInstanceState.getInt(NAV_ITEM_ID);
         }
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle.syncState();
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         getSupportFragmentManager().beginTransaction().replace(R.id.container,new MealPlanActivity()).commit();
-
     }
 
+    private void navigate(final int itemId) {
+        switch (itemId) {
+            case R.id.home:
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, new MapsActivity()).commit();
+                break;
+            case R.id.nav_health_pref:
+                getSupportFragmentManager().beginTransaction().replace(R.id.container,new MealPlanActivity()).commit();
+                break;
+            case R.id.nav_meal_archeive:
+                break;
+            case R.id.nav_food_description:
+                break;
+            case R.id.nav_challenge:
+                break;
+            case R.id.nav_weekly:
+                break;
+            case R.id.nav_history:
+                break;
+            case R.id.nav_event:
+                break;
+        }
+    }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem menuItem) {
-        return false;
-    }
+    public boolean onNavigationItemSelected(final MenuItem menuItem) {
+        menuItem.setChecked(true);
+        mNavItemId = menuItem.getItemId();
+        mDrawerActionHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                navigate(menuItem.getItemId());
+                mDrawerLayout.closeDrawers();
+            }
+        }, DRAWER_CLOSE_DELAY_MS);
+        return true;    }
 }

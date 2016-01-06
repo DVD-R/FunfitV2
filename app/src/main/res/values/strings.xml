@@ -10,17 +10,17 @@
         <item>Very Active</item>
     </string-array>
 
-    <string name="sedentary">⦿ Sedentary – primarily daily living activities such as resting,
-        desk work or driving. May include moderate housework and standing but no light exercise performed.</string>
+    <string name="sedentary">Sedentary</string>
+    <string name="sedentary_description">Daily activities require minimal effort such as resting, desk work or driving</string>
 
-    <string name="low_active">⦿ Low Active – in addition to daily living activities, undertake more strenuous activities,
-        such as longer periods of standing or housework. Some form of light exercise performed, such as slow walking,
-        leisurely bicycling or gardening.</string>
+    <string name="low_active">Low Active</string>
+    <string name="low_active_description">Daily activities require some effort such as periods of standing, housework or some light exercise</string>
 
-    <string name="active">⦿ Active – minimal sitting and/or resting and may work in an environment requiring standing and/or
-        some physical work. Regularly perform moderate exercise, such as dancing, brisk walking or swimming.</string>
+    <string name="active">Active</string>
+    <string name="active_description">Daily activities require reasonable effort such as standing, physical work or regular moderate exercise</string>
 
-    <string name="very_active">⦿ Very Active – physically intensive work environment such as construction and/or perform
-        vigorous activities most days of the week, such as jogging, using gym equipment or participating in physical sports.</string>
+    <string name="very_active">Very Active</string>
+    <string name="very_active_description">Daily activities require intense physical effort such as construction work or regular vigorous exercise</string>
+
     <string name="login">Login</string>
 </resources>

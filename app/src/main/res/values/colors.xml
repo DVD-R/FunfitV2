@@ -6,4 +6,5 @@
     <color name="fb_button">#3c5c9d</color>
     <color name="plus_button">#ef3f2b</color>
     <color name="white">#FFFFFF</color>
+    <color name="border_color">#BDBDBD</color>
 </resources>

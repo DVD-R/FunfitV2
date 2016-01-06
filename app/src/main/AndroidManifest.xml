@@ -49,9 +49,15 @@
         </activity>
         <activity android:name=".MapsActivity" >
         </activity>
-        <activity android:name=".main.MainActivity" >
-        </activity>
+        <activity android:name=".main.MainActivity"/>
         <activity android:name=".healthPreference.HealthPreferenceActivity" />
+        <activity android:name=".search.SearchActivity">
+            <intent-filter>
+                <action android:name="ANDROID.INTENT.ACTION.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+        </activity>
     </application>
 
 </manifest>

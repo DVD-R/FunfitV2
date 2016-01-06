@@ -2,12 +2,88 @@
     <string name="app_name">FunFitV2</string>
     <string name="title_activity_maps">Map</string>
     <string name="app_name_small">funfit</string>
+    <string name="search_hint">Search</string>
 
     <string-array name="activity_level">
         <item>Sendentary</item>
         <item>Low Active</item>
         <item>Active</item>
         <item>Very Active</item>
+    </string-array>
+
+    <string-array name="weight_measurement">
+        <item>kg</item>
+        <item>lb</item>
+    </string-array>
+
+    <string-array name="height_measurement">
+        <item>cm</item>
+        <item>ft/in</item>
+    </string-array>
+
+
+    <string-array name="ft_values">
+        <item>3\'</item>
+        <item>3\'1"</item>
+        <item>3\'2"</item>
+        <item>3\'3"</item>
+        <item>3\'4"</item>
+        <item>3\'5"</item>
+        <item>3\'6"</item>
+        <item>3\'7"</item>
+        <item>3\'8"</item>
+        <item>3\'9"</item>
+        <item>3\'10"</item>
+        <item>3\'11"</item>
+        <item>4\'</item>
+        <item>4\'1"</item>
+        <item>4\'2"</item>
+        <item>4\'3"</item>
+        <item>4\'4"</item>
+        <item>4\'5"</item>
+        <item>4\'6"</item>
+        <item>4\'7"</item>
+        <item>4\'8"</item>
+        <item>4\'9"</item>
+        <item>4\'10"</item>
+        <item>4\'11"</item>
+        <item>5\'</item>
+        <item>5\'1"</item>
+        <item>5\'2"</item>
+        <item>5\'3"</item>
+        <item>5\'4"</item>
+        <item>5\'5"</item>
+        <item>5\'6"</item>
+        <item>5\'7"</item>
+        <item>5\'8"</item>
+        <item>5\'9"</item>
+        <item>5\'10"</item>
+        <item>5\'11"</item>
+        <item>6\'</item>
+        <item>6\'1"</item>
+        <item>6\'2"</item>
+        <item>6\'3"</item>
+        <item>6\'4"</item>
+        <item>6\'5"</item>
+        <item>6\'6"</item>
+        <item>6\'7"</item>
+        <item>6\'8"</item>
+        <item>6\'9"</item>
+        <item>6\'10"</item>
+        <item>6\'11"</item>
+        <item>7\'</item>
+        <item>7\'1"</item>
+        <item>7\'2"</item>
+        <item>7\'3"</item>
+        <item>7\'4"</item>
+        <item>7\'5"</item>
+        <item>7\'6"</item>
+        <item>7\'7"</item>
+        <item>7\'8"</item>
+        <item>7\'9"</item>
+        <item>7\'10"</item>
+        <item>7\'11"</item>
+
     </string-array>
 
     <string name="sedentary">Sedentary</string>
@@ -23,4 +99,5 @@
     <string name="very_active_description">Daily activities require intense physical effort such as construction work or regular vigorous exercise</string>
 
     <string name="login">Login</string>
+    <string name="action_search">Search</string>
 </resources>

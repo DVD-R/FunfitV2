@@ -5,26 +5,47 @@
 
 
     <LinearLayout
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="60dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical">
-        <EditText
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-            android:hint="Weight"/>
 
-        <EditText
-            android:layout_width="250dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Height"/>
+            android:orientation="horizontal"
+            android:gravity="center">
+            <EditText
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:hint="Weight"/>
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/weight"/>
+        </LinearLayout>
 
-
-        <EditText
-            android:layout_width="250dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Diet Goal"/>
+            android:orientation="horizontal"
+            android:gravity="center">
+            <EditText
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:hint="Height"/>
+            <Spinner
+                android:id="@+id/heightSpnr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/height_measurement"/>
+        </LinearLayout>
+
+        <Button
+            android:layout_width="168dp"
+            android:layout_height="wrap_content"
+            android:hint="Activity Level"/>
 
         <LinearLayout
             android:layout_marginTop="5dp"
@@ -33,18 +54,21 @@
             android:orientation="vertical"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            >
+            android:background="@drawable/border">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:fontFamily="sans-sarif-medium"
                 android:text="@string/sedentary"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:fontFamily="sans-sarif-light"
                 android:text="@string/sedentary_description"/>
         </LinearLayout>
@@ -55,11 +79,13 @@
             android:layout_height="65dp"
             android:orientation="vertical"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+            android:layout_marginRight="10dp"
+            android:background="@drawable/border">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:fontFamily="sans-sarif-medium"
                 android:text="@string/low_active"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
@@ -67,6 +93,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:fontFamily="sans-sarif-light"
                 android:text="@string/low_active_description"/>
         </LinearLayout>
@@ -77,11 +104,13 @@
             android:layout_height="65dp"
             android:orientation="vertical"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+            android:layout_marginRight="10dp"
+            android:background="@drawable/border">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:fontFamily="sans-sarif-medium"
                 android:text="@string/active"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
@@ -89,6 +118,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:fontFamily="sans-sarif-light"
                 android:text="@string/active_description"/>
         </LinearLayout>
@@ -99,11 +129,13 @@
             android:layout_height="65dp"
             android:orientation="vertical"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+            android:layout_marginRight="10dp"
+            android:background="@drawable/border">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:fontFamily="sans-sarif-medium"
                 android:text="@string/very_active"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
@@ -111,20 +143,21 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:fontFamily="sans-sarif-light"
                 android:text="@string/very_active_description"/>
         </LinearLayout>
 
 
         <TextView
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="60dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-sarif-medium"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
             android:text="Swipe Right to continue>>>"/>
-        </LinearLayout>
+    </LinearLayout>
 
 
-        
+
 </LinearLayout>

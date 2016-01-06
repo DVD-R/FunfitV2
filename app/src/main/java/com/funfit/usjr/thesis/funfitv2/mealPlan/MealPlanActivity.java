@@ -1,5 +1,6 @@
 package com.funfit.usjr.thesis.funfitv2.mealPlan;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,10 +12,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.listener.LeftGestureListener;
 import com.funfit.usjr.thesis.funfitv2.listener.RightGestureListener;
+import com.funfit.usjr.thesis.funfitv2.search.SearchActivity;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
@@ -29,6 +32,7 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MealPlanActivity extends Fragment {
 
@@ -150,6 +154,31 @@ public class MealPlanActivity extends Fragment {
 
         //update pie chart
         mPieChart.invalidate();
+    }
+
+    @OnClick(R.id.breakfastClk)
+    public void addBreakfast(){
+        startActivity(new Intent(getActivity(), SearchActivity.class));
+    }
+
+
+
+    @OnClick(R.id.lunchClk)
+    public void addLunch(){
+        startActivity(new Intent(getActivity(), SearchActivity.class));
+    }
+
+
+    @OnClick(R.id.dinnerClk)
+    public void addDinner(){
+        startActivity(new Intent(getActivity(), SearchActivity.class));
+    }
+
+
+
+    @OnClick(R.id.snackClk)
+    public void addSnack(){
+        startActivity(new Intent(getActivity(), SearchActivity.class));
     }
 
 

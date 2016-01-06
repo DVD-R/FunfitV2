@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--Navigation Drawer items-->
+    <group>
+        <item
+            android:id="@+id/nav_health_pref"
+            android:title="Health Preference"/>
+        <item
+            android:id="@+id/nav_meal_archeive"
+            android:title="Meal Archieve" />
+        <item
+            android:id="@+id/nav_food_description"
+            android:title="Food Description"/>
+
+    </group>
+
+    <item android:title="Leader Board">
+        <menu>
+            <item
+                android:id="@+id/nav_challenge"
+                android:title="Challenge"/>
+            <item
+                android:id="@+id/nav_weekly"
+                android:title="Weekly" />
+        </menu>
+    </item>
+
+    <item android:title="Current Event">
+        <menu>
+            <item
+                android:id="@+id/nav_history"
+                android:title="History"/>
+            <item
+                android:id="@+id/nav_event"
+                android:title="Event" />
+        </menu>
+    </item>
+
+</menu>

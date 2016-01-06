@@ -52,8 +52,6 @@
         <activity android:name=".main.MainActivity" >
         </activity>
         <activity android:name=".healthPreference.HealthPreferenceActivity" />
-        <activity android:name=".mealPlan.MealPlanActivity" >
-        </activity>
     </application>
 
 </manifest>

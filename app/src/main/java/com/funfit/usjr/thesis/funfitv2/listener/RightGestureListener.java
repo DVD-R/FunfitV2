@@ -6,6 +6,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import com.funfit.usjr.thesis.funfitv2.healthPreference.HealthPreferenceActivity;
+import com.funfit.usjr.thesis.funfitv2.main.MainActivity;
 import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanActivity;
 
 /**
@@ -21,7 +22,7 @@ public class RightGestureListener extends GestureDetector.SimpleOnGestureListene
     @Override
     public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
         if (event2.getX() > event1.getX()){
-            Intent intent = new Intent(activity, MealPlanActivity.class);
+            Intent intent = new Intent(activity, MainActivity.class);
             activity.startActivity(intent);
         }
 

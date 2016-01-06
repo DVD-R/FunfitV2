@@ -1,6 +1,5 @@
 package com.funfit.usjr.thesis.funfitv2.healthPreference;
 
-
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;

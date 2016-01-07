@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:layout_margin="15dp"
+    android:background="@drawable/border"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/item_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/darker_gray"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:text="test22222"
+        android:layout_marginTop="8dp"
+        android:textSize="22dp" />
+
+    <TextView
+        android:id="@+id/item_event"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/darker_gray"
+        android:layout_toRightOf="@+id/item_user"
+        android:layout_alignBaseline="@+id/item_user"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:text="test11111"
+        android:layout_marginTop="8dp"
+        android:textSize="22dp" />
+
+    <TextView
+        android:id="@+id/item_area"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/darker_gray"
+        android:layout_toRightOf="@+id/item_event"
+        android:layout_alignBaseline="@+id/item_event"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:text="test444444"
+        android:layout_marginTop="8dp"
+        android:textSize="22dp" />
+
+    <TextView
+        android:id="@+id/item_timeDate"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/darker_gray"
+        android:layout_toRightOf="@+id/item_area"
+        android:layout_alignBaseline="@+id/item_area"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:text="test55555"
+        android:layout_marginTop="8dp"
+        android:textSize="22dp" />
+
+</LinearLayout>

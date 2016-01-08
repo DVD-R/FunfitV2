@@ -50,7 +50,8 @@
             android:layout_marginLeft="100dp"
             android:layout_marginTop="50dp"
             android:background="@color/fb_button"
-            android:text="Temporary Facebook"/>
+            android:text="Temporary Facebook"
+            android:textColor="@color/white"/>
 
         <Button
             android:id="@+id/googleBtn"
@@ -61,7 +62,8 @@
             android:layout_marginLeft="100dp"
             android:layout_marginTop="12dp"
             android:background="@color/plus_button"
-            android:text="Temporary Google"/>
+            android:text="Temporary Google"
+            android:textColor="@color/white"/>
 
     </RelativeLayout>
 

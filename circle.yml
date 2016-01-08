@@ -1,21 +1,42 @@
-#
-# Build configuration for Circle CI
-#
+test:
+  override:
+    # start the emulator
+    - emulator -avd circleci-android23 -no-audio -no-window:
+        background: true
+        parallel: true
+    # wait for it to have booted
+    #- circle-android wait-for-boot
+    # run tests  against the emulator.
+    #- ./gradlew connectedAndroidTest --stacktrace    
+    - (./gradlew assemble):
+            timeout: 360
+    # copy the build outputs to artifacts
+    ##- cp -r GameBBS-Android/build/outputs $CIRCLE_ARTIFACTS
+    # copy the test results to the test results directory.
+    ##- cp -r GameBBS-Android/build/outputs/androidTest-results/ $CIRCLE_TEST_REPORTS
+    #deploy apk
+    #- ./gradlew assembleRelease
+    ##- cp -r GameBBS-Android/build/outputs $CIRCLE_ARTIFACTS  
 
-general:
-    artifacts:
-        - /home/ubuntu/FunfitV2/app/build/outputs/apk/
+deployment:
+  master: 
+    branch: master
+    commands: 
+      - echo '--------master deployment'
+      - ./gradlew assembleRelease
+      - sh scripts/upload_s3.sh
+      - sh scripts/upload_testfairy.sh   
 
-machine:
-    environment:
-        ANDROID_HOME: /usr/local/android-sdk-linux
+  # master: 
+  #   branch: test-fairy
+  #   commands: 
+  #     - echo '--------master deployment'
+  #     - ./gradlew assembleRelease
+  #     - sh scripts/upload_s3.sh
+  #     - sh scripts/upload_testfairy.sh    
 
 dependencies:
-    override:
-        - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-23.0.1,android-23,extra-google-m2repository,extra-google-google_play_services,extra-android-support
-        - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
-
-test:
-    override:
-        - (./gradlew assemble):
-            timeout: 360
+  pre:  
+  - sudo pip install awscli
+  - echo y | android update sdk --no-ui --all --filter "android-22,build-tools-21.1.2,extra-android-m2repository,extra-android-support" 
+  - echo y | android update sdk --no-ui --all --filter "android-23,build-tools-23.0.1,extra-android-m2repository,extra-android-support"

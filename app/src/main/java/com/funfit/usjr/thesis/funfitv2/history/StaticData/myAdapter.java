@@ -3,6 +3,7 @@ package com.funfit.usjr.thesis.funfitv2.history.StaticData;
 /**
  * Created by ocabafox on 1/8/2016.
  */
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.history.ClickedHistory;
 
 public class myAdapter extends RecyclerView.Adapter<myAdapter.ViewHolder> {
     private ItemData[] itemsData;
@@ -68,7 +70,12 @@ public class myAdapter extends RecyclerView.Adapter<myAdapter.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-
+            Intent intent = new Intent(v.getContext(),ClickedHistory.class);
+            intent.putExtra("user",user);
+            intent.putExtra("event",event);
+            intent.putExtra("area",area);
+            intent.putExtra("timeDate",timeDate);
+            v.getContext().startActivity(intent);
         }
 
         public void giveMeThat(String user, String event, String area, String timeDate) {

@@ -1,10 +1,12 @@
 package com.funfit.usjr.thesis.funfitv2.login;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -17,6 +19,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class LoginActivity extends AppCompatActivity {
+    @Bind(R.id.text_funfit)
+    TextView mTextFunfit;
 
     @Bind(R.id.img_login_bg)ImageView mImageBg;
     @Override
@@ -36,6 +40,8 @@ public class LoginActivity extends AppCompatActivity {
         intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         Toast.makeText(this,"CLick",Toast.LENGTH_LONG).show();
+
+        mTextFunfit.setTypeface(Typeface.createFromAsset(getAssets(), "HelveticaBold.otf"));
     }
 
     @OnClick(R.id.googleBtn)

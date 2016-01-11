@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/action_search"
-          android:icon="@drawable/ic_search"
-          android:title="search"
+    <item android:id="@+id/action_notification"
+          android:icon="@drawable/ic_notification"
+          android:title="notification"
           app:showAsAction="always"
           android:orderInCategory="1"
           android:menuCategory="secondary"/>
-    <item android:id="@+id/action_cast"
-          android:icon="@drawable/cast_ic_notification_on"
-          android:title="cast"
+    <item android:id="@+id/action_news"
+          android:icon="@drawable/ic_helmet"
+          android:title="news"
           app:showAsAction="always"
           android:orderInCategory="2"
           android:menuCategory="secondary"/>

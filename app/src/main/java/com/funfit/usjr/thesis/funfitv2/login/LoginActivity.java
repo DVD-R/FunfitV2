@@ -32,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
                 .load(Uri.parse("http://djunabel.com/images/pics/554_djuna-bel-nike-db8.jpg"))
                 .centerCrop()
                 .into(mImageBg);
+        mTextFunfit.setTypeface(Typeface.createFromAsset(getAssets(), "HelveticaBold.otf"));
     }
 
     @OnClick(R.id.facebookBtn)
@@ -40,8 +41,6 @@ public class LoginActivity extends AppCompatActivity {
         intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         Toast.makeText(this,"CLick",Toast.LENGTH_LONG).show();
-
-        mTextFunfit.setTypeface(Typeface.createFromAsset(getAssets(), "HelveticaBold.otf"));
     }
 
     @OnClick(R.id.googleBtn)

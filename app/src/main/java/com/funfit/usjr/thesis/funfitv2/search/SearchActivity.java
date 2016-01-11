@@ -12,15 +12,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.fatSecretImplementation.FatSecretPresenter;
+import com.funfit.usjr.thesis.funfitv2.model.Food;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.MostEatenSearchFragment;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.QuickPickSearchFragment;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.RecentlyEatenSearchFragment;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.SavedMealSearchFragment;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.SearchFragment;
+import com.funfit.usjr.thesis.funfitv2.views.ISearchView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,19 +33,20 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements ISearchView{
 
     @Bind(R.id.toolbar)Toolbar mToolbar;
     @Bind(R.id.viewpager)ViewPager mViewPager;
     @Bind(R.id.tabs)TabLayout mTabs;
     private SearchView mSearchView;
-
+    private FatSecretPresenter fatSecretPresenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
         activitySetup();
+        fatSecretPresenter = new FatSecretPresenter(this);
     }
 
     private void activitySetup() {
@@ -65,11 +71,12 @@ public class SearchActivity extends AppCompatActivity {
 
 
         mTabs.setupWithViewPager(viewPager);
-//        tabs.getTabAt(0).setIcon(R.drawable.ic_home);
-//        tabs.getTabAt(1).setIcon(R.drawable.ic_fav);
-//        tabs.getTabAt(2).setIcon(R.drawable.ic_search);
         mTabs.setTabGravity(TabLayout.GRAVITY_FILL);
         mTabs.setTabMode(TabLayout.MODE_FIXED);
+    }
+
+    @Override
+    public void getFood(ArrayList<Food> items) {
     }
 
 
@@ -128,7 +135,23 @@ public class SearchActivity extends AppCompatActivity {
         mSearchView = (SearchView)
                 MenuItemCompat.getActionView(searchItem);
         searchItem.expandActionView();
-        return super.onCreateOptionsMenu(menu);
+        doSearch();
 
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public void doSearch() {
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                fatSecretPresenter.searchFoodQuery(newText);
+                return true;
+            }
+        });
     }
 }

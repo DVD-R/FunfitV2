@@ -2,11 +2,14 @@
 <resources>
     <color name="primary">#212121</color>
     <color name="primary_dark">#212121</color>
-    <color name="accent">#FFC107</color>
+    <color name="accent">@color/velocity</color>
     <color name="fb_button">#3c5c9d</color>
     <color name="plus_button">#ef3f2b</color>
     <color name="white">#FFFFFF</color>
     <color name="divider_color">#BDBDBD</color>
     <color name="light">#EEEEEE</color>
     <color name="border_color">#212121</color>
+
+    <color name="velocity">#2980b9</color>
+    <color name="impulse">#c0392b</color>
 </resources>

@@ -19,7 +19,10 @@ import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-public class FatSecretSearch {
+/**
+ * Created by victor on 1/12/2016.
+ */
+public class FatSecretGet {
 
     final static private String APP_METHOD = "GET";
     final static private String APP_KEY = "2ea8a980851f4a36a39b65b9359050ef";
@@ -27,44 +30,42 @@ public class FatSecretSearch {
     final static private String APP_URL = "http://platform.fatsecret.com/rest/server.api";
     private static final String HMAC_SHA1_ALGORITHM = "HMAC-SHA1";
 
-    public JSONObject searchFood(String searchFood) {
-        List<String> params = new ArrayList<>(Arrays.asList(generateOauthParams(0)));
+    public JSONObject getFood(Long ab) {
+        List<String> params = new ArrayList<>(Arrays.asList(generateOauthParams()));
         String[] template = new String[1];
-        params.add("method=foods.search");
-        params.add("search_expression=" + Uri.encode(searchFood));
+        params.add("method=food.get");
+        params.add("food_id=" + Uri.encode(String.valueOf(ab)));
         params.add("oauth_signature=" + sign(APP_METHOD, APP_URL, params.toArray(template)));
-
-        JSONObject foods = null;
+        JSONObject food = null;
         try {
             URL url = new URL(APP_URL + "?" + paramify(params.toArray(template)));
+
             URLConnection api = url.openConnection();
             String line;
             StringBuilder builder = new StringBuilder();
             BufferedReader reader = new BufferedReader(new InputStreamReader(api.getInputStream()));
-            while ((line = reader.readLine()) != null) builder.append(line);
-            JSONObject food = new JSONObject(builder.toString());
-            foods = food.getJSONObject("foods");
-        } catch (Exception exception) {
-            Log.e("FatSecret Error", exception.toString());
-            exception.printStackTrace();
+            while ((line = reader.readLine()) != null)
+                builder.append(line);
+            JSONObject foodGet = new JSONObject(builder.toString());
+            food = foodGet.getJSONObject("food");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return foods;
+        return food;
     }
 
-    private  String[] generateOauthParams(int i) {
+    private static String[] generateOauthParams() {
         return new String[]{
-            "oauth_consumer_key=" + APP_KEY,
-            "oauth_signature_method=HMAC-SHA1",
-            "oauth_timestamp=" +
-                Long.valueOf(System.currentTimeMillis() * 2).toString(),
-            "oauth_nonce=" + nonce(),
-            "oauth_version=1.0",
-                "format=json",
-            "page_number=" + i,
-            "max_results=" + 20};
+                "oauth_consumer_key=" + APP_KEY,
+                "oauth_signature_method=HMAC-SHA1",
+                "oauth_timestamp=" +
+                        Long.valueOf(System.currentTimeMillis() * 2).toString(),
+                "oauth_nonce=" + nonce(),
+                "oauth_version=1.0",
+                "format=json"};
     }
 
-    private  String sign(String method, String uri, String[] params) {
+    private static String sign(String method, String uri, String[] params) {
         String[] p = {method, Uri.encode(uri), Uri.encode(paramify(params))};
         String s = join(p, "&");
         SecretKey sk = new SecretKeySpec(APP_SECRET.getBytes(), HMAC_SHA1_ALGORITHM);
@@ -81,13 +82,13 @@ public class FatSecretSearch {
         }
     }
 
-    private  String paramify(String[] params) {
+    private static String paramify(String[] params) {
         String[] p = Arrays.copyOf(params, params.length);
         Arrays.sort(p);
         return join(p, "&");
     }
 
-    private  String join(String[] array, String separator) {
+    private static String join(String[] array, String separator) {
         StringBuilder b = new StringBuilder();
         for (int i = 0; i < array.length; i++) {
             if (i > 0)
@@ -97,11 +98,11 @@ public class FatSecretSearch {
         return b.toString();
     }
 
-    private  String nonce() {
+    private static String nonce() {
         Random r = new Random();
         StringBuilder n = new StringBuilder();
         for (int i = 0; i < r.nextInt(8) + 2; i++)
-            n.append(r.nextInt(35) + 'a');
+            n.append(r.nextInt(26) + 'a');
         return n.toString();
     }
 }

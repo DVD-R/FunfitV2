@@ -37,7 +37,7 @@ public class FatSecretPresenter {
             protected Food doInBackground(Void... params) {
                 JSONObject food = mFatSecretSearch.searchFood(item);
                 JSONArray FOODS_ARRAY;
-                ArrayList<Food> foods = new ArrayList<Food>();
+                List<Food> foods = new ArrayList<Food>();
                 Food items = null;
                 try {
                     if (food != null) {

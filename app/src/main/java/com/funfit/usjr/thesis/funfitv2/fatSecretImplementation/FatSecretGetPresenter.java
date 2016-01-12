@@ -38,18 +38,43 @@ public class FatSecretGetPresenter {
                 Log.e("FatSecret Api", foodItem.length()+"");
 
                 JSONArray FOODS_ARRAY;
-                List<Food> foods = new ArrayList<Food>();
-                Food items = null;
+                List<FoodServing> foods = new ArrayList<FoodServing>();
+                FoodServing items = null;
                 JSONObject jsonObjectServing;
                 try {
                     if (foodItem != null) {
+                        Log.i("FOOD NAME",foodItem.getString("food_name"));
                         jsonObjectServing = foodItem.getJSONObject("servings");
                         FOODS_ARRAY = jsonObjectServing.getJSONArray("serving");
                         if (FOODS_ARRAY != null) {
                             for (int i = 0; i < FOODS_ARRAY.length(); i++) {
                                 JSONObject food_items = FOODS_ARRAY.optJSONObject(i);
-                                Log.i("Size", String.valueOf(food_items.getString("serving_description")));
+                                items = new FoodServing();
+                                items.setCalcium(food_items.getString("calcium"));
+                                items.setCalories(food_items.getString("calories"));
+                                items.setCarbohydrate(food_items.getString("carbohydrate"));
+                                items.setCholesterol(food_items.getString("cholesterol"));
+                                items.setFat(food_items.getString("fat"));
+                                items.setFiber(food_items.getString("fiber"));
+                                items.setIron(food_items.getString("iron"));
+                                items.setMeasurement_description(food_items.getString("measurement_description"));
+                                items.setMetric_serving_amount(food_items.getString("metric_serving_amount"));
+                                items.setMetric_serving_unit(food_items.getString("metric_serving_unit"));
+                                items.setMonounsaturated_fat(food_items.getString("monounsaturated_fat"));
+                                items.setNumber_of_units(food_items.getString("number_of_units"));
+                                items.setPolyunsaturated_fat(food_items.getString("polyunsaturated_fat"));
+                                items.setPotassium(food_items.getString("potassium"));
+                                items.setProtein(food_items.getString("protein"));
+                                items.setSaturated_fat(food_items.getString("saturated_fat"));
+                                items.setServing_description(food_items.getString("serving_description"));
+                                items.setServing_id(food_items.getString("serving_id"));
+                                items.setServing_url(food_items.getString("serving_url"));
+                                items.setSodium(food_items.getString("sodium"));
+                                foods.add(items);
                             }
+                            iSearchFragmentView.setItem(foods);
+                            iSearchFragmentView.setUpSearchAdapter();
+
                         }
                     }
                 }catch (Exception e){
@@ -58,7 +83,14 @@ public class FatSecretGetPresenter {
                 }
                 return foodServing;
             }
+
+            @Override
+            protected void onPostExecute(FoodServing foodServing) {
+                super.onPostExecute(foodServing);
+//                iSearchFragmentView.setUpSearchAdapter();
+            }
         };
         doInBackGround.execute();
     }
+
 }

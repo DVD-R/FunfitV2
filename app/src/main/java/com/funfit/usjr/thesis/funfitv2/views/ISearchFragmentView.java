@@ -1,5 +1,7 @@
 package com.funfit.usjr.thesis.funfitv2.views;
 
+import android.content.Context;
+
 import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
 
 import java.util.List;
@@ -10,5 +12,5 @@ import java.util.List;
 public interface ISearchFragmentView {
     public void setItem(List<FoodServing> items);
     public Long getFoodId();
-
+    public void setUpSearchAdapter();
 }

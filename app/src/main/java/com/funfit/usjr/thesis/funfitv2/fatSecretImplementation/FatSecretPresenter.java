@@ -46,11 +46,8 @@ public class FatSecretPresenter {
                             for (int i = 0; i < FOODS_ARRAY.length(); i++) {
                                 JSONObject food_items = FOODS_ARRAY.optJSONObject(i);
                                 items = new Food();
-                                items.setFood_description(food_items.getString("food_description"));
                                 items.setFood_id(food_items.getString("food_id"));
                                 items.setFood_name(food_items.getString("food_name"));
-                                items.setFood_type(food_items.getString("food_type"));
-                                items.setFood_url(food_items.getString("food_url"));
                                 foods.add(items);
                             }
                             iSearchView.getFood(foods);

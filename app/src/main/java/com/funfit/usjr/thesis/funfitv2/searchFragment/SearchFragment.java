@@ -1,6 +1,5 @@
 package com.funfit.usjr.thesis.funfitv2.searchFragment;
 
-
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,6 +21,7 @@ import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.adapter.SearchAdapter;
 import com.funfit.usjr.thesis.funfitv2.adapter.SearchServingAdapter;
 import com.funfit.usjr.thesis.funfitv2.fatSecretImplementation.FatSecretGetPresenter;
+import com.funfit.usjr.thesis.funfitv2.fragmentDialog.FoodInfoFragment;
 import com.funfit.usjr.thesis.funfitv2.listener.RecyclerItemClickListener;
 import com.funfit.usjr.thesis.funfitv2.model.Food;
 import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
@@ -43,7 +43,9 @@ public class SearchFragment extends Fragment implements ISearchFragmentView{
     private List<Food> foodList;
     private FatSecretGetPresenter fatSecretGetPresenter;
     private Long id;
+
     @Bind(R.id.recyclerview_list)RecyclerView mRecyclerView;
+    @Bind(R.id.recyclerview_foodList)RecyclerView mRecyclerViewFood;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,24 +91,43 @@ public class SearchFragment extends Fragment implements ISearchFragmentView{
         mRecyclerView.setAdapter(searchAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
-
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), mRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-//                SearchServingAdapter searchAdapter = new SearchServingAdapter(7);
-//                mRecyclerView.setAdapter(searchAdapter);
-//                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-//                mRecyclerView.setLayoutManager(linearLayoutManager);
                 id = Long.parseLong(foodList.get(position).getFood_id());
                 fatSecretGetPresenter.searchFoodWithServings();
-
             }
         }));
     }
 
     @Override
-    public void setItem(List<FoodServing> items) {
+    public void setUpSearchAdapter() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.setVisibility(View.INVISIBLE);
+                mRecyclerViewFood.setVisibility(View.VISIBLE);
+                SearchServingAdapter searchServingAdapter = new SearchServingAdapter(7);
+                mRecyclerViewFood.setAdapter(searchServingAdapter);
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+                mRecyclerViewFood.setLayoutManager(linearLayoutManager);
+                mRecyclerViewFood.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), mRecyclerViewFood, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Toast.makeText(getActivity(), "Click", Toast.LENGTH_LONG).show();
+                        FoodInfoFragment foodInfoFragment = new FoodInfoFragment();
+                        foodInfoFragment.show(getActivity().getFragmentManager(), "Food Info");
+                    }
+                }));
+            }
+        });
+    }
 
+
+    @Override
+    public void setItem(List<FoodServing> items) {
+        Log.i("measurement_description", items.get(0).getMeasurement_description());
+        setUpSearchAdapter();
     }
 
     @Override

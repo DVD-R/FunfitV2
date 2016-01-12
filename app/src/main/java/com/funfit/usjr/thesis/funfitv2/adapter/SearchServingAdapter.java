@@ -1,13 +1,17 @@
 package com.funfit.usjr.thesis.funfitv2.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.fragmentDialog.FoodInfoFragment;
 import com.funfit.usjr.thesis.funfitv2.model.Food;
 import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
+import com.funfit.usjr.thesis.funfitv2.views.ISearchFragmentView;
 
 import java.util.List;
 
@@ -19,21 +23,17 @@ public class SearchServingAdapter extends RecyclerView.Adapter<SearchServingAdap
 
     private List<FoodServing> foodList;
     private int size;
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ViewHolder(View itemView) {
+    Context context;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public ViewHolder(final View itemView) {
             super(itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
         }
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_serving_adapter_layout, parent, false);
+        context = parent.getContext();
         view.setFocusable(true);
         return new ViewHolder(view);
     }

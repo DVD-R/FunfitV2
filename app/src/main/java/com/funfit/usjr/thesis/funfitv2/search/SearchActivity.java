@@ -1,6 +1,5 @@
 package com.funfit.usjr.thesis.funfitv2.search;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -10,25 +9,20 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
-import com.funfit.usjr.thesis.funfitv2.adapter.SearchAdapter;
 import com.funfit.usjr.thesis.funfitv2.fatSecretImplementation.FatSecretPresenter;
 import com.funfit.usjr.thesis.funfitv2.model.Food;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.MostEatenSearchFragment;
-import com.funfit.usjr.thesis.funfitv2.searchFragment.QuickPickSearchFragment;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.RecentlyEatenSearchFragment;
-import com.funfit.usjr.thesis.funfitv2.searchFragment.SavedMealSearchFragment;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.SearchFragment;
 import com.funfit.usjr.thesis.funfitv2.views.ISearchView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,8 +60,6 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
         adapter.addFragment(new SearchFragment(), "Search");
         adapter.addFragment(new RecentlyEatenSearchFragment(), "Recently Eaten");
         adapter.addFragment(new MostEatenSearchFragment(), "Most Eaten");
-        adapter.addFragment(new SavedMealSearchFragment(), "Save Meal");
-
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(5);
 
@@ -78,11 +70,11 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
     }
 
     @Override
-    public void getFood(ArrayList<Food> items) {
-        Log.i("Food Name", items.get(0).getFood_name());
-        Log.i("Size", items.size()+"");
+    public void getFood(List<Food> items) {
+        Intent intent = new Intent(this, SearchFragment.SearchService.class);
+        intent.putExtra("FoodList", (Serializable) items);
+        startService(intent);
     }
-
 
     static class TabAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragments = new ArrayList<>();
@@ -129,10 +121,7 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 onBackPressed();
-
-//                Intent intent = new Intent(BROADCAST_SEARCH_VISIBLE);
-//                sendBroadcast(intent);
-                return false; // OR FALSE IF YOU DIDN'T WANT IT TO CLOSE!
+               return false;
             }
         });
 

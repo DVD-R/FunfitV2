@@ -52,6 +52,7 @@
         </activity>
         <activity android:name=".main.MainActivity"/>
         <activity android:name=".healthPreference.HealthPreferenceActivity" />
+        <activity android:name=".history.ClickedHistory"/>
         <activity android:name=".search.SearchActivity">
             <intent-filter>
                 <action android:name="ANDROID.INTENT.ACTION.SEARCH" />

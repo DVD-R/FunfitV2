@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.funfit.usjr.thesis.funfitv2.distance.DistanceCalculation;
+import com.funfit.usjr.thesis.funfitv2.history.ClickedHistory;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -42,7 +44,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
-public class MapsActivity extends Fragment implements  GoogleApiClient.ConnectionCallbacks,
+public class MapsActivity extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerClickListener {
 
@@ -56,8 +58,15 @@ public class MapsActivity extends Fragment implements  GoogleApiClient.Connectio
     private ArrayList<LatLng> arrayPoints = null;
     private boolean checkClick = false;
 
+    DistanceCalculation distanceCalculation;
+    PolylineOptions polylineOptions;
+    LatLng newLatLng;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_maps, container, false);
+
+        //instantiate DistanceCalculation
+        distanceCalculation = new DistanceCalculation();
 
 //        ButterKnife.inject(getActivity(), view);
         mMapView = (MapView) view.findViewById(R.id.mapView);
@@ -74,17 +83,6 @@ public class MapsActivity extends Fragment implements  GoogleApiClient.Connectio
         }
 
         myMap = mMapView.getMap();
-        // latitude and longitude
-        double latitude = 10.2873793;
-        double longitude = 123.8604063;
-
-        // create marker
-        MarkerOptions marker = new MarkerOptions().position(
-                new LatLng(latitude, longitude)).title("University of San Jose-Recoletos");
-
-        // Changing marker icon
-        marker.icon(BitmapDescriptorFactory
-                .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
 
 
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
@@ -95,12 +93,11 @@ public class MapsActivity extends Fragment implements  GoogleApiClient.Connectio
 
         connectClient();
 
-        // adding marker
-        myMap.addMarker(marker);
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(10.2873793,123.8604063)).zoom(14).build();
-        myMap.animateCamera(CameraUpdateFactory
-                .newCameraPosition(cameraPosition));
+//        CameraPosition cameraPosition = new CameraPosition.Builder()
+//                .target(new LatLng(10.2873793, 123.8604063)).zoom(14).build();
+//        myMap.animateCamera(CameraUpdateFactory
+//                .newCameraPosition(cameraPosition));
+
 
         return view;
 
@@ -131,7 +128,7 @@ public class MapsActivity extends Fragment implements  GoogleApiClient.Connectio
         switch (requestCode) {
 
             case CONNECTION_FAILURE_RESOLUTION_REQUEST:
-			/*
+            /*
 			 * If the result code is Activity.RESULT_OK, try to connect again
 			 */
                 switch (resultCode) {
@@ -152,6 +149,9 @@ public class MapsActivity extends Fragment implements  GoogleApiClient.Connectio
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
             myMap.animateCamera(cameraUpdate);
             myMap.setMyLocationEnabled(true);
+            polylineOptions = new PolylineOptions();
+            arrayPoints.add(latLng);
+
             myMap.setOnMapClickListener(this);
             myMap.setOnMapLongClickListener(this);
             myMap.setOnMarkerClickListener(this);
@@ -163,12 +163,23 @@ public class MapsActivity extends Fragment implements  GoogleApiClient.Connectio
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Toast.makeText(getContext(), "Location Suspend", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onLocationChanged(Location location) {
+        Toast.makeText(getContext(), "Location Change", Toast.LENGTH_SHORT).show();
 
+        newLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(newLatLng, 19);
+        myMap.animateCamera(cameraUpdate);
+        myMap.setMyLocationEnabled(true);
+
+        polylineOptions.color(Color.RED);
+        polylineOptions.width(6);
+        arrayPoints.add(newLatLng);
+        polylineOptions.addAll(arrayPoints);
+        myMap.addPolyline(polylineOptions);
     }
 
     @Override
@@ -195,9 +206,20 @@ public class MapsActivity extends Fragment implements  GoogleApiClient.Connectio
     @Override
     public void onMapClick(LatLng latLng) {
         if (checkClick == false) {
-            Toast.makeText(getActivity(), "test", Toast.LENGTH_SHORT).show();
-            myMap.addMarker(new MarkerOptions().position(latLng).title("This is my empire"));
-            arrayPoints.add(latLng);
+            //myMap.addMarker(new MarkerOptions().position(latLng).title("This is my empire"));
+
+//            Log.i("location",latLng.toString());
+//            if(arrayPoints.size()>=2){
+//                Log.i("distance","Distance: "+distanceCalculation.CalculationByDistance(arrayPoints.get(0),arrayPoints.get(1)));
+//            }
+//
+//            // settin polyline in the map
+//            polylineOptions = new PolylineOptions();
+//            polylineOptions.color(Color.GREEN);
+//            polylineOptions.width(4);
+//            arrayPoints.add(latLng);
+//            polylineOptions.addAll(arrayPoints);
+//            myMap.addPolyline(polylineOptions);
         }
     }
 
@@ -216,6 +238,7 @@ public class MapsActivity extends Fragment implements  GoogleApiClient.Connectio
         }
         return false;
     }
+
     private boolean isGooglePlayServicesAvailable() {
         // Check that Google Play services is available
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
@@ -224,10 +247,12 @@ public class MapsActivity extends Fragment implements  GoogleApiClient.Connectio
             // In debug mode, log the status
             Log.d("Location Updates", "Google Play services is available.");
             return true;
-        } else {}
-
-            return false;
+        } else {
         }
+
+        return false;
+    }
+
     protected void startLocationUpdates() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
@@ -246,12 +271,6 @@ public class MapsActivity extends Fragment implements  GoogleApiClient.Connectio
             polygonOptions.strokeWidth(7);
             polygonOptions.fillColor(Color.CYAN);
             Polygon polygon = myMap.addPolygon(polygonOptions);
-
-
-
-//            ParseObject testObject = new ParseObject("User");
-//            testObject.put("username","rickydnfgkdj");
-//            testObject.saveInBackground();
         }
     }
 

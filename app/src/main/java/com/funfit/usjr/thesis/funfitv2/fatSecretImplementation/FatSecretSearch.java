@@ -63,7 +63,7 @@ public class FatSecretSearch {
             "oauth_version=1.0",
                 "format=json",
             "page_number=" + i,
-            "max_results=" + 20};
+            "max_results=" + 4};
     }
 
     private  String sign(String method, String uri, String[] params) {

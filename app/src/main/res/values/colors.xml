@@ -9,7 +9,7 @@
     <color name="divider_color">#BDBDBD</color>
     <color name="light">#EEEEEE</color>
     <color name="border_color">#212121</color>
-
+    <color name="background">#A5D6A7</color>
     <color name="velocity">#2980b9</color>
     <color name="impulse">#c0392b</color>
 </resources>

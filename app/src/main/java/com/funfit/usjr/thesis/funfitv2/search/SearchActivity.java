@@ -10,6 +10,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.adapter.SearchAdapter;
 import com.funfit.usjr.thesis.funfitv2.fatSecretImplementation.FatSecretPresenter;
 import com.funfit.usjr.thesis.funfitv2.model.Food;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.MostEatenSearchFragment;
@@ -77,6 +79,8 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
 
     @Override
     public void getFood(ArrayList<Food> items) {
+        Log.i("Food Name", items.get(0).getFood_name());
+        Log.i("Size", items.size()+"");
     }
 
 

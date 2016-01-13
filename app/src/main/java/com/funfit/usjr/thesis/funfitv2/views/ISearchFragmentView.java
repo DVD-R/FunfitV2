@@ -13,4 +13,6 @@ public interface ISearchFragmentView {
     public void setItem(List<FoodServing> items);
     public Long getFoodId();
     public void setUpSearchAdapter();
+    public void mProgressBarGone();
+    public void mProgressInit();
 }

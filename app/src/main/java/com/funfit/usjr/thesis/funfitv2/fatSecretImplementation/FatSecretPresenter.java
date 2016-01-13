@@ -28,6 +28,7 @@ public class FatSecretPresenter {
     }
 
     public void searchFoodQuery(String item) {
+        iSearchView.mProgressInit();
         DoInBackGround(item);
     }
 
@@ -51,6 +52,7 @@ public class FatSecretPresenter {
                                 foods.add(items);
                             }
                             iSearchView.getFood(foods);
+                            iSearchView.mProgressBarGone();
                         }
                     }
                 } catch (Exception e) {

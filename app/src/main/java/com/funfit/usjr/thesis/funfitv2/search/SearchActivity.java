@@ -11,12 +11,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.fatSecretImplementation.FatSecretPresenter;
 import com.funfit.usjr.thesis.funfitv2.model.Food;
+import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.MostEatenSearchFragment;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.RecentlyEatenSearchFragment;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.SearchFragment;
@@ -34,6 +38,7 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
     @Bind(R.id.toolbar)Toolbar mToolbar;
     @Bind(R.id.viewpager)ViewPager mViewPager;
     @Bind(R.id.tabs)TabLayout mTabs;
+    @Bind(R.id.carddemo_progressContainer)LinearLayout mProgressBarContainer;
     private SearchView mSearchView;
     private FatSecretPresenter fatSecretPresenter;
     @Override
@@ -74,6 +79,22 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
         Intent intent = new Intent(this, SearchFragment.SearchService.class);
         intent.putExtra("FoodList", (Serializable) items);
         startService(intent);
+    }
+
+    @Override
+    public void mProgressBarGone() {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mProgressBarContainer != null)
+                    mProgressBarContainer.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    @Override
+    public void mProgressInit() {
+        mProgressBarContainer.setVisibility(View.VISIBLE);
     }
 
     static class TabAdapter extends FragmentPagerAdapter {

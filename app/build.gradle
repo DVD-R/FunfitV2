@@ -27,7 +27,6 @@ dependencies {
     compile 'com.android.support:design:23.0.1'
     compile 'com.android.support:recyclerview-v7:23.0.1'
     compile 'com.android.support:cardview-v7:23.1.0'
-    compile 'com.google.android.gms:play-services:8.1.0'
 
     //butterknife
     compile 'com.jakewharton:butterknife:7.0.1'
@@ -47,4 +46,12 @@ dependencies {
     //MaterialDateTimePicker
     compile 'com.wdullaer:materialdatetimepicker:2.0.0'
 
+    //MapBox
+    compile ('com.mapbox.mapboxsdk:mapbox-android-sdk:3.0.0@aar'){
+        transitive=true
+    }
+
+    compile ('com.mapbox.mapboxsdk:mapbox-android-sdk:2.3.0@aar'){
+        transitive=true
+    }
 }

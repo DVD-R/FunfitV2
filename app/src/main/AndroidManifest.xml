@@ -6,6 +6,7 @@
         android:name="com.example.mapdemo.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="com.example.mapdemo.permission.MAPS_RECEIVE" />
     <uses-permission android:name="com.example.mapdemo.permission.MAPS_RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -34,9 +35,6 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/. 
         -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
 
         <activity
             android:name=".login.LoginActivity"
@@ -63,6 +61,9 @@
 
         <service android:name=".searchFragment.SearchFragment$SearchService"
             android:enabled="true"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="9724157045ff7d083492c6d9ae03e60e8609d461" />
     </application>
 
 </manifest>

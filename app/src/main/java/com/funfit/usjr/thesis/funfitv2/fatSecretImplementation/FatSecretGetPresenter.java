@@ -27,6 +27,7 @@ public class FatSecretGetPresenter {
     }
 
     public void searchFoodWithServings(){
+        iSearchFragmentView.mProgressInit();
         DoInBackGround();
     }
 
@@ -74,7 +75,7 @@ public class FatSecretGetPresenter {
                             }
                             iSearchFragmentView.setItem(foods);
                             iSearchFragmentView.setUpSearchAdapter();
-
+                            iSearchFragmentView.mProgressBarGone();
                         }
                     }
                 }catch (Exception e){

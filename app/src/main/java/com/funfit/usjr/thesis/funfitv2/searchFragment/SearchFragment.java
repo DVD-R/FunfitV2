@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
@@ -43,7 +44,7 @@ public class SearchFragment extends Fragment implements ISearchFragmentView{
     private List<Food> foodList;
     private FatSecretGetPresenter fatSecretGetPresenter;
     private Long id;
-
+    @Bind(R.id.carddemo_progressContainer) LinearLayout mProgressBarContainer;
     @Bind(R.id.recyclerview_list)RecyclerView mRecyclerView;
     @Bind(R.id.recyclerview_foodList)RecyclerView mRecyclerViewFood;
     @Nullable
@@ -123,6 +124,21 @@ public class SearchFragment extends Fragment implements ISearchFragmentView{
         });
     }
 
+    @Override
+    public void mProgressBarGone() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mProgressBarContainer!=null)
+                    mProgressBarContainer.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    @Override
+    public void mProgressInit() {
+        mProgressBarContainer.setVisibility(View.VISIBLE);
+    }
 
     @Override
     public void setItem(List<FoodServing> items) {

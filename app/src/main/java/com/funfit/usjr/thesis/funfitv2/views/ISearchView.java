@@ -9,4 +9,6 @@ import java.util.List;
  */
 public interface ISearchView {
     public void getFood(List<Food> items);
+    public void mProgressBarGone();
+    public void mProgressInit();
 }

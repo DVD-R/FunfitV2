@@ -38,6 +38,7 @@ import butterknife.ButterKnife;
 
 public class SearchActivity extends AppCompatActivity implements ISearchView{
 
+    private SearchFragment searchFragment;
     @Bind(R.id.toolbar)Toolbar mToolbar;
     @Bind(R.id.viewpager)ViewPager mViewPager;
     @Bind(R.id.tabs)TabLayout mTabs;
@@ -46,17 +47,18 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
 
     private SearchView mSearchView;
     private FatSecretPresenter fatSecretPresenter;
+    private String query;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
+        searchFragment = new SearchFragment();
         activitySetup();
-        intent = new Intent(this, SearchFragment.SearchService.class);
-        fatSecretPresenter = new FatSecretPresenter(this);
     }
 
     private void activitySetup() {
+        fatSecretPresenter = new FatSecretPresenter(this);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(null);
 
@@ -68,11 +70,11 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
 
     private void setupViewPager(ViewPager viewPager) {
         TabAdapter adapter = new TabAdapter(getSupportFragmentManager());
-        adapter.addFragment(new SearchFragment(), "Search");
+        adapter.addFragment(searchFragment, "Search");
         adapter.addFragment(new RecentlyEatenSearchFragment(), "Recently Eaten");
         adapter.addFragment(new MostEatenSearchFragment(), "Most Eaten");
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(5);
+        viewPager.setOffscreenPageLimit(3);
 
 
         mTabs.setupWithViewPager(viewPager);
@@ -82,11 +84,11 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
 
     @Override
     public void getFood(List<Food> items) {
-        if (items.size()!=0)
-        {
-            intent.putExtra("FoodList", (Serializable) items);
-            startService(intent);
-        }
+            (searchFragment).sendFoodList(items);
+    }
+
+    public interface DisplayList{
+        public void sendFoodList(List<Food> items);
     }
 
     @Override
@@ -103,6 +105,11 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
     @Override
     public void mProgressInit() {
         mProgressBarContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public String getNewText() {
+        return query;
     }
 
     static class TabAdapter extends FragmentPagerAdapter {
@@ -165,13 +172,13 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-//                fatSecretPresenter.searchFoodQuery(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                fatSecretPresenter.searchFoodQuery(newText);
+                query = newText;
+                fatSecretPresenter.searchFoodQuery();
                 return true;
             }
         });

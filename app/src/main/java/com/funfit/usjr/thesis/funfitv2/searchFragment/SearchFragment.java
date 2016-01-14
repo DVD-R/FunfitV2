@@ -64,7 +64,6 @@ public class SearchFragment extends Fragment implements SearchActivity.DisplayLi
 
     }
 
-    @OnClick(R.id.click)
     public void click(){
         List<Food> foods = ((SearchAdapter) searchAdapter).getFoodList();
         for (int i = 0; i < foods.size(); i++)

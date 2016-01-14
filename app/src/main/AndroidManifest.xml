@@ -28,6 +28,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -63,12 +65,14 @@
                 android:resource="@xml/searchable"/>
         </activity>
 
-        <service
-            android:name=".services.FoodInfoService"
-            android:enabled="true"/>
+        <activity android:name="com.facebook.FacebookActivity"
+                  android:configChanges=
+                      "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+                  android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                  android:label="@string/app_name" />
 
         <service
-            android:name=".searchFragment.SearchFragment$SearchService"
+            android:name=".services.FoodInfoService"
             android:enabled="true"/>
 
         <meta-data

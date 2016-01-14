@@ -16,6 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.login.LoginManager;
+import com.facebook.login.widget.LoginButton;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -43,14 +48,20 @@ public class LoginActivity extends AppCompatActivity  implements
         GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = LoginActivity.class.getSimpleName();
 
+    //firebase
     private Firebase mFirebaseRef;
     private AuthData mAuthData;
     private Firebase.AuthStateListener mAuthStateListener;
     public static final int RC_GOOGLE_LOGIN = 1;
+    //google
     private GoogleApiClient mGoogleApiClient;
     private boolean mGoogleIntentInProgress;
     private boolean mGoogleLoginClicked;
     private ConnectionResult mGoogleConnectionResult;
+    //facebook
+    private CallbackManager mFacebookCallbackManager;
+    /* Used to track user logging in/out off Facebook */
+    private AccessTokenTracker mFacebookAccessTokenTracker;
     private ProgressDialog mAuthProgressDialog;
 
     @Bind(R.id.text_funfit)
@@ -59,7 +70,7 @@ public class LoginActivity extends AppCompatActivity  implements
     ImageView mImageBg;
 
     @Bind(R.id.facebookBtn)
-    Button mButtonFacebook;
+    LoginButton mButtonFacebook;
     @Bind(R.id.googleBtn)
     Button mButtonGoogle;
 
@@ -76,6 +87,18 @@ public class LoginActivity extends AppCompatActivity  implements
 
 
         mFirebaseRef = new Firebase(Constants.FIREBASE_URL);
+
+        //Facebook
+        mFacebookCallbackManager = CallbackManager.Factory.create();
+        mFacebookAccessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                Log.i(TAG, "Facebook.AccessTokenTracker.OnCurrentAccessTokenChanged");
+                LoginActivity.this.onFacebookAccessTokenChange(currentAccessToken);
+            }
+        };
+
+        //Google
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -102,13 +125,25 @@ public class LoginActivity extends AppCompatActivity  implements
         mAuthProgressDialog.show();
     }
 
-    @OnClick(R.id.facebookBtn)
-    public void loginFacebook() {
-        Intent intent = new Intent(this, HealthPreferenceActivity.class);
-        intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        Toast.makeText(this, "CLick", Toast.LENGTH_LONG).show();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // if user logged in with Facebook, stop tracking their token
+        if (mFacebookAccessTokenTracker != null) {
+            mFacebookAccessTokenTracker.stopTracking();
+        }
+
+        // if changing configurations, stop tracking firebase session.
+        mFirebaseRef.removeAuthStateListener(mAuthStateListener);
     }
+
+//    @OnClick(R.id.facebookBtn)
+//    public void loginFacebook() {
+//        Intent intent = new Intent(this, HealthPreferenceActivity.class);
+//        intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(intent);
+//        Toast.makeText(this, "CLick", Toast.LENGTH_LONG).show();
+//    }
 
     @OnClick(R.id.googleBtn)
     public void loginGoogle() {
@@ -139,6 +174,9 @@ public class LoginActivity extends AppCompatActivity  implements
             if (!mGoogleApiClient.isConnecting()) {
                 mGoogleApiClient.connect();
             }
+        }else {
+            /* Otherwise, it's probably the request by the Facebook login button, keep track of the session */
+            mFacebookCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -148,7 +186,10 @@ public class LoginActivity extends AppCompatActivity  implements
             mFirebaseRef.unauth();
             /* Logout of any of the Frameworks. This step is optional, but ensures the user is not logged into
              * Facebook/Google+ after logging out of Firebase. */
-            if (this.mAuthData.getProvider().equals("google")) {
+            if (this.mAuthData.getProvider().equals("facebook")) {
+                /* Logout from Facebook */
+                LoginManager.getInstance().logOut();
+            } else if (this.mAuthData.getProvider().equals("google")) {
                 /* Logout from Google+ */
                 if (mGoogleApiClient.isConnected()) {
                     Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
@@ -189,6 +230,34 @@ public class LoginActivity extends AppCompatActivity  implements
         this.mAuthData = authData;
         /* invalidate options menu to hide/show the logout button */
         supportInvalidateOptionsMenu();
+    }
+
+    /* ************************************
+     *             FACEBOOK               *
+     **************************************
+     */
+    private void onFacebookAccessTokenChange(AccessToken token) {
+        if (token != null) {
+            mAuthProgressDialog.show();
+            mFirebaseRef.authWithOAuthToken("facebook", token.getToken(), new Firebase.AuthResultHandler() {
+                @Override
+                public void onAuthenticated(AuthData authData) {
+                    //TODO:DISPLAY EMAIL
+                    Log.v(TAG,authData.getProviderData().get("displayName").toString());
+                }
+
+                @Override
+                public void onAuthenticationError(FirebaseError firebaseError) {
+
+                }
+            });
+        } else {
+            // Logged out of Facebook and currently authenticated with Firebase using Facebook, so do a logout
+            if (this.mAuthData != null && this.mAuthData.getProvider().equals("facebook")) {
+                mFirebaseRef.unauth();
+                setAuthenticatedUser(null);
+            }
+        }
     }
 
     /* ************************************

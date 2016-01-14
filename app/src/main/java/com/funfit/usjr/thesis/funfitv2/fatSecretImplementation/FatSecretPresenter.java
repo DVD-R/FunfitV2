@@ -34,6 +34,7 @@ public class FatSecretPresenter {
         }else{
             List<Food> foods = null;
             iSearchView.getFood(foods);
+            iSearchView.mProgressBarGone();
         }
     }
 

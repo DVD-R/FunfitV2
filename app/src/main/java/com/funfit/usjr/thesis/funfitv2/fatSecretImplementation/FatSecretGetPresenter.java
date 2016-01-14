@@ -3,9 +3,8 @@ package com.funfit.usjr.thesis.funfitv2.fatSecretImplementation;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.funfit.usjr.thesis.funfitv2.model.Food;
 import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
-import com.funfit.usjr.thesis.funfitv2.views.ISearchFragmentView;
+import com.funfit.usjr.thesis.funfitv2.views.ISearchAdapterView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,17 +16,16 @@ import java.util.List;
  * Created by victor on 1/12/2016.
  */
 public class FatSecretGetPresenter {
-    private ISearchFragmentView iSearchFragmentView;
+    private ISearchAdapterView iSearchAdapterView;
     private FatSecretGet fatSecretGet;
     private FoodServing foodServing;
 
-    public FatSecretGetPresenter(ISearchFragmentView iSearchFragmentView){
-            this.iSearchFragmentView = iSearchFragmentView;
+    public FatSecretGetPresenter(ISearchAdapterView iSearchAdapterView){
+            this.iSearchAdapterView = iSearchAdapterView;
             fatSecretGet = new FatSecretGet();
     }
 
     public void searchFoodWithServings(){
-        iSearchFragmentView.mProgressInit();
         DoInBackGround();
     }
 
@@ -35,7 +33,7 @@ public class FatSecretGetPresenter {
         AsyncTask<Void,Void,FoodServing> doInBackGround = new AsyncTask<Void, Void, FoodServing>() {
             @Override
             protected FoodServing doInBackground(Void... params) {
-                JSONObject foodItem = fatSecretGet.getFood(iSearchFragmentView.getFoodId());
+                JSONObject foodItem = fatSecretGet.getFood(iSearchAdapterView.getFoodId());
 
                 JSONArray FOODS_ARRAY;
                 List<FoodServing> foods = new ArrayList<FoodServing>();
@@ -54,7 +52,7 @@ public class FatSecretGetPresenter {
                                 items.setCarbohydrate(food_items.getString("carbohydrate"));
                                 items.setCholesterol(food_items.getString("cholesterol"));
                                 items.setFat(food_items.getString("fat"));
-                                items.setFiber(food_items.getString("fiber"));
+//                                items.setFiber(food_items.getString("fiber"));
                                 items.setIron(food_items.getString("iron"));
                                 items.setMeasurement_description(food_items.getString("measurement_description"));
                                 items.setMetric_serving_amount(food_items.getString("metric_serving_amount"));
@@ -67,12 +65,11 @@ public class FatSecretGetPresenter {
                                 items.setSaturated_fat(food_items.getString("saturated_fat"));
                                 items.setServing_description(food_items.getString("serving_description"));
                                 items.setServing_id(food_items.getString("serving_id"));
-                                items.setServing_url(food_items.getString("serving_url"));
+//                                items.setServing_url(food_items.getString("serving_url"));
                                 items.setSodium(food_items.getString("sodium"));
                                 foods.add(items);
                             }
-                            iSearchFragmentView.sendList(foods);
-                            iSearchFragmentView.mProgressBarGone();
+                            iSearchAdapterView.sendList(foods);
                         }
                     }
                 }catch (Exception e){
@@ -80,12 +77,6 @@ public class FatSecretGetPresenter {
                     return null;
                 }
                 return foodServing;
-            }
-
-            @Override
-            protected void onPostExecute(FoodServing foodServing) {
-                super.onPostExecute(foodServing);
-//                iSearchFragmentView.setUpSearchAdapter();
             }
         };
         doInBackGround.execute();

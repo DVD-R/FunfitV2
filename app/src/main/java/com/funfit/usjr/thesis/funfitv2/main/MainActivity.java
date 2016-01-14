@@ -91,10 +91,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void navigate(final int itemId) {
         switch (itemId) {
             case R.id.home:
-                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container_layout, new MapsActivity()).commit();
+//                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container_layout, new MapsActivity()).commit();
                 break;
             case R.id.nav_health_pref:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout, new MealPlanActivity()).commit();
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout, new MealPlanActivity()).commit();
                 break;
             case R.id.nav_meal_archeive:
                 break;
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_weekly:
                 break;
             case R.id.nav_history:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout, new HistoryActivity()).commit();
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout, new HistoryActivity()).commit();
                 break;
             case R.id.nav_event:
                 break;

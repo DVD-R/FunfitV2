@@ -4,9 +4,11 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.Food;
+import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,7 +23,7 @@ public class FoodInfoService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        List<Food> list = (List<Food>) intent.getExtras().getSerializable("FoodInfoList");
+        List<FoodServing> list = (List<FoodServing>) intent.getExtras().getSerializable("FoodInfoList");
         Intent i = new Intent(getString(R.string.broadcastInfo));
         i.putExtra("broadcastList", (Serializable) list);
         sendBroadcast(i);

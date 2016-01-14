@@ -54,6 +54,7 @@ public class FatSecretPresenter {
                                 items = new Food();
                                 items.setFood_id(food_items.getString("food_id"));
                                 items.setFood_name(food_items.getString("food_name"));
+                                items.setIsSelected(false);
                                 foods.add(items);
                             }
                         int a = 0;

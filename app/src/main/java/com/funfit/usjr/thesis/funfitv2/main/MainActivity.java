@@ -1,5 +1,6 @@
 package com.funfit.usjr.thesis.funfitv2.main;
 
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -15,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,7 +26,10 @@ import android.widget.Toast;
 import com.funfit.usjr.thesis.funfitv2.MapsActivity;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.history.HistoryActivity;
+import com.funfit.usjr.thesis.funfitv2.login.LoginActivity;
 import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanActivity;
+import com.funfit.usjr.thesis.funfitv2.notificationEvents.EventActivity;
+import com.funfit.usjr.thesis.funfitv2.notificationEvents.NotificationActivity;
 import com.funfit.usjr.thesis.funfitv2.search.SearchActivity;
 
 import java.util.ArrayList;
@@ -80,6 +85,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_notification:
+                startActivity(new Intent(this, NotificationActivity.class));
+                return true;
+            case R.id.action_news:
+                startActivity(new Intent(this, EventActivity.class));
+                return true;
+            default:
+                Log.v("HEY",item.getItemId()+"");
+                return false;
+        }
     }
 
     @Override

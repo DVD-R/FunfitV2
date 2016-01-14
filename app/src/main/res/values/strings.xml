@@ -108,4 +108,6 @@
     <string name="broadcastInfo">broadcast_foodInfoList</string>
 
     <string name="facebook_app_id">472651612918878</string>
+    <string name="label_notification">Notifications</string>
+    <string name="label_events">Events</string>
 </resources>

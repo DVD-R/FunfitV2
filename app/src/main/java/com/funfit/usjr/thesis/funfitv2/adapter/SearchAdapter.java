@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolder>{
 
     private List<Food> foodList;
-
+//    private int size;
     public static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.foodNameTxt)TextView foodNameTxt;
 
@@ -43,6 +43,11 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
         this.foodList = foodList;
     }
 
+
+//    public SearchAdapter(int size){
+//        this.size = size;
+//    }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.foodNameTxt.setText(foodList.get(position).getFood_name());
@@ -50,6 +55,9 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
 
     @Override
     public int getItemCount() {
+
         return foodList.size();
+//    return size;
     }
+
 }

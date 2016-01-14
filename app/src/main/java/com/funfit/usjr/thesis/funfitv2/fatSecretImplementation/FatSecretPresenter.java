@@ -51,6 +51,9 @@ public class FatSecretPresenter {
                                 items.setFood_name(food_items.getString("food_name"));
                                 foods.add(items);
                             }
+                        int a = 0;
+                            ++a;
+                            Log.i("Size Testing", String.valueOf(a));
                             iSearchView.getFood(foods);
                             iSearchView.mProgressBarGone();
                         }

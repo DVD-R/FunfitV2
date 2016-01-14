@@ -39,7 +39,6 @@ public class FatSecretGet {
         JSONObject food = null;
         try {
             URL url = new URL(APP_URL + "?" + paramify(params.toArray(template)));
-
             URLConnection api = url.openConnection();
             String line;
             StringBuilder builder = new StringBuilder();

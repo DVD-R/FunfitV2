@@ -51,13 +51,17 @@
         <activity android:name=".main.MainActivity"/>
         <activity android:name=".healthPreference.HealthPreferenceActivity" />
         <activity android:name=".history.ClickedHistory"/>
-        <activity android:name=".search.SearchActivity">
+        <activity android:name=".search.SearchActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="ANDROID.INTENT.ACTION.SEARCH" />
             </intent-filter>
             <meta-data android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
         </activity>
+
+        <service android:name=".services.FoodInfoService"
+            android:enabled="true"/>
 
         <service android:name=".searchFragment.SearchFragment$SearchService"
             android:enabled="true"/>

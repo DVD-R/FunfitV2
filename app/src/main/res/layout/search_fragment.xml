@@ -10,14 +10,6 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview_foodList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:visibility="gone"/>
-
     <LinearLayout
         android:id="@+id/carddemo_progressContainer"
         android:orientation="vertical"
@@ -33,6 +25,12 @@
             android:layout_height="wrap_content"/>
 
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="368dp"
+        android:layout_height="550dp"
+        android:layout_gravity="center"></FrameLayout>
 
 
 </FrameLayout>

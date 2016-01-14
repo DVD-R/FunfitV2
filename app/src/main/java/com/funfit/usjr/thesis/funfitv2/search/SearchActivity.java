@@ -1,5 +1,8 @@
 package com.funfit.usjr.thesis.funfitv2.search;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -39,6 +42,8 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
     @Bind(R.id.viewpager)ViewPager mViewPager;
     @Bind(R.id.tabs)TabLayout mTabs;
     @Bind(R.id.carddemo_progressContainer)LinearLayout mProgressBarContainer;
+    private Intent intent;
+
     private SearchView mSearchView;
     private FatSecretPresenter fatSecretPresenter;
     @Override
@@ -47,6 +52,7 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
         activitySetup();
+        intent = new Intent(this, SearchFragment.SearchService.class);
         fatSecretPresenter = new FatSecretPresenter(this);
     }
 
@@ -76,9 +82,11 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
 
     @Override
     public void getFood(List<Food> items) {
-        Intent intent = new Intent(this, SearchFragment.SearchService.class);
-        intent.putExtra("FoodList", (Serializable) items);
-        startService(intent);
+        if (items.size()!=0)
+        {
+            intent.putExtra("FoodList", (Serializable) items);
+            startService(intent);
+        }
     }
 
     @Override
@@ -150,7 +158,6 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
                 MenuItemCompat.getActionView(searchItem);
         searchItem.expandActionView();
         doSearch();
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -158,6 +165,7 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+//                fatSecretPresenter.searchFoodQuery(query);
                 return false;
             }
 

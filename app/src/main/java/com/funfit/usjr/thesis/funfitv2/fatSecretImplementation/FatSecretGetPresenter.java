@@ -36,7 +36,6 @@ public class FatSecretGetPresenter {
             @Override
             protected FoodServing doInBackground(Void... params) {
                 JSONObject foodItem = fatSecretGet.getFood(iSearchFragmentView.getFoodId());
-                Log.e("FatSecret Api", foodItem.length()+"");
 
                 JSONArray FOODS_ARRAY;
                 List<FoodServing> foods = new ArrayList<FoodServing>();
@@ -44,7 +43,6 @@ public class FatSecretGetPresenter {
                 JSONObject jsonObjectServing;
                 try {
                     if (foodItem != null) {
-                        Log.i("FOOD NAME",foodItem.getString("food_name"));
                         jsonObjectServing = foodItem.getJSONObject("servings");
                         FOODS_ARRAY = jsonObjectServing.getJSONArray("serving");
                         if (FOODS_ARRAY != null) {
@@ -73,8 +71,7 @@ public class FatSecretGetPresenter {
                                 items.setSodium(food_items.getString("sodium"));
                                 foods.add(items);
                             }
-                            iSearchFragmentView.setItem(foods);
-                            iSearchFragmentView.setUpSearchAdapter();
+                            iSearchFragmentView.sendList(foods);
                             iSearchFragmentView.mProgressBarGone();
                         }
                     }
@@ -93,5 +90,4 @@ public class FatSecretGetPresenter {
         };
         doInBackGround.execute();
     }
-
 }

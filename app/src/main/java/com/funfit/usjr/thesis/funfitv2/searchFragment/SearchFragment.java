@@ -26,6 +26,7 @@ import com.funfit.usjr.thesis.funfitv2.fragmentDialog.FoodInfoFragment;
 import com.funfit.usjr.thesis.funfitv2.listener.RecyclerItemClickListener;
 import com.funfit.usjr.thesis.funfitv2.model.Food;
 import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
+import com.funfit.usjr.thesis.funfitv2.services.FoodInfoService;
 import com.funfit.usjr.thesis.funfitv2.views.ISearchFragmentView;
 
 import java.io.Serializable;
@@ -42,17 +43,20 @@ public class SearchFragment extends Fragment implements ISearchFragmentView{
 
     private boolean mBroadcastInfoRegistered;
     private List<Food> foodList;
+    private List<FoodServing> foodInfoList;
     private FatSecretGetPresenter fatSecretGetPresenter;
     private Long id;
+    private  Intent intent;
+
     @Bind(R.id.carddemo_progressContainer) LinearLayout mProgressBarContainer;
     @Bind(R.id.recyclerview_list)RecyclerView mRecyclerView;
-    @Bind(R.id.recyclerview_foodList)RecyclerView mRecyclerViewFood;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_fragment, container, false);
         ButterKnife.bind(this, view);
         fatSecretGetPresenter = new FatSecretGetPresenter(this);
+        intent = new Intent(getActivity(), FoodInfoService.class);
         return view;
     }
 
@@ -86,7 +90,6 @@ public class SearchFragment extends Fragment implements ISearchFragmentView{
         }
     };
 
-
     public void populateFoodList(){
         SearchAdapter searchAdapter = new SearchAdapter(foodList);
         mRecyclerView.setAdapter(searchAdapter);
@@ -97,31 +100,14 @@ public class SearchFragment extends Fragment implements ISearchFragmentView{
             public void onItemClick(View view, int position) {
                 id = Long.parseLong(foodList.get(position).getFood_id());
                 fatSecretGetPresenter.searchFoodWithServings();
+                sample();
             }
         }));
     }
 
-    @Override
-    public void setUpSearchAdapter() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mRecyclerView.setVisibility(View.INVISIBLE);
-                mRecyclerViewFood.setVisibility(View.VISIBLE);
-                SearchServingAdapter searchServingAdapter = new SearchServingAdapter(7);
-                mRecyclerViewFood.setAdapter(searchServingAdapter);
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-                mRecyclerViewFood.setLayoutManager(linearLayoutManager);
-                mRecyclerViewFood.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), mRecyclerViewFood, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Toast.makeText(getActivity(), "Click", Toast.LENGTH_LONG).show();
-                        FoodInfoFragment foodInfoFragment = new FoodInfoFragment();
-                        foodInfoFragment.show(getActivity().getFragmentManager(), "Food Info");
-                    }
-                }));
-            }
-        });
+    public void sample(){
+        Log.i("Test", String.valueOf("Victor"));
+
     }
 
     @Override
@@ -129,7 +115,7 @@ public class SearchFragment extends Fragment implements ISearchFragmentView{
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mProgressBarContainer!=null)
+                if (mProgressBarContainer != null)
                     mProgressBarContainer.setVisibility(View.GONE);
             }
         });
@@ -141,10 +127,14 @@ public class SearchFragment extends Fragment implements ISearchFragmentView{
     }
 
     @Override
-    public void setItem(List<FoodServing> items) {
-        Log.i("measurement_description", items.get(0).getMeasurement_description());
-        setUpSearchAdapter();
+    public void sendList(List<FoodServing> items) {
+        foodInfoList = items;
+        intent.putExtra("FoodInfoList", (Serializable) foodInfoList);
+        getActivity().startService(intent);
+        FoodInfoFragment foodInfoFragment = new FoodInfoFragment();
+        foodInfoFragment.show(getActivity().getFragmentManager(), "Food Info");
     }
+
 
     @Override
     public Long getFoodId() {
@@ -152,7 +142,6 @@ public class SearchFragment extends Fragment implements ISearchFragmentView{
     }
 
     public static class SearchService extends Service{
-
         @Nullable
         @Override
         public IBinder onBind(Intent intent) {return null;}

@@ -105,4 +105,5 @@
     <string name="open">open</string>
     <string name="close">close</string>
     <string name="broadcast_info">broadcast_foodList</string>
+    <string name="broadcastInfo">broadcast_foodInfoList</string>
 </resources>

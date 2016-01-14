@@ -38,7 +38,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MealPlanFragment extends Fragment implements IMealPlanFragmentView{
+public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
 
     GestureDetectorCompat gestureDetectorCompat;
     @Bind(R.id.container)FrameLayout piechartLayout;

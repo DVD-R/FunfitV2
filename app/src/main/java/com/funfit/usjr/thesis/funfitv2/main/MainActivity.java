@@ -17,7 +17,8 @@ import android.view.MenuItem;
 
 import com.funfit.usjr.thesis.funfitv2.MapsActivity;
 import com.funfit.usjr.thesis.funfitv2.R;
-import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanFragment;
+import com.funfit.usjr.thesis.funfitv2.history.HistoryActivity;
+import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,16 +78,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-//        getSupportFragmentManager().beginTransaction().replace(R.id.container,new MealPlanFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container,new MealPlanActivity()).commit();
     }
 
     private void navigate(final int itemId) {
         switch (itemId) {
             case R.id.home:
-//                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container_layout, new MapsActivity()).commit();
+                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container_layout, new MapsActivity()).commit();
                 break;
             case R.id.nav_health_pref:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout, new MealPlanFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout, new MealPlanActivity()).commit();
                 break;
             case R.id.nav_meal_archeive:
                 break;
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_weekly:
                 break;
             case R.id.nav_history:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout, new HistoryActivity()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout, new HistoryActivity()).commit();
                 break;
             case R.id.nav_event:
                 break;
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new MapsActivity(), "Arena");
-        adapter.addFragment(new MealPlanFragment(), "Shack");
+        adapter.addFragment(new MealPlanActivity(), "Shack");
         viewPager.setAdapter(adapter);
     }
 

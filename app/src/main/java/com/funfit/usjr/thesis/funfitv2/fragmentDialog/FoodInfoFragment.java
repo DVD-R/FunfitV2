@@ -66,7 +66,7 @@ public class FoodInfoFragment extends DialogFragment implements  DatePickerDialo
     private FoodInfoPresenter foodInfoPresenter;
     private List<String> mSpinnerServingItems;
     private Activity activity;
-
+    private int mPosition;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -128,7 +128,6 @@ public class FoodInfoFragment extends DialogFragment implements  DatePickerDialo
         mFatSize.setText(foodInfoList.get(0).getFat());
         mCarbSize.setText(foodInfoList.get(0).getCarbohydrate());
         mProteinSize.setText(foodInfoList.get(0).getProtein());
-
     }
 
     @Override
@@ -136,7 +135,8 @@ public class FoodInfoFragment extends DialogFragment implements  DatePickerDialo
         mServingDescription.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity(), parent.getSelectedItem().toString(),Toast.LENGTH_LONG).show();
+                mPosition = position;
+                foodInfoPresenter.updateNutritionInfo();
             }
 
             @Override
@@ -154,6 +154,20 @@ public class FoodInfoFragment extends DialogFragment implements  DatePickerDialo
     @Override
     public List<FoodServing> getFoodInfoList() {
         return foodInfoList;
+    }
+
+    @Override
+    public void updateNutritionInfo(int position) {
+        mServingSize.setText(foodInfoList.get(position).getNumber_of_units().substring(0,1));
+        mCalSize.setText(foodInfoList.get(position).getCalories());
+        mFatSize.setText(foodInfoList.get(position).getFat());
+        mCarbSize.setText(foodInfoList.get(position).getCarbohydrate());
+        mProteinSize.setText(foodInfoList.get(position).getProtein());
+    }
+
+    @Override
+    public int getPosition() {
+        return mPosition;
     }
 
 

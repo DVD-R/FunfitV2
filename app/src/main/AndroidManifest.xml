@@ -65,6 +65,24 @@
                 android:resource="@xml/searchable"/>
         </activity>
 
+        <activity
+            android:name=".notificationEvents.NotificationActivity"
+            android:parentActivityName=".main.MainActivity"
+            android:label="@string/label_notification">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".main.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".notificationEvents.EventActivity"
+            android:parentActivityName=".main.MainActivity"
+            android:label="@string/label_events">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".main.MainActivity" />
+        </activity>
+
         <activity android:name="com.facebook.FacebookActivity"
                   android:configChanges=
                       "keyboard|keyboardHidden|screenLayout|screenSize|orientation"

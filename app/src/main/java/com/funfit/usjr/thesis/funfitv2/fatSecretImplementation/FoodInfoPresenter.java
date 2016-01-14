@@ -34,4 +34,9 @@ public class FoodInfoPresenter {
         }
         iFoodInfoView.setSpinnerItem(newEntry);
     }
+
+    public void updateNutritionInfo(){
+        iFoodInfoView.updateNutritionInfo(iFoodInfoView.getPosition());
+    }
+
 }

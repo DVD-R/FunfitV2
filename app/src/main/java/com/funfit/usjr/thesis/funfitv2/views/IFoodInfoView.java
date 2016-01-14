@@ -12,4 +12,6 @@ public interface IFoodInfoView {
     public void setUpListener();
     public void setSpinnerItem(List<String> items);
     public List<FoodServing> getFoodInfoList();
+    public void updateNutritionInfo(int position);
+    public int getPosition();
 }

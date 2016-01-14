@@ -1,6 +1,5 @@
 package com.funfit.usjr.thesis.funfitv2.fragmentDialog;
 
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -68,7 +67,6 @@ public class FoodInfoFragment extends DialogFragment implements  DatePickerDialo
     private List<String> mSpinnerServingItems;
     private Activity activity;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -99,6 +97,11 @@ public class FoodInfoFragment extends DialogFragment implements  DatePickerDialo
         Window window = getDialog().getWindow();
         window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         window.setGravity(Gravity.CENTER);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         if (!mBroadcastInfoRegistered){
             activity.registerReceiver(foodInfoListReceiver, new IntentFilter(getString(R.string.broadcastInfo)));
             mBroadcastInfoRegistered = true;
@@ -120,6 +123,12 @@ public class FoodInfoFragment extends DialogFragment implements  DatePickerDialo
                 android.R.layout.simple_spinner_item, mSpinnerServingItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mServingDescription.setAdapter(adapter);
+        mServingSize.setText(foodInfoList.get(0).getNumber_of_units().substring(0,1));
+        mCalSize.setText(foodInfoList.get(0).getCalories());
+        mFatSize.setText(foodInfoList.get(0).getFat());
+        mCarbSize.setText(foodInfoList.get(0).getCarbohydrate());
+        mProteinSize.setText(foodInfoList.get(0).getProtein());
+
     }
 
     @Override
@@ -153,14 +162,11 @@ public class FoodInfoFragment extends DialogFragment implements  DatePickerDialo
         public void onReceive(Context context, Intent intent) {
             try {
                 foodInfoList = (List<FoodServing>) intent.getExtras().getSerializable("broadcastList");
-
+                Log.i("Serving Description", foodInfoList.get(0).getMeasurement_description());
                 foodInfoPresenter.onResume();
-
             }catch (Exception e){
                 Log.e("Broadcast Error", String.valueOf(e));
             }
-            Log.i("Serving Description", foodInfoList.get(0).getMeasurement_description());
-
         }
     };
 
@@ -187,6 +193,4 @@ public class FoodInfoFragment extends DialogFragment implements  DatePickerDialo
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
 
     }
-
-
 }

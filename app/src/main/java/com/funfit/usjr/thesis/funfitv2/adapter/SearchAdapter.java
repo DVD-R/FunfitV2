@@ -1,14 +1,26 @@
 package com.funfit.usjr.thesis.funfitv2.adapter;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.fatSecretImplementation.FatSecretGetPresenter;
+import com.funfit.usjr.thesis.funfitv2.fragmentDialog.FoodInfoFragment;
 import com.funfit.usjr.thesis.funfitv2.model.Food;
+import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
+import com.funfit.usjr.thesis.funfitv2.services.FoodInfoService;
+import com.funfit.usjr.thesis.funfitv2.views.ISearchAdapterView;
 
+import java.io.Serializable;
 import java.util.List;
 
 import butterknife.Bind;
@@ -18,15 +30,39 @@ import butterknife.ButterKnife;
 /**
  * Created by victor on 1/12/2016.
  */
-public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolder>{
+public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolder> implements ISearchAdapterView{
 
     private List<Food> foodList;
-//    private int size;
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.foodNameTxt)TextView foodNameTxt;
+    private Intent intent;
+    private Context context;
+    private int position;
+    private FatSecretGetPresenter fatSecretGetPresenter;
+    @Override
+    public void sendList(List<FoodServing> items) {
+        android.app.FragmentManager manager = ((Activity) context).getFragmentManager();
+        FoodInfoFragment foodInfoFragment = new FoodInfoFragment();
+        foodInfoFragment.show(manager, "Food Info");
+        intent = new Intent(context, FoodInfoService.class);
+        intent.putExtra("FoodInfoList", (Serializable) items);
+        context.startService(intent);
+    }
 
+    @Override
+    public Long getFoodId() {
+        return Long.parseLong(foodList.get(position).getFood_id());
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.foodNameTxt)TextView foodNameTxt;
         public ViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    position = getPosition();
+                    fatSecretGetPresenter.searchFoodWithServings();
+                }
+            });
             ButterKnife.bind(this,itemView);
         }
 
@@ -36,17 +72,15 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_adapter_layout, parent, false);
         view.setFocusable(true);
+        context = parent.getContext();
         return new ViewHolder(view);
     }
 
     public SearchAdapter(List<Food> foodList){
         this.foodList = foodList;
+        fatSecretGetPresenter = new FatSecretGetPresenter(this);
     }
 
-
-//    public SearchAdapter(int size){
-//        this.size = size;
-//    }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -55,9 +89,15 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
 
     @Override
     public int getItemCount() {
+        try {
+            return foodList.size();
+        }catch (Exception e){
+            return 0;
+        }
+   }
 
-        return foodList.size();
-//    return size;
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
     }
-
 }

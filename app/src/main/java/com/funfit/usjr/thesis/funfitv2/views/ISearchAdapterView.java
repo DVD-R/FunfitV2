@@ -9,9 +9,7 @@ import java.util.List;
 /**
  * Created by victor on 1/12/2016.
  */
-public interface ISearchFragmentView {
+public interface ISearchAdapterView {
     public void sendList(List<FoodServing> items);
     public Long getFoodId();
-    public void mProgressBarGone();
-    public void mProgressInit();
 }

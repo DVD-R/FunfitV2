@@ -27,9 +27,14 @@ public class FatSecretPresenter {
         mFatSecretSearch = new FatSecretSearch();
     }
 
-    public void searchFoodQuery(String item) {
-        iSearchView.mProgressInit();
-        DoInBackGround(item);
+    public void searchFoodQuery() {
+        if (!iSearchView.getNewText().isEmpty()) {
+            iSearchView.mProgressInit();
+            DoInBackGround(iSearchView.getNewText());
+        }else{
+            List<Food> foods = null;
+            iSearchView.getFood(foods);
+        }
     }
 
     private void DoInBackGround(final String item) {

@@ -7,13 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
-import com.funfit.usjr.thesis.funfitv2.fragmentDialog.FoodInfoFragment;
-import com.funfit.usjr.thesis.funfitv2.model.Food;
 import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
-import com.funfit.usjr.thesis.funfitv2.views.ISearchFragmentView;
 
 import java.util.List;
 

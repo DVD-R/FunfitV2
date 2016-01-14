@@ -1,31 +1,23 @@
 package com.funfit.usjr.thesis.funfitv2.main;
 
-import android.content.IntentFilter;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.MapsActivity;
 import com.funfit.usjr.thesis.funfitv2.R;
-import com.funfit.usjr.thesis.funfitv2.history.HistoryActivity;
-import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanActivity;
-import com.funfit.usjr.thesis.funfitv2.search.SearchActivity;
+import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-//        getSupportFragmentManager().beginTransaction().replace(R.id.container,new MealPlanActivity()).commit();
+//        getSupportFragmentManager().beginTransaction().replace(R.id.container,new MealPlanFragment()).commit();
     }
 
     private void navigate(final int itemId) {
@@ -94,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container_layout, new MapsActivity()).commit();
                 break;
             case R.id.nav_health_pref:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout, new MealPlanActivity()).commit();
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout, new MealPlanFragment()).commit();
                 break;
             case R.id.nav_meal_archeive:
                 break;
@@ -129,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new MapsActivity(), "Arena");
-        adapter.addFragment(new MealPlanActivity(), "Shack");
+        adapter.addFragment(new MealPlanFragment(), "Shack");
         viewPager.setAdapter(adapter);
     }
 

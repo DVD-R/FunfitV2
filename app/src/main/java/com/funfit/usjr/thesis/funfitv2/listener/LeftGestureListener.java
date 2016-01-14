@@ -6,7 +6,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import com.funfit.usjr.thesis.funfitv2.healthPreference.HealthPreferenceActivity;
-import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanActivity;
 
 /**
  * Created by victor on 1/6/2016.

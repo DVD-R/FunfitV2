@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +55,7 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.foodNameTxt)TextView foodNameTxt;
+        @Bind(R.id.selectChkBox)CheckBox mSelectChk;
         public ViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +86,25 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+
+        final int pos = position;
+
         holder.foodNameTxt.setText(foodList.get(position).getFood_name());
+
+        holder.mSelectChk.setChecked(foodList.get(position).isSelected());
+        holder.mSelectChk.setTag(foodList.get(position));
+
+        holder.mSelectChk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CheckBox checkBox = (CheckBox) v;
+                Food food = (Food) checkBox.getTag();
+
+                food.setIsSelected(checkBox.isChecked());
+                foodList.get(pos).setIsSelected(checkBox.isChecked());
+//                Toast.makeText(v.getContext(), food.getFood_name(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
@@ -100,4 +120,9 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
+
+    public List<Food> getFoodList(){
+        return foodList;
+    }
+
 }

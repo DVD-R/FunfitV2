@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by victor on 1/6/2016.
@@ -28,7 +30,7 @@ public class SearchFragment extends Fragment implements SearchActivity.DisplayLi
     RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private LayoutManagerType mLayoutManagerType;
-
+    private SearchAdapter searchAdapter;
     private enum LayoutManagerType{
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
@@ -62,12 +64,23 @@ public class SearchFragment extends Fragment implements SearchActivity.DisplayLi
 
     }
 
+    @OnClick(R.id.click)
+    public void click(){
+        List<Food> foods = ((SearchAdapter) searchAdapter).getFoodList();
+        for (int i = 0; i < foods.size(); i++)
+        {
+            Food food  = foods.get(i);
+            if (food.isSelected() == true)
+            Log.i("Click Size", String.valueOf(food.getFood_name()));
+        }
+    }
+
     @Override
     public void sendFoodList(final List<Food> items) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                SearchAdapter searchAdapter = new SearchAdapter(items);
+               searchAdapter  = new SearchAdapter(items);
                 mRecyclerView.setAdapter(searchAdapter);
             }
         });

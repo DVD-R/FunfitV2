@@ -11,6 +11,7 @@ public class Food implements Serializable {
     private String food_name;
     private String food_type;
     private String food_url;
+    private boolean isSelected;
 
     public String getFood_description() {
         return food_description;
@@ -50,5 +51,13 @@ public class Food implements Serializable {
 
     public void setFood_url(String food_url) {
         this.food_url = food_url;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setIsSelected(boolean isSelected) {
+        this.isSelected = isSelected;
     }
 }

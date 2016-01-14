@@ -39,17 +39,14 @@
             android:textColor="@color/white"
             android:textSize="70sp"/>
 
-        <Button
+        <com.facebook.login.widget.LoginButton
             android:id="@+id/facebookBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_funfit"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="100dp"
-            android:layout_marginTop="50dp"
-            android:background="@color/fb_button"
-            android:text="Temporary Facebook"
-            android:textColor="@color/white"/>
+            android:layout_marginTop="50dp"/>
 
         <Button
             android:id="@+id/googleBtn"

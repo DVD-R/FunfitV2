@@ -26,6 +26,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.healthPreference.HealthPreferenceActivity;
+import com.funfit.usjr.thesis.funfitv2.main.MainActivity;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
@@ -147,18 +148,23 @@ public class LoginActivity extends AppCompatActivity  implements
 
     @OnClick(R.id.googleBtn)
     public void loginGoogle() {
-        mGoogleLoginClicked = true;
-        if (!mGoogleApiClient.isConnecting()) {
-            if (mGoogleConnectionResult != null) {
-                resolveSignInError();
-            } else if (mGoogleApiClient.isConnected()) {
-                getGoogleOAuthTokenAndLogin();
-            } else {
-                    /* connect API now */
-                Log.d(TAG, "Trying to connect to Google API");
-                mGoogleApiClient.connect();
-            }
-        }
+//        mGoogleLoginClicked = true;
+//        if (!mGoogleApiClient.isConnecting()) {
+//            if (mGoogleConnectionResult != null) {
+//                resolveSignInError();
+//            } else if (mGoogleApiClient.isConnected()) {
+//                getGoogleOAuthTokenAndLogin();
+//            } else {
+//                    /* connect API now */
+//                Log.d(TAG, "Trying to connect to Google API");
+//                mGoogleApiClient.connect();
+//            }
+//        }
+
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     @Override

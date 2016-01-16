@@ -25,7 +25,9 @@ import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.MapsActivity;
 import com.funfit.usjr.thesis.funfitv2.R;
-import com.funfit.usjr.thesis.funfitv2.history.HistoryActivity;
+//import com.funfit.usjr.thesis.funfitv2.history.HistoryActivity;
+import com.funfit.usjr.thesis.funfitv2.history.EventHistoryActivity;
+import com.funfit.usjr.thesis.funfitv2.history.EventHistoryActivityImpl;
 import com.funfit.usjr.thesis.funfitv2.login.LoginActivity;
 import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanActivity;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.EventActivity;
@@ -126,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_history:
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout, new HistoryActivity()).commit();
+                startActivity(new Intent(this, EventHistoryActivityImpl.class));
                 break;
             case R.id.nav_event:
                 break;

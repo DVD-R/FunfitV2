@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.funfit.usjr.thesis.funfitv2.R;
-import com.funfit.usjr.thesis.funfitv2.adapter.SearchAdapter;
+import com.funfit.usjr.thesis.funfitv2.adapters.SearchAdapter;
 import com.funfit.usjr.thesis.funfitv2.model.Food;
 import com.funfit.usjr.thesis.funfitv2.search.SearchActivity;
 
@@ -19,7 +19,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by victor on 1/6/2016.

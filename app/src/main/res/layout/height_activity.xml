@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/divider_color">
+
+
+
+
+    <LinearLayout
+        android:layout_marginTop="55dp"
+        android:layout_marginBottom="55dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="What is your Height?"
+            android:fontFamily="sans-sarif-light"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <EditText
+                android:id="@+id/heightEdt"
+                android:layout_width="100dp"
+                android:layout_height="75dp"
+                android:inputType="number"
+                android:textColor="@color/white"/>
+            <Spinner
+                android:id="@+id/ftValueSpnr"
+                android:layout_width="100dp"
+                android:layout_height="75dp"
+                android:entries="@array/ft_values"
+                android:visibility="gone"
+                android:textColor="@color/white"/>
+            <Spinner
+                android:id="@+id/heightSpnr"
+                android:layout_width="wrap_content"
+                android:layout_height="75dp"
+                android:entries="@array/height_measurement"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+
+
+</LinearLayout>

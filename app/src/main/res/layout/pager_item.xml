@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:src="@drawable/mountain"
+        android:id="@+id/img_pager_item"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:clickable="false"/>
+
+    <FrameLayout
+        android:id="@+id/activityLevelLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <include layout="@layout/activity_level"/>
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/activityWeightLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <include layout="@layout/activity_weight"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/activityHeightLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <include layout="@layout/height_activity"/>
+    </FrameLayout>
+
+</LinearLayout>

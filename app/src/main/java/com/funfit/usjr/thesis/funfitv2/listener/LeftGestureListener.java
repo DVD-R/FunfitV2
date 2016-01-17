@@ -5,8 +5,7 @@ import android.content.Intent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-import com.funfit.usjr.thesis.funfitv2.healthPreference.HealthPreferenceActivity;
-import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanActivity;
+import com.funfit.usjr.thesis.funfitv2.healthPreference.HealthStatisticsSetupPager;
 
 /**
  * Created by victor on 1/6/2016.
@@ -23,7 +22,7 @@ public class LeftGestureListener extends GestureDetector.SimpleOnGestureListener
     @Override
     public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
         if (event2.getX() < event1.getX()){
-            Intent intent = new Intent(activity, HealthPreferenceActivity.class);
+            Intent intent = new Intent(activity, HealthStatisticsSetupPager.class);
             activity.startActivity(intent);
         }
         return true;

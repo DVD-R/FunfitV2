@@ -25,7 +25,7 @@ import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.funfit.usjr.thesis.funfitv2.R;
-import com.funfit.usjr.thesis.funfitv2.healthPreference.HealthPreferenceActivity;
+import com.funfit.usjr.thesis.funfitv2.healthPreference.HealthStatisticsSetupPager;
 import com.funfit.usjr.thesis.funfitv2.main.MainActivity;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.google.android.gms.auth.GoogleAuthException;
@@ -140,7 +140,7 @@ public class LoginActivity extends AppCompatActivity  implements
 
 //    @OnClick(R.id.facebookBtn)
 //    public void loginFacebook() {
-//        Intent intent = new Intent(this, HealthPreferenceActivity.class);
+//        Intent intent = new Intent(this, HealthStatisticsSetupPager.class);
 //        intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
 //        startActivity(intent);
 //        Toast.makeText(this, "CLick", Toast.LENGTH_LONG).show();
@@ -162,7 +162,7 @@ public class LoginActivity extends AppCompatActivity  implements
 //        }
 
 
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, HealthStatisticsSetupPager.class);
         intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -210,7 +210,7 @@ public class LoginActivity extends AppCompatActivity  implements
     private void setAuthenticatedUser(AuthData authData) {
         if (authData != null) {
             //Login Successful
-            Intent intent = new Intent(this, HealthPreferenceActivity.class);
+            Intent intent = new Intent(this, HealthStatisticsSetupPager.class);
             intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
 

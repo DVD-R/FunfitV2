@@ -1,42 +1,29 @@
 package com.funfit.usjr.thesis.funfitv2.main;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.funfit.usjr.thesis.funfitv2.MapsActivity;
 import com.funfit.usjr.thesis.funfitv2.R;
-//import com.funfit.usjr.thesis.funfitv2.history.HistoryActivity;
-import com.funfit.usjr.thesis.funfitv2.history.EventHistoryActivity;
 import com.funfit.usjr.thesis.funfitv2.history.EventHistoryActivityImpl;
-import com.funfit.usjr.thesis.funfitv2.login.LoginActivity;
 import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanActivity;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.EventActivity;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.NotificationActivity;
-import com.funfit.usjr.thesis.funfitv2.search.SearchActivity;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -127,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_weekly:
                 break;
             case R.id.nav_history:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout, new HistoryActivity()).commit();
                 startActivity(new Intent(this, EventHistoryActivityImpl.class));
                 break;
             case R.id.nav_event:

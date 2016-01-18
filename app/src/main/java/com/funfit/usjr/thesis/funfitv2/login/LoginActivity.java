@@ -3,9 +3,11 @@ package com.funfit.usjr.thesis.funfitv2.login;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,12 +24,17 @@ import com.facebook.CallbackManager;
 import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ServerValue;
+import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.healthPreference.HealthStatisticsSetupPager;
 import com.funfit.usjr.thesis.funfitv2.main.MainActivity;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
+import com.funfit.usjr.thesis.funfitv2.model.User;
+import com.funfit.usjr.thesis.funfitv2.model.Utils;
 import com.funfit.usjr.thesis.funfitv2.tutorial.TutorialActivity;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
@@ -75,6 +82,8 @@ public class LoginActivity extends AppCompatActivity  implements
     LoginButton mButtonFacebook;
     @Bind(R.id.googleBtn)
     Button mButtonGoogle;
+    private String mEncodedEmail;
+    private String mUnprocessedEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,23 +158,23 @@ public class LoginActivity extends AppCompatActivity  implements
 
     @OnClick(R.id.googleBtn)
     public void loginGoogle() {
-//        mGoogleLoginClicked = true;
-//        if (!mGoogleApiClient.isConnecting()) {
-//            if (mGoogleConnectionResult != null) {
-//                resolveSignInError();
-//            } else if (mGoogleApiClient.isConnected()) {
-//                getGoogleOAuthTokenAndLogin();
-//            } else {
-//                    /* connect API now */
-//                Log.d(TAG, "Trying to connect to Google API");
-//                mGoogleApiClient.connect();
-//            }
-//        }
+        mGoogleLoginClicked = true;
+        if (!mGoogleApiClient.isConnecting()) {
+            if (mGoogleConnectionResult != null) {
+                resolveSignInError();
+            } else if (mGoogleApiClient.isConnected()) {
+                getGoogleOAuthTokenAndLogin();
+            } else {
+                    /* connect API now */
+                Log.d(TAG, "Trying to connect to Google API");
+                mGoogleApiClient.connect();
+            }
+        }
 
 
-        Intent intent = new Intent(this, TutorialActivity.class);
-        intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+//        Intent intent = new Intent(this, TutorialActivity.class);
+//        intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(intent);
     }
 
     @Override
@@ -328,7 +337,68 @@ public class LoginActivity extends AppCompatActivity  implements
                     mFirebaseRef.authWithOAuthToken("google", token, new Firebase.AuthResultHandler() {
                         @Override
                         public void onAuthenticated(AuthData authData) {
-                            Log.v(TAG,authData.getProviderData().get("displayName").toString());
+                            Log.v(TAG, Plus.AccountApi.getAccountName(mGoogleApiClient));
+                            mUnprocessedEmail =  Plus.AccountApi.getAccountName(mGoogleApiClient);;
+
+                            if (authData.getProvider().equals(Constants.GOOGLE_PROVIDER)) {
+                                /**
+                                 * If google api client is connected, get the lowerCase user email
+                                 * and save in sharedPreferences
+                                 */
+                                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                                SharedPreferences.Editor spe = sp.edit();
+                                if (mGoogleApiClient.isConnected()) {
+                                    spe.putString(Constants.KEY_GOOGLE_EMAIL, mUnprocessedEmail).apply();
+                                } else {
+
+                                    /**
+                                     * Otherwise get email from sharedPreferences, use null as default value
+                                     * (this mean that user resumes his session)
+                                     */
+                                    mUnprocessedEmail = sp.getString(Constants.KEY_GOOGLE_EMAIL, null);
+                                }
+                                /**
+                                 * Encode user email replacing "." with "," to be able to use it
+                                 * as a Firebase db key
+                                 */
+                                mEncodedEmail = Utils.encodeEmail(mUnprocessedEmail);
+
+
+                    /* Get username from authData */
+                                final String userName = (String) authData.getProviderData().get(Constants.PROVIDER_DATA_DISPLAY_NAME);
+
+                    /* If no user exists, make a user */
+                                final Firebase userLocation = new Firebase(Constants.FIREBASE_URL_USERS).child(mEncodedEmail);
+                                userLocation.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                            /* If nothing is there ...*/
+                                        if (dataSnapshot.getValue() == null) {
+                                            HashMap<String, Object> timestampJoined = new HashMap<>();
+                                            timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+
+                                            User newUser = new User(userName, mEncodedEmail, timestampJoined);
+                                            userLocation.setValue(newUser);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(FirebaseError firebaseError) {
+                                        Log.d(TAG, firebaseError.getMessage());
+                                    }
+                                });
+
+
+                            }
+
+
+                            if (authData != null) {
+                /* Go to main activity */
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
                         }
 
                         @Override

@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LinearLayout xmlns:android='http://schemas.android.com/apk/res/android'
+    android:layout_width='match_parent'
+    android:layout_height='wrap_content'
+    android:background="@color/primary"
+    android:orientation='vertical'
+    android:padding='10dp'>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="Take a tour?"
+            android:textStyle="bold|italic"
+            android:textColor="@color/accent"
+            android:textSize="20dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:layout_gravity="right">
+
+
+        <Button
+            android:id='@+id/btn_yes'
+            android:layout_width='70dp'
+            android:layout_height='50dp'
+            android:text="Yes" />
+
+        <Button
+            android:id='@+id/btn_no'
+            android:layout_width='70dp'
+            android:layout_height='50dp'
+            android:layout_alignParentTop='true'
+            android:layout_marginLeft='10dp'
+            android:layout_toRightOf='@+id/btn_search'
+            android:text="No" />
+    </LinearLayout>
+
+
+</LinearLayout>

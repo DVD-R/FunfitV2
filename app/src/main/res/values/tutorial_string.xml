@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Course titles and descriptions -->
+    <string name="dendrobates_auratus_genus">Tutorial 1</string>
+    <string name="dendrobates_auratus_scientific_name">Dendrobates Auratus</string>
+  <string name="dendrobates_auratus_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ultricies, augue at euismod porttitor, tortor risus posuere nibh, at viverra mi mi a orci. Quisque gravida turpis arcu, et luctus massa semper non. Vivamus enim justo, aliquet eu ante eget, venenatis facilisis erat. Donec viverra tristique velit, id tristique diam. Quisque at suscipit lorem. Maecenas lobortis ex in libero congue imperdiet. Cras ultrices neque sit amet diam congue tincidunt. Nunc tempor purus eu semper porttitor. Nullam nec elit interdum, accumsan dolor id, ullamcorper ligula. Aliquam rutrum augue non porta mollis. Nunc volutpat accumsan vulputate. Maecenas ullamcorper blandit ex et semper. In tristique ut turpis congue facilisis.
+  </string>
+
+    <string name="dendrobates_tinctorius_azureus_genus">Tutorial 2</string>
+    <string name="dendrobates_tinctorius_azureus_scientific_name">Dendrobates Tinctorius Azureus</string>
+  <string name="dendrobates_tinctorius_azureus_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ultricies, augue at euismod porttitor, tortor risus posuere nibh, at viverra mi mi a orci. Quisque gravida turpis arcu, et luctus massa semper non. Vivamus enim justo, aliquet eu ante eget, venenatis facilisis erat. Donec viverra tristique velit, id tristique diam. Quisque at suscipit lorem. Maecenas lobortis ex in libero congue imperdiet. Cras ultrices neque sit amet diam congue tincidunt. Nunc tempor purus eu semper porttitor. Nullam nec elit interdum, accumsan dolor id, ullamcorper ligula. Aliquam rutrum augue non porta mollis. Nunc volutpat accumsan vulputate. Maecenas ullamcorper blandit ex et semper. In tristique ut turpis congue facilisis.
+  </string>
+
+
+    <string name="phyllobates_aurotaenia_genus">Tutorial 3</string>
+    <string name="phyllobates_aurotaenia_scientific_name">Phyllobates Aurotaenia</string>
+  <string name="phyllobates_aurotaenia_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ultricies, augue at euismod porttitor, tortor risus posuere nibh, at viverra mi mi a orci. Quisque gravida turpis arcu, et luctus massa semper non. Vivamus enim justo, aliquet eu ante eget, venenatis facilisis erat. Donec viverra tristique velit, id tristique diam. Quisque at suscipit lorem. Maecenas lobortis ex in libero congue imperdiet. Cras ultrices neque sit amet diam congue tincidunt. Nunc tempor purus eu semper porttitor. Nullam nec elit interdum, accumsan dolor id, ullamcorper ligula. Aliquam rutrum augue non porta mollis. Nunc volutpat accumsan vulputate. Maecenas ullamcorper blandit ex et semper. In tristique ut turpis congue facilisis.
+  </string>
+
+    <string name="phyllobates_bicolor_genus">Tutorial 4</string>
+    <string name="phyllobates_bicolor_scientific_name">Phyllobates Bicolor</string>
+    <string name="phyllobates_bicolor_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ultricies, augue at euismod porttitor, tortor risus posuere nibh, at viverra mi mi a orci. Quisque gravida turpis arcu, et luctus massa semper non. Vivamus enim justo, aliquet eu ante eget, venenatis facilisis erat. Donec viverra tristique velit, id tristique diam. Quisque at suscipit lorem. Maecenas lobortis ex in libero congue imperdiet. Cras ultrices neque sit amet diam congue tincidunt. Nunc tempor purus eu semper porttitor. Nullam nec elit interdum, accumsan dolor id, ullamcorper ligula. Aliquam rutrum augue non porta mollis. Nunc volutpat accumsan vulputate. Maecenas ullamcorper blandit ex et semper. In tristique ut turpis congue facilisis.
+  </string>
+
+    <string name="ameerega_macero_genus">Tutorial 5</string>
+    <string name="ameerega_macero_scientific_name">Ameerega Macero</string>
+  <string name="ameerega_macero_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ultricies, augue at euismod porttitor, tortor risus posuere nibh, at viverra mi mi a orci. Quisque gravida turpis arcu, et luctus massa semper non. Vivamus enim justo, aliquet eu ante eget, venenatis facilisis erat. Donec viverra tristique velit, id tristique diam. Quisque at suscipit lorem. Maecenas lobortis ex in libero congue imperdiet. Cras ultrices neque sit amet diam congue tincidunt. Nunc tempor purus eu semper porttitor. Nullam nec elit interdum, accumsan dolor id, ullamcorper ligula. Aliquam rutrum augue non porta mollis. Nunc volutpat accumsan vulputate. Maecenas ullamcorper blandit ex et semper. In tristique ut turpis congue facilisis.
+  </string>
+
+
+    <string name="ameerega_trivittatus_genus">Tutorial 6</string>
+    <string name="ameerega_trivittatus_scientific_name">Ameerega Trivittatus</string>
+  <string name="ameerega_trivittatus_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ultricies, augue at euismod porttitor, tortor risus posuere nibh, at viverra mi mi a orci. Quisque gravida turpis arcu, et luctus massa semper non. Vivamus enim justo, aliquet eu ante eget, venenatis facilisis erat. Donec viverra tristique velit, id tristique diam. Quisque at suscipit lorem. Maecenas lobortis ex in libero congue imperdiet. Cras ultrices neque sit amet diam congue tincidunt. Nunc tempor purus eu semper porttitor. Nullam nec elit interdum, accumsan dolor id, ullamcorper ligula. Aliquam rutrum augue non porta mollis. Nunc volutpat accumsan vulputate. Maecenas ullamcorper blandit ex et semper. In tristique ut turpis congue facilisis.
+  </string>
+
+    <string name="ranitomeya_benedicta_genus">Tutorial 7</string>
+    <string name="ranitomeya_benedicta_scientific_name">Ranitomeya Benedicta</string>
+  <string name="ranitomeya_benedicta_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ultricies, augue at euismod porttitor, tortor risus posuere nibh, at viverra mi mi a orci. Quisque gravida turpis arcu, et luctus massa semper non. Vivamus enim justo, aliquet eu ante eget, venenatis facilisis erat. Donec viverra tristique velit, id tristique diam. Quisque at suscipit lorem. Maecenas lobortis ex in libero congue imperdiet. Cras ultrices neque sit amet diam congue tincidunt. Nunc tempor purus eu semper porttitor. Nullam nec elit interdum, accumsan dolor id, ullamcorper ligula. Aliquam rutrum augue non porta mollis. Nunc volutpat accumsan vulputate. Maecenas ullamcorper blandit ex et semper. In tristique ut turpis congue facilisis.
+  </string>
+
+
+    <string name="allobates_femoralis_genus">Tutorial 8</string>
+    <string name="allobates_femoralis_scientific_name">Allobates Femoralis</string>
+  <string name="allobates_femoralis_description">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ultricies, augue at euismod porttitor, tortor risus posuere nibh, at viverra mi mi a orci. Quisque gravida turpis arcu, et luctus massa semper non. Vivamus enim justo, aliquet eu ante eget, venenatis facilisis erat. Donec viverra tristique velit, id tristique diam. Quisque at suscipit lorem. Maecenas lobortis ex in libero congue imperdiet. Cras ultrices neque sit amet diam congue tincidunt. Nunc tempor purus eu semper porttitor. Nullam nec elit interdum, accumsan dolor id, ullamcorper ligula. Aliquam rutrum augue non porta mollis. Nunc volutpat accumsan vulputate. Maecenas ullamcorper blandit ex et semper. In tristique ut turpis congue facilisis.
+  </string>
+
+</resources>

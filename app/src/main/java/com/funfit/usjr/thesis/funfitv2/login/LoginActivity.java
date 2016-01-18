@@ -28,6 +28,7 @@ import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.healthPreference.HealthStatisticsSetupPager;
 import com.funfit.usjr.thesis.funfitv2.main.MainActivity;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
+import com.funfit.usjr.thesis.funfitv2.tutorial.TutorialActivity;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -162,7 +163,7 @@ public class LoginActivity extends AppCompatActivity  implements
 //        }
 
 
-        Intent intent = new Intent(this, HealthStatisticsSetupPager.class);
+        Intent intent = new Intent(this, TutorialActivity.class);
         intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }

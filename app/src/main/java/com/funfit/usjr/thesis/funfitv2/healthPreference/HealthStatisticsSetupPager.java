@@ -1,17 +1,24 @@
 package com.funfit.usjr.thesis.funfitv2.healthPreference;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.adapter.ViewPagerAdapter;
 import com.funfit.usjr.thesis.funfitv2.main.MainActivity;
+import com.funfit.usjr.thesis.funfitv2.tutorial.TutorialViewPagerAdapter;
+import com.funfit.usjr.thesis.funfitv2.tutorial.ZoomOutPageTransformer;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -22,19 +29,27 @@ import butterknife.OnClick;
  */
 public class HealthStatisticsSetupPager extends AppCompatActivity implements ViewPager.OnPageChangeListener, View.OnClickListener{
     @Bind(R.id.pager_introduction)ViewPager mViewPager;
+
     @Bind(R.id.btn_next)ImageButton mBtnNext;
     @Bind(R.id.btn_finish)ImageButton mBtnFinish;
     @Bind(R.id.viewPagerCountDots)LinearLayout mViewPagerCountDots;
+    //ViewPagerAdapter viewPagerAdapter;
+//    @Bind(R.id.pager) ViewPager mViewPager;
     private ViewPagerAdapter mViewPagerAdapter;
+    private TutorialViewPagerAdapter mTutorialPagerAdapter;
     private int mDotsCount;
     private ImageView[] mDots;
     private int resource = 4;
+    AlertDialog alertDialog;
+    final private static int DIALOG_POP = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewpager);
         ButterKnife.bind(this);
+
+        //checkFirstRun();
         configure();
     }
 
@@ -110,4 +125,5 @@ public class HealthStatisticsSetupPager extends AppCompatActivity implements Vie
     public void onClick(View v) {
 
     }
+
 }

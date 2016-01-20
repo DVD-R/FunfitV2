@@ -52,7 +52,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginActivity extends AppCompatActivity  implements
+public class LoginActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = LoginActivity.class.getSimpleName();
@@ -190,7 +190,7 @@ public class LoginActivity extends AppCompatActivity  implements
             if (!mGoogleApiClient.isConnecting()) {
                 mGoogleApiClient.connect();
             }
-        }else {
+        } else {
             /* Otherwise, it's probably the request by the Facebook login button, keep track of the session */
             mFacebookCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
@@ -236,7 +236,7 @@ public class LoginActivity extends AppCompatActivity  implements
                 Log.e(TAG, "Invalid provider: " + authData.getProvider());
             }
             if (name != null) {
-                Toast.makeText(this,"Logged in as " + name + " (" + authData.getProvider() + ")",Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Logged in as " + name + " (" + authData.getProvider() + ")", Toast.LENGTH_LONG).show();
             }
         } else {
             /* No authenticated user show all the login buttons */
@@ -259,7 +259,7 @@ public class LoginActivity extends AppCompatActivity  implements
                 @Override
                 public void onAuthenticated(AuthData authData) {
                     //TODO:DISPLAY EMAIL
-                    Log.v(TAG,authData.getProviderData().get("displayName").toString());
+                    Log.v(TAG, authData.getProviderData().get("displayName").toString());
                 }
 
                 @Override
@@ -337,63 +337,10 @@ public class LoginActivity extends AppCompatActivity  implements
                     mFirebaseRef.authWithOAuthToken("google", token, new Firebase.AuthResultHandler() {
                         @Override
                         public void onAuthenticated(AuthData authData) {
-                            Log.v(TAG, Plus.AccountApi.getAccountName(mGoogleApiClient));
-                            mUnprocessedEmail =  Plus.AccountApi.getAccountName(mGoogleApiClient);;
-
-                            if (authData.getProvider().equals(Constants.GOOGLE_PROVIDER)) {
-                                /**
-                                 * If google api client is connected, get the lowerCase user email
-                                 * and save in sharedPreferences
-                                 */
-                                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                                SharedPreferences.Editor spe = sp.edit();
-                                if (mGoogleApiClient.isConnected()) {
-                                    spe.putString(Constants.KEY_GOOGLE_EMAIL, mUnprocessedEmail).apply();
-                                } else {
-
-                                    /**
-                                     * Otherwise get email from sharedPreferences, use null as default value
-                                     * (this mean that user resumes his session)
-                                     */
-                                    mUnprocessedEmail = sp.getString(Constants.KEY_GOOGLE_EMAIL, null);
-                                }
-                                /**
-                                 * Encode user email replacing "." with "," to be able to use it
-                                 * as a Firebase db key
-                                 */
-                                mEncodedEmail = Utils.encodeEmail(mUnprocessedEmail);
-
-
-                    /* Get username from authData */
-                                final String userName = (String) authData.getProviderData().get(Constants.PROVIDER_DATA_DISPLAY_NAME);
-
-                    /* If no user exists, make a user */
-                                final Firebase userLocation = new Firebase(Constants.FIREBASE_URL_USERS).child(mEncodedEmail);
-                                userLocation.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                            /* If nothing is there ...*/
-                                        if (dataSnapshot.getValue() == null) {
-                                            HashMap<String, Object> timestampJoined = new HashMap<>();
-                                            timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
-
-                                            User newUser = new User(userName, mEncodedEmail, timestampJoined);
-                                            userLocation.setValue(newUser);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(FirebaseError firebaseError) {
-                                        Log.d(TAG, firebaseError.getMessage());
-                                    }
-                                });
-
-
-                            }
-
+                            mUnprocessedEmail = Plus.AccountApi.getAccountName(mGoogleApiClient);
+                            googleRegisterToFirebase(authData);
 
                             if (authData != null) {
-                /* Go to main activity */
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
@@ -403,16 +350,91 @@ public class LoginActivity extends AppCompatActivity  implements
 
                         @Override
                         public void onAuthenticationError(FirebaseError firebaseError) {
-                            Log.e(TAG,firebaseError.getMessage().toString());
+                            Log.e(TAG, firebaseError.getMessage().toString());
                         }
                     });
                 } else if (errorMessage != null) {
                     mAuthProgressDialog.hide();
-                    Log.e(TAG,errorMessage.toString());
+                    Log.e(TAG, errorMessage.toString());
                 }
             }
         };
         task.execute();
+    }
+
+    private void googleRegisterToFirebase(AuthData authData) {
+        if (authData.getProvider().equals(Constants.GOOGLE_PROVIDER)) {
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor spe = sp.edit();
+            if (mGoogleApiClient.isConnected()) {
+                spe.putString(Constants.KEY_GOOGLE_EMAIL, mUnprocessedEmail).apply();
+            } else {
+                mUnprocessedEmail = sp.getString(Constants.KEY_GOOGLE_EMAIL, null);
+            }
+            mEncodedEmail = Utils.encodeEmail(mUnprocessedEmail);
+
+            final String userName = (String) authData.getProviderData().get(Constants.PROVIDER_DATA_DISPLAY_NAME);
+
+            final Firebase userLocation = new Firebase(Constants.FIREBASE_URL_USERS).child(mEncodedEmail);
+            userLocation.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() == null) {
+                        HashMap<String, Object> timestampJoined = new HashMap<>();
+                        timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+
+                        User newUser = new User(userName, mEncodedEmail, timestampJoined);
+                        userLocation.setValue(newUser);
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Log.d(TAG, firebaseError.getMessage());
+                }
+            });
+        }
+
+        if (authData != null) {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    private void facebookRegisterToFirebase(AuthData authData) {
+        if (authData.getProvider().equals(Constants.GOOGLE_PROVIDER)) {
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor spe = sp.edit();
+            if (mGoogleApiClient.isConnected()) {
+                spe.putString(Constants.KEY_GOOGLE_EMAIL, mUnprocessedEmail).apply();
+            } else {
+                mUnprocessedEmail = sp.getString(Constants.KEY_GOOGLE_EMAIL, null);
+            }
+            mEncodedEmail = Utils.encodeEmail(mUnprocessedEmail);
+
+            final String userName = (String) authData.getProviderData().get(Constants.PROVIDER_DATA_DISPLAY_NAME);
+
+            final Firebase userLocation = new Firebase(Constants.FIREBASE_URL_USERS).child(mEncodedEmail);
+            userLocation.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() == null) {
+                        HashMap<String, Object> timestampJoined = new HashMap<>();
+                        timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+
+                        User newUser = new User(userName, mEncodedEmail, timestampJoined);
+                        userLocation.setValue(newUser);
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Log.d(TAG, firebaseError.getMessage());
+                }
+            });
+        }
     }
 
     @Override

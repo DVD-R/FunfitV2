@@ -2,6 +2,7 @@ package com.funfit.usjr.thesis.funfitv2.healthPreference;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -33,13 +34,16 @@ public class HealthStatisticsSetupPager extends AppCompatActivity implements Vie
     @Bind(R.id.btn_next)ImageButton mBtnNext;
     @Bind(R.id.btn_finish)ImageButton mBtnFinish;
     @Bind(R.id.viewPagerCountDots)LinearLayout mViewPagerCountDots;
-    //ViewPagerAdapter viewPagerAdapter;
-//    @Bind(R.id.pager) ViewPager mViewPager;
+    private SharedPreferences mPrefHealthSetup;
+
     private ViewPagerAdapter mViewPagerAdapter;
     private TutorialViewPagerAdapter mTutorialPagerAdapter;
     private int mDotsCount;
     private ImageView[] mDots;
     private int resource = 4;
+    private double height;
+    private double weight;
+    private String activityLevel;
     AlertDialog alertDialog;
     final private static int DIALOG_POP = 1;
 
@@ -91,9 +95,10 @@ public class HealthStatisticsSetupPager extends AppCompatActivity implements Vie
 
     @OnClick(R.id.btn_finish)
     public void finish(){
-        Intent i = new Intent(this, MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+//        Intent i = new Intent(this, MainActivity.class);
+//        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(i);
+        mViewPagerAdapter.sendHealthPref();
     }
 
     @Override

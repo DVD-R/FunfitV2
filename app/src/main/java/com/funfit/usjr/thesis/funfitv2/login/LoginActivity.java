@@ -158,23 +158,23 @@ public class LoginActivity extends AppCompatActivity implements
 
     @OnClick(R.id.googleBtn)
     public void loginGoogle() {
-        mGoogleLoginClicked = true;
-        if (!mGoogleApiClient.isConnecting()) {
-            if (mGoogleConnectionResult != null) {
-                resolveSignInError();
-            } else if (mGoogleApiClient.isConnected()) {
-                getGoogleOAuthTokenAndLogin();
-            } else {
-                    /* connect API now */
-                Log.d(TAG, "Trying to connect to Google API");
-                mGoogleApiClient.connect();
-            }
-        }
+//        mGoogleLoginClicked = true;
+//        if (!mGoogleApiClient.isConnecting()) {
+//            if (mGoogleConnectionResult != null) {
+//                resolveSignInError();
+//            } else if (mGoogleApiClient.isConnected()) {
+//                getGoogleOAuthTokenAndLogin();
+//            } else {
+//                    /* connect API now */
+//                Log.d(TAG, "Trying to connect to Google API");
+//                mGoogleApiClient.connect();
+//            }
+//        }
 
 
-//        Intent intent = new Intent(this, TutorialActivity.class);
-//        intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        startActivity(intent);
+        Intent intent = new Intent(this, TutorialActivity.class);
+        intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     @Override

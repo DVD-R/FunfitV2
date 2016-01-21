@@ -83,7 +83,10 @@ public class LoginActivity extends AppCompatActivity implements
     @Bind(R.id.googleBtn)
     Button mButtonGoogle;
     private String mEncodedEmail;
-    private String mUnprocessedEmail;
+    private String mUnprocessedEmail, mFirstName, mLastName, mBirthday, mImgUrl;
+    private int mGender;
+
+    private SharedPreferences mPrefUserData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +99,7 @@ public class LoginActivity extends AppCompatActivity implements
                 .into(mImageBg);
         mTextFunfit.setTypeface(Typeface.createFromAsset(getAssets(), "HelveticaBold.otf"));
 
-
+        mPrefUserData = getSharedPreferences("USER_DATA_PREF", MODE_PRIVATE);
         mFirebaseRef = new Firebase(Constants.FIREBASE_URL);
 
         //Facebook
@@ -248,6 +251,18 @@ public class LoginActivity extends AppCompatActivity implements
         supportInvalidateOptionsMenu();
     }
 
+    private void savePreference() {
+        mPrefUserData.edit().putString("FIRST_NAME", mFirstName).apply();
+        mPrefUserData.edit().putString("LAST_NAME", mLastName).apply();
+        mPrefUserData.edit().putString("BIRTHDAY", mBirthday).apply();
+        mPrefUserData.edit().putString("EMAIL", mEncodedEmail).apply();
+        mPrefUserData.edit().putString("IMG_URL", mImgUrl).apply();
+        if(mGender==0)
+            mPrefUserData.edit().putString("GENDER", "male").apply();
+        if(mGender==1)
+            mPrefUserData.edit().putString("GENDER", "female").apply();
+    }
+
     /* ************************************
      *             FACEBOOK               *
      **************************************
@@ -337,7 +352,8 @@ public class LoginActivity extends AppCompatActivity implements
                     mFirebaseRef.authWithOAuthToken("google", token, new Firebase.AuthResultHandler() {
                         @Override
                         public void onAuthenticated(AuthData authData) {
-                            mUnprocessedEmail = Plus.AccountApi.getAccountName(mGoogleApiClient);
+                            setGoogleUserData();
+                            savePreference();
                             googleRegisterToFirebase(authData);
 
                             if (authData != null) {
@@ -362,6 +378,21 @@ public class LoginActivity extends AppCompatActivity implements
         task.execute();
     }
 
+    private void setGoogleUserData() {
+        //fname
+        mFirstName = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getName().getGivenName();
+        //lname
+        mLastName = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getName().getFamilyName();
+        //e-mail
+        mUnprocessedEmail = Plus.AccountApi.getAccountName(mGoogleApiClient);
+        //gender
+        mGender = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getGender();
+        //birthday
+        mBirthday = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getBirthday();
+        //image url
+        mImgUrl = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl();
+    }
+
     private void googleRegisterToFirebase(AuthData authData) {
         if (authData.getProvider().equals(Constants.GOOGLE_PROVIDER)) {
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -383,7 +414,7 @@ public class LoginActivity extends AppCompatActivity implements
                         HashMap<String, Object> timestampJoined = new HashMap<>();
                         timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
 
-                        User newUser = new User(userName, mEncodedEmail, timestampJoined);
+                        User newUser = new User(mFirstName, mLastName, mEncodedEmail, mGender, mBirthday, mImgUrl, timestampJoined);
                         userLocation.setValue(newUser);
                     }
                 }
@@ -404,37 +435,7 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     private void facebookRegisterToFirebase(AuthData authData) {
-        if (authData.getProvider().equals(Constants.GOOGLE_PROVIDER)) {
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            SharedPreferences.Editor spe = sp.edit();
-            if (mGoogleApiClient.isConnected()) {
-                spe.putString(Constants.KEY_GOOGLE_EMAIL, mUnprocessedEmail).apply();
-            } else {
-                mUnprocessedEmail = sp.getString(Constants.KEY_GOOGLE_EMAIL, null);
-            }
-            mEncodedEmail = Utils.encodeEmail(mUnprocessedEmail);
-
-            final String userName = (String) authData.getProviderData().get(Constants.PROVIDER_DATA_DISPLAY_NAME);
-
-            final Firebase userLocation = new Firebase(Constants.FIREBASE_URL_USERS).child(mEncodedEmail);
-            userLocation.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue() == null) {
-                        HashMap<String, Object> timestampJoined = new HashMap<>();
-                        timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
-
-                        User newUser = new User(userName, mEncodedEmail, timestampJoined);
-                        userLocation.setValue(newUser);
-                    }
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                    Log.d(TAG, firebaseError.getMessage());
-                }
-            });
-        }
+        //TODO: Do facebook
     }
 
     @Override

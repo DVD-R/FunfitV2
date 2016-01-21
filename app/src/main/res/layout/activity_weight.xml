@@ -37,11 +37,13 @@
         android:orientation="horizontal"
         android:gravity="center">
         <EditText
+            android:id="@+id/weightEdt"
             android:layout_width="100dp"
             android:layout_height="75dp"
             android:inputType="number"
             android:textColor="@color/white"/>
         <Spinner
+            android:id="@+id/weight"
             android:layout_width="wrap_content"
             android:layout_height="75dp"
             android:entries="@array/weight"

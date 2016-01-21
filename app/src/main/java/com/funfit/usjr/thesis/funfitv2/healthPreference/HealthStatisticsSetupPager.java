@@ -91,9 +91,10 @@ public class HealthStatisticsSetupPager extends AppCompatActivity implements Vie
 
     @OnClick(R.id.btn_finish)
     public void finish(){
-        Intent i = new Intent(this, MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+        mViewPagerAdapter.sendHealthPref();
+       // Intent i = new Intent(this, MainActivity.class);
+        //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //startActivity(i);
     }
 
     @Override

@@ -32,6 +32,7 @@
 
 
     <LinearLayout
+        android:id="@+id/sendentary"
         android:layout_marginTop="15dp"
         android:layout_width="350dp"
         android:layout_height="65dp"
@@ -60,6 +61,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/lowActive"
         android:layout_marginTop="15dp"
         android:layout_width="350dp"
         android:layout_height="65dp"
@@ -88,6 +90,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/active"
         android:layout_marginTop="15dp"
         android:layout_width="350dp"
         android:layout_height="65dp"
@@ -116,6 +119,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/veryActive"
         android:layout_marginTop="15dp"
         android:layout_width="350dp"
         android:layout_height="65dp"

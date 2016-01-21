@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/touch_selector_white"
+    android:elevation="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+        android:fontFamily="sans-serif-black"
+        android:text="#1"
+        android:id="@+id/textView2"
+        android:textColor="#EEEEEE"
+        android:layout_gravity="right|bottom" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/notif_img_container"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="7dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgIcon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@android:color/darker_gray"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/img_leader_status"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@android:color/black"
+                android:layout_gravity="right|bottom"
+                app:civ_border_width="2dp"
+                app:civ_border_color="#EEEEEE"/>
+        </FrameLayout>
+
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="7"
+            android:layout_marginLeft="15dp"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/txtName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/primary_dark"
+                android:text="abcd"/>
+
+            <TextView
+                android:id="@+id/txtScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="abcd"
+                android:singleLine="false"
+                android:textColor="@android:color/darker_gray"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

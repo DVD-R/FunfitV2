@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import com.funfit.usjr.thesis.funfitv2.MapsActivity;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.history.EventHistoryActivityImpl;
+import com.funfit.usjr.thesis.funfitv2.leaderBoard.LeaderBoardActivity;
 import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanActivity;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.EventActivity;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.NotificationActivity;
@@ -107,11 +108,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_meal_archeive:
                 break;
-            case R.id.nav_food_description:
-                break;
-            case R.id.nav_challenge:
-                break;
-            case R.id.nav_weekly:
+            case R.id.nav_leaderBoard:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout, new LeaderBoardActivity()).commit();
+                startActivity(new Intent(this, LeaderBoardActivity.class));
                 break;
             case R.id.nav_history:
                 startActivity(new Intent(this, EventHistoryActivityImpl.class));

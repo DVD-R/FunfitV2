@@ -136,7 +136,6 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
                         mGoogleApiClient.connect();
                         break;
                 }
-
         }
     }
 
@@ -144,7 +143,6 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
     public void onConnected(Bundle bundle) {
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {
-            Toast.makeText(getActivity(), "GPS location was found!", Toast.LENGTH_SHORT).show();
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
             myMap.animateCamera(cameraUpdate);
@@ -168,8 +166,6 @@ public class MapsActivity extends Fragment implements GoogleApiClient.Connection
 
     @Override
     public void onLocationChanged(Location location) {
-        Toast.makeText(getContext(), "Location Change", Toast.LENGTH_SHORT).show();
-
         newLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(newLatLng, 18);
         myMap.animateCamera(cameraUpdate);

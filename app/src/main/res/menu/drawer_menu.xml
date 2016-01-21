@@ -12,20 +12,13 @@
         <item
             android:id="@+id/nav_meal_archeive"
             android:title="Meal Archieve" />
-        <item
-            android:id="@+id/nav_food_description"
-            android:title="Food Description"/>
-
     </group>
 
-    <item android:title="Leader Board">
+    <item android:title="Top Score">
         <menu>
             <item
-                android:id="@+id/nav_challenge"
-                android:title="Challenge"/>
-            <item
-                android:id="@+id/nav_weekly"
-                android:title="Weekly" />
+                android:id="@+id/nav_leaderBoard"
+                android:title="Leader Board"/>
         </menu>
     </item>
 

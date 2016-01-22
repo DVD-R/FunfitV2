@@ -51,9 +51,9 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.6.1'
 
     //retrofit
-    compile 'com.squareup.retrofit:retrofit:1.6.1'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
-    compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.3.0'
+    compile 'com.squareup.okhttp:okhttp:2.3.0'
 
     //recyclerview
     compile 'com.android.support:recyclerview-v7:23.0.1'

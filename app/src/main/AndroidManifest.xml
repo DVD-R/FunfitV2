@@ -50,8 +50,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".MapsActivity">
-        </activity>
         <activity android:name=".main.MainActivity"/>
         <activity android:name=".healthPreference.HealthStatisticsSetupPager"/>
         <activity
@@ -83,6 +81,13 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".main.MainActivity"/>
+        </activity>
+        <activity
+            android:name=".notificationEvents.EventDetailActivity"
+            android:theme="@style/SemiTransparentLightBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".notificationEvents.EventActivity"/>
         </activity>
         <activity
             android:name="com.facebook.FacebookActivity"

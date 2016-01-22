@@ -1,6 +1,5 @@
 package com.funfit.usjr.thesis.funfitv2.leaderBoard;
 
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +19,6 @@ import com.funfit.usjr.thesis.funfitv2.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by ocabafox on 1/22/2016.
@@ -88,11 +86,11 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
                 // if viewType == 0 it will use the first big layout
                 // else it will use the small layout
                 case VIEW_TYPE_GOD_TIER: {
-                    layoutId = R.layout.list_item_god_game;
+                    layoutId = R.layout.list_item_leaderboard_top;
                     break;
                 }
                 case VIEW_TYPE_TOP_TIER: {
-                    layoutId = R.layout.list_item_top_game;
+                    layoutId = R.layout.list_item_leaderboard;
                     break;
                 }
             }

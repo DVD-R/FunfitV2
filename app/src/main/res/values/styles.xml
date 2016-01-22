@@ -17,6 +17,9 @@
     <style name="SemiTransparentBar" parent="AppTheme">
     </style>
 
+    <style name="SemiTransparentLightBar" parent="AppThemeLight">
+    </style>
+
     <style name="TabText" parent="@android:style/TextAppearance.Widget.TabWidget">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">16sp</item>

@@ -18,7 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.funfit.usjr.thesis.funfitv2.MapsActivity;
+import com.funfit.usjr.thesis.funfitv2.maps.MapsFragment;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.history.EventHistoryActivityImpl;
 import com.funfit.usjr.thesis.funfitv2.leaderBoard.LeaderBoardActivity;
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void navigate(final int itemId) {
         switch (itemId) {
             case R.id.home:
-//                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container_layout, new MapsActivity()).commit();
+//                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container_layout, new MapsFragment()).commit();
                 break;
             case R.id.nav_health_pref:
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout, new MealPlanActivity()).commit();
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new MapsActivity(), "Arena");
+        adapter.addFragment(new MapsFragment(), "Arena");
         adapter.addFragment(new MealPlanActivity(), "Shack");
         viewPager.setAdapter(adapter);
     }

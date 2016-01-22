@@ -70,4 +70,8 @@ dependencies {
 
     //Circle Image View
     compile 'de.hdodenhof:circleimageview:2.0.0'
+
+    //android-maps-utils
+    compile 'com.google.maps.android:android-maps-utils:0.4+'
+
 }

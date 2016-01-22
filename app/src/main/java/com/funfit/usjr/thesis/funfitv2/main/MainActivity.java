@@ -25,8 +25,10 @@ import com.funfit.usjr.thesis.funfitv2.leaderBoard.LeaderBoardActivity;
 import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanActivity;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.EventActivity;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.NotificationActivity;
+import com.funfit.usjr.thesis.funfitv2.services.CreatePolylineService;
 import com.funfit.usjr.thesis.funfitv2.views.IMainView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import butterknife.Bind;
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private int mNavItemId;
     private SharedPreferences mPrefHealthSetup;
     private MainPresenter mainPresenter;
+    private List<String> encodePolyline;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,6 +166,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public String getActivityLevel() {
         return mPrefHealthSetup.getString("ACTIVITY_LEVEL", null);
     }
+
+    @Override
+    public void sendEncodePolyline() {
+        Intent i = new Intent(this, CreatePolylineService.class);
+        i.putExtra("ENCODEDPOLYLINE", (Serializable) this.encodePolyline);
+        startService(i);
+    }
+
+    @Override
+    public void setEndcodedPolylineList(List<String> encodePolyline) {
+        this.encodePolyline = encodePolyline;
+    }
+
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();

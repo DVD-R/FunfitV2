@@ -3,7 +3,10 @@ package com.funfit.usjr.thesis.funfitv2.maps;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.graphics.Color;
 import android.location.Location;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.distance.DistanceCalculation;
+import com.funfit.usjr.thesis.funfitv2.views.IMapFragmentView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -42,12 +46,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.PolyUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MapsFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerClickListener {
+        LocationListener, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerClickListener, IMapFragmentView {
 
     MapView mMapView;
     private GoogleMap myMap;
@@ -58,10 +64,15 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     private long FASTEST_INTERVAL = 2000; /* 5 secs */
     private ArrayList<LatLng> arrayPoints = null;
     private boolean checkClick = false;
-
+    private final static int ALPHA_ADJUSTMENT = 0x77000000;
+    private MapsFragmentPresenter mapsFragmentPresenter;
     DistanceCalculation distanceCalculation;
     PolylineOptions polylineOptions;
     LatLng newLatLng;
+
+    private String OVAL_POLYGON;
+    private boolean mBroadcastInfoRegistered;
+    private List<String> polylineList;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_maps, container, false);
@@ -92,13 +103,8 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                 .addOnConnectionFailedListener(this).build();
         myMap.setMyLocationEnabled(true);
 
+        mapsFragmentPresenter = new MapsFragmentPresenter(this);
         connectClient();
-
-//        CameraPosition cameraPosition = new CameraPosition.Builder()
-//                .target(new LatLng(10.2873793, 123.8604063)).zoom(14).build();
-//        myMap.animateCamera(CameraUpdateFactory
-//                .newCameraPosition(cameraPosition));
-
 
         return view;
 
@@ -111,10 +117,37 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        if (!mBroadcastInfoRegistered){
+            getActivity().registerReceiver(encodedPolylineBroadcast, new IntentFilter(getString(R.string.broadcast_encodedpolyline)));
+            mBroadcastInfoRegistered = true;
+        }
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         mGoogleApiClient.disconnect();
+
+        if (!mBroadcastInfoRegistered){
+            getActivity().unregisterReceiver(encodedPolylineBroadcast);
+            mBroadcastInfoRegistered = false;
+        }
     }
+
+
+    private BroadcastReceiver encodedPolylineBroadcast = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            List<String> encodedPolylineList = (List<String>) intent.getSerializableExtra("encodedPolyLine");
+            polylineList = encodedPolylineList;
+            if (polylineList.size() != 0)
+                mapsFragmentPresenter.populateTerritory();
+        }
+    };
+
 
     private void connectClient() {
         // Connect the client.
@@ -162,7 +195,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
     @Override
     public void onConnectionSuspended(int i) {
-        Toast.makeText(getContext(), "Location Suspend", Toast.LENGTH_SHORT).show();
+        Log.w("Connection Service: ", "Location Suspend");
     }
 
     @Override
@@ -196,8 +229,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                 e.printStackTrace();
             }
         } else {
-            Toast.makeText(getActivity(),
-                    "Sorry. Location services not available to you", Toast.LENGTH_LONG).show();
+            Log.w("Location Service: ", "Sorry. Location services not available to you");
         }
     }
 
@@ -210,14 +242,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             if(arrayPoints.size()>=2){
                 //Log.i("distance","Distance: "+distanceCalculation.CalculationByDistance(arrayPoints.get(0),arrayPoints.get(1)));
             }
-
-            // settin polyline in the map
-//            polylineOptions = new PolylineOptions();
-//            polylineOptions.color(Color.GREEN);
-//            polylineOptions.width(4);
-//            arrayPoints.add(latLng);
-//            polylineOptions.addAll(arrayPoints);
-//            myMap.addPolyline(polylineOptions);
         }
     }
 
@@ -272,5 +296,31 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         }
     }
 
+    @Override
+    public void populateTerritory() {
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(10.290060, 123.862453)).zoom(16).build();
+            myMap.animateCamera(CameraUpdateFactory
+                .newCameraPosition(cameraPosition));
+
+        for (int i = 0; i < polylineList.size(); i++) {
+            List<LatLng> oval = PolyUtil.decode(polylineList.get(i).toString());
+            myMap.addPolygon(new PolygonOptions()
+                    .addAll(oval)
+                    .fillColor(Color.BLUE - ALPHA_ADJUSTMENT)
+                    .strokeColor(Color.BLUE)
+                    .strokeWidth(5));
+        }
+
+
+        // Simplified oval polygon
+//        tolerance = 10; // meters
+//        List simplifiedOval= PolyUtil.simplify(oval, tolerance);
+//        mMap.addPolygon(new PolygonOptions()
+//                .addAll(simplifiedOval)
+//                .fillColor(Color.YELLOW - ALPHA_ADJUSTMENT)
+//                .strokeColor(Color.YELLOW)
+//                .strokeWidth(5));
+    }
 }
 

@@ -99,6 +99,9 @@
             android:name=".services.FoodInfoService"
             android:enabled="true"/>
 
+        <service android:name=".services.CreatePolylineService"
+            android:enabled="true"/>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="9724157045ff7d083492c6d9ae03e60e8609d461"/>

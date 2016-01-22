@@ -8,6 +8,7 @@ import com.funfit.usjr.thesis.funfitv2.model.ProfileRequestJson;
 import com.funfit.usjr.thesis.funfitv2.model.ResponseJson;
 import com.funfit.usjr.thesis.funfitv2.views.IMainView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Callback;
@@ -53,8 +54,14 @@ public class MainPresenter {
         ProfileClient.get().getAppInitialization(profileRequestJson, new Callback<List<ResponseJson>>() {
             @Override
             public void success(List<ResponseJson> responseJsons, Response response) {
-                 Log.i("Response: ", responseJsons.get(0).getEncodePolyline());
-
+                List<String> endcodedPolyline = null;
+               for(ResponseJson res: responseJsons){
+                    endcodedPolyline = new ArrayList<String>();
+                   endcodedPolyline.add(res.getEncodePolyline());
+               }
+                iMainView.setEndcodedPolylineList(endcodedPolyline);
+                if (endcodedPolyline.size() !=0)
+                    iMainView.sendEncodePolyline();
             }
 
             @Override

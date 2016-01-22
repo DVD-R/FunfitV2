@@ -54,11 +54,11 @@ public class MainPresenter {
         ProfileClient.get().getAppInitialization(profileRequestJson, new Callback<List<ResponseJson>>() {
             @Override
             public void success(List<ResponseJson> responseJsons, Response response) {
-                List<String> endcodedPolyline = null;
+                List<String> endcodedPolyline = new ArrayList<String>();
                for(ResponseJson res: responseJsons){
-                    endcodedPolyline = new ArrayList<String>();
                    endcodedPolyline.add(res.getEncodePolyline());
                }
+                Log.i("check: ", endcodedPolyline.size()+"");
                 iMainView.setEndcodedPolylineList(endcodedPolyline);
                 if (endcodedPolyline.size() !=0)
                     iMainView.sendEncodePolyline();

@@ -1,6 +1,8 @@
 package com.funfit.usjr.thesis.funfitv2.main;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -22,12 +24,14 @@ import com.funfit.usjr.thesis.funfitv2.history.EventHistoryActivityImpl;
 import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanActivity;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.EventActivity;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.NotificationActivity;
+import com.funfit.usjr.thesis.funfitv2.views.IMainView;
+
 import java.util.ArrayList;
 import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, IMainView {
 
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
@@ -44,7 +48,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final long DRAWER_CLOSE_DELAY_MS = 250;
     private static final String NAV_ITEM_ID = "navItemId";
     private int mNavItemId;
-
+    private SharedPreferences mPrefHealthSetup;
+    private MainPresenter mainPresenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle.syncState();
+        mainPresenter = new MainPresenter(this);
+        mPrefHealthSetup = getSharedPreferences("USER_HEALTH_DATA_PREF", Context.MODE_PRIVATE);
     }
 
     @Override
@@ -94,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+        mainPresenter.onResume();
 //        getSupportFragmentManager().beginTransaction().replace(R.id.container,new MealPlanActivity()).commit();
     }
 
@@ -140,6 +148,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         adapter.addFragment(new MapsActivity(), "Arena");
         adapter.addFragment(new MealPlanActivity(), "Shack");
         viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public String getHeight() {
+        return mPrefHealthSetup.getString("HEIGHT", null);
+    }
+
+    @Override
+    public String getWeight() {
+        return mPrefHealthSetup.getString("WEIGHT", null);
+    }
+
+    @Override
+    public String getActivityLevel() {
+        return mPrefHealthSetup.getString("ACTIVITY_LEVEL", null);
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

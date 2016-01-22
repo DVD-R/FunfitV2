@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -21,7 +20,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.R;
-import com.funfit.usjr.thesis.funfitv2.model.Constants;
 
 /**
  * Created by Wasim on 11-06-2015.
@@ -47,6 +45,7 @@ public class ViewPagerAdapter extends PagerAdapter implements View.OnClickListen
     private double weight;
     private String activityLevel;
     private SharedPreferences mPrefHealthSetup;
+    private SharedPreferences.Editor editor;
 
     public ViewPagerAdapter(Context mContext, int mResources) {
         this.mContext = mContext;
@@ -80,6 +79,7 @@ public class ViewPagerAdapter extends PagerAdapter implements View.OnClickListen
         mHeightSpinner = (Spinner) itemView.findViewById(R.id.heightSpnr);
         mFtValue = (Spinner) itemView.findViewById(R.id.ftValueSpnr);
         mPrefHealthSetup = mContext.getSharedPreferences("USER_HEALTH_DATA_PREF", Context.MODE_PRIVATE);
+        editor = mPrefHealthSetup.edit();
         mSendentary.setOnClickListener(this);
         mLowActive.setOnClickListener(this);
         mActive.setOnClickListener(this);
@@ -206,8 +206,6 @@ public class ViewPagerAdapter extends PagerAdapter implements View.OnClickListen
                 feet = Integer.parseInt(phrase[i]);
                 inches = Integer.parseInt(phrase[i]);
             }
-            Toast.makeText(mContext, feet + "", Toast.LENGTH_LONG).show();
-            Toast.makeText(mContext, inches + "", Toast.LENGTH_LONG).show();
 
             int partialResult = (feet * 12) + inches;
             height = partialResult * 2.54;
@@ -217,10 +215,9 @@ public class ViewPagerAdapter extends PagerAdapter implements View.OnClickListen
             }catch (Exception e){}
         }
 
-
-        mPrefHealthSetup.edit().putString("WEIGHT", String.valueOf(weight));
-        mPrefHealthSetup.edit().putString("HEIGHT", String.valueOf(height));
-        mPrefHealthSetup.edit().putString("ACTIVITY_LEVEL", String.valueOf(activityLevel));
-        mPrefHealthSetup.edit().commit();
+        editor.putString("WEIGHT", String.valueOf(weight));
+        editor.putString("HEIGHT", String.valueOf(height));
+        editor.putString("ACTIVITY_LEVEL", String.valueOf(activityLevel));
+        editor.commit();
     }
 }

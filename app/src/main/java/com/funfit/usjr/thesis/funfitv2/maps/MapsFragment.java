@@ -303,13 +303,15 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             myMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
 
-        for (int i = 0; i < polylineList.size(); i++) {
-            List<LatLng> oval = PolyUtil.decode(polylineList.get(i).toString());
-            myMap.addPolygon(new PolygonOptions()
-                    .addAll(oval)
-                    .fillColor(Color.BLUE - ALPHA_ADJUSTMENT)
-                    .strokeColor(Color.BLUE)
-                    .strokeWidth(5));
+        for (String polyline: polylineList) {
+            List<LatLng> oval = PolyUtil.decode(polyline);
+                myMap.addPolygon(new PolygonOptions()
+                        .addAll(oval)
+                        .fillColor(Color.BLUE - ALPHA_ADJUSTMENT)
+                        .strokeColor(Color.BLUE)
+                        .strokeWidth(5));
+            Log.i("Polyline: ", polyline);
+            }
         }
 
 
@@ -321,6 +323,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 //                .fillColor(Color.YELLOW - ALPHA_ADJUSTMENT)
 //                .strokeColor(Color.YELLOW)
 //                .strokeWidth(5));
-    }
 }
+
 

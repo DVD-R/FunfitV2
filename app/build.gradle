@@ -27,7 +27,7 @@ android {
 
     dexOptions {
         incremental true
-        javaMaxHeapSize "2048M"
+        javaMaxHeapSize "4g"
         jumboMode = true
     }
 
@@ -71,7 +71,9 @@ dependencies {
     //Circle Image View
     compile 'de.hdodenhof:circleimageview:2.0.0'
 
-    //android-maps-utils
+    //Map Utils
     compile 'com.google.maps.android:android-maps-utils:0.4+'
 
+    //Scanner
+    compile 'me.dm7.barcodescanner:zxing:1.7.2'
 }

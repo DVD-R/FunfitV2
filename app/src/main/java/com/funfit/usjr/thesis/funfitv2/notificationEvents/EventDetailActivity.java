@@ -1,5 +1,7 @@
 package com.funfit.usjr.thesis.funfitv2.notificationEvents;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -12,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -22,12 +25,14 @@ import com.funfit.usjr.thesis.funfitv2.model.Events;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Dj on 1/22/2016.
  */
 public class EventDetailActivity extends AppCompatActivity {
     private static final String TAG = EventDetailActivity.class.getSimpleName();
+    private static final int REQUEST_CODE_QR_SCAN = 40000;
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
@@ -40,7 +45,7 @@ public class EventDetailActivity extends AppCompatActivity {
     @Bind(R.id.img_event)
     ImageView mImageEvent;
 
-    Events mEvents;
+    private Events mEvents;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,5 +82,22 @@ public class EventDetailActivity extends AppCompatActivity {
                 }));
         mTextEvent.setText(mEvents.getEventName());
         mTextBounty.setText(mEvents.getReward());
+    }
+
+    @OnClick(R.id.fab_qr)
+    public void onClickQr(){
+        startActivityForResult(new Intent(this, QRScannerActivity.class), REQUEST_CODE_QR_SCAN);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (Activity.RESULT_OK == resultCode) {
+
+            if (REQUEST_CODE_QR_SCAN == requestCode) {
+
+                Toast.makeText(this,data.getStringExtra("RAW_RESULT"),Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

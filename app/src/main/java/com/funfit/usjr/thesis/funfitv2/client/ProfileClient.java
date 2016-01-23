@@ -12,7 +12,7 @@ import retrofit.client.OkClient;
  */
 public class ProfileClient {
     public static ProfileService profileService;
-    private static final String ROOT = "http://192.168.254.104:8081";
+    private static final String ROOT = "http://172.17.2.203:8081";
     static {
         setupRestClient();
     }

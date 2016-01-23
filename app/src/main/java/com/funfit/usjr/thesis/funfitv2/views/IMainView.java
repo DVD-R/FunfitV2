@@ -11,4 +11,6 @@ public interface IMainView {
     public String getActivityLevel();
     public void sendEncodePolyline();
     public void setEndcodedPolylineList(List<String> encodePolyline);
+    public void initProgressDialog();
+    public void hideProgressDialog();
 }

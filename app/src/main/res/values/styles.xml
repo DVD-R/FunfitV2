@@ -17,7 +17,7 @@
     <style name="SemiTransparentBar" parent="AppTheme">
     </style>
 
-    <style name="SemiTransparentLightBar" parent="AppThemeLight">
+    <style name="NoStatusBar" parent="AppTheme">
     </style>
 
     <style name="TabText" parent="@android:style/TextAppearance.Widget.TabWidget">

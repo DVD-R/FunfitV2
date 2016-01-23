@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mProgressDialog.setTitle("Processing...");
         mProgressDialog.setMessage("Application Components");
         mProgressDialog.setCancelable(false);
-//        mProgressDialog.show();
+        mProgressDialog.show();
     }
 
     @Override
@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void initProgressDialog() {
-//        this.mProgressDialog.show();
+        this.mProgressDialog.show();
     }
 
     @Override

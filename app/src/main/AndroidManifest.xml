@@ -84,7 +84,7 @@
         </activity>
         <activity
             android:name=".notificationEvents.EventDetailActivity"
-            android:theme="@style/SemiTransparentLightBar">
+            android:theme="@style/NoStatusBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".notificationEvents.EventActivity"/>

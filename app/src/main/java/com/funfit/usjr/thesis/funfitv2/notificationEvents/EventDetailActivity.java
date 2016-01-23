@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.maps.MapsFragment;
 import com.funfit.usjr.thesis.funfitv2.model.Events;
 
 import butterknife.Bind;
@@ -34,10 +35,6 @@ public class EventDetailActivity extends AppCompatActivity {
     FloatingActionButton mFabQr;
     @Bind(R.id.txt_event)
     TextView mTextEvent;
-    @Bind(R.id.txt_sub_event)
-    TextView mTextSubEvent;
-    @Bind(R.id.txt_location)
-    TextView mTextLocation;
     @Bind(R.id.txt_bounty)
     TextView mTextBounty;
     @Bind(R.id.img_event)
@@ -54,7 +51,6 @@ public class EventDetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mTextEvent.setTypeface(Typeface.createFromAsset(getAssets(), "HelveticaBold.otf"));
-        mTextSubEvent.setTypeface(Typeface.createFromAsset(getAssets(), "HelveticaBold.otf"));
         mEvents = (Events) getIntent().getSerializableExtra("EVENT");
 
         Glide.with(this)
@@ -72,7 +68,6 @@ public class EventDetailActivity extends AppCompatActivity {
                                     Palette.Swatch swatch = palette.getLightMutedSwatch();
                                     int color = palette.getMutedColor(swatch.getTitleTextColor());
                                     mFabQr.setBackgroundTintList(ColorStateList.valueOf(color));
-                                    mTextSubEvent.setTextColor(ColorStateList.valueOf(color));
                                 }catch (NullPointerException e){
                                     Log.e(TAG, "Failed to load color");
                                 }
@@ -81,8 +76,6 @@ public class EventDetailActivity extends AppCompatActivity {
                     }
                 }));
         mTextEvent.setText(mEvents.getEventName());
-        mTextSubEvent.setText(mEvents.getEventName().toUpperCase());
-        mTextLocation.setText(mEvents.getLocation().toUpperCase());
         mTextBounty.setText(mEvents.getReward());
     }
 }

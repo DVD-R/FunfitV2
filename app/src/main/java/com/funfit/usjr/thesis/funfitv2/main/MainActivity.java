@@ -1,5 +1,6 @@
 package com.funfit.usjr.thesis.funfitv2.main;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SharedPreferences mPrefHealthSetup;
     private MainPresenter mainPresenter;
     private List<String> encodePolyline;
+    private ProgressDialog mProgressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +81,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mActionBarDrawerToggle.syncState();
         mainPresenter = new MainPresenter(this);
         mPrefHealthSetup = getSharedPreferences("USER_HEALTH_DATA_PREF", Context.MODE_PRIVATE);
+
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setTitle("Processing...");
+        mProgressDialog.setMessage("Application Components");
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
     }
 
     @Override
@@ -177,6 +185,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void setEndcodedPolylineList(List<String> encodePolyline) {
         this.encodePolyline = encodePolyline;
+    }
+
+    @Override
+    public void initProgressDialog() {
+        this.mProgressDialog.show();
+
+    }
+
+    @Override
+    public void hideProgressDialog() {
+        this.mProgressDialog.hide();
     }
 
 

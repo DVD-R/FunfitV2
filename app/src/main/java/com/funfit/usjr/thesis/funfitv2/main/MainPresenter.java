@@ -27,7 +27,9 @@ public class MainPresenter {
     }
 
 
-    public void onResume(){
+    public void onResume()
+    {
+            iMainView.initProgressDialog();
             DoInBackground();
     }
 
@@ -58,10 +60,10 @@ public class MainPresenter {
                for(ResponseJson res: responseJsons){
                    endcodedPolyline.add(res.getEncodePolyline());
                }
-                Log.i("check: ", endcodedPolyline.size()+"");
                 iMainView.setEndcodedPolylineList(endcodedPolyline);
                 if (endcodedPolyline.size() !=0)
                     iMainView.sendEncodePolyline();
+                    iMainView.hideProgressDialog();
             }
 
             @Override
@@ -69,6 +71,5 @@ public class MainPresenter {
                 Log.e("Main presenter: ", String.valueOf(error));
             }
         });
-
     }
 }

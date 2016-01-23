@@ -189,7 +189,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             myMap.setOnMarkerClickListener(this);
             startLocationUpdates();
         } else {
-            Toast.makeText(getActivity(), "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();
+            Log.e("Location Service: ", "GPS not connected!");
         }
     }
 

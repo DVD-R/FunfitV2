@@ -8,4 +8,8 @@
     <dimen name="map_card_vertical_margin">8dp</dimen>
     <dimen name="map_card_horizontal_margin">12dp</dimen>
     <dimen name="content_margin">15dp</dimen>
+    <dimen name="nav_name_margin">70dp</dimen>
+    <dimen name="nav_howdy_margin">24dp</dimen>
+    <dimen name="circ_prof_size">80dp</dimen>
+    <dimen name="nav_prof_margin">50dp</dimen>
 </resources>

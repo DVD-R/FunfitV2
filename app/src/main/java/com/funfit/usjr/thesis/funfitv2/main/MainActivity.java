@@ -19,6 +19,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.maps.MapsFragment;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.history.EventHistoryActivityImpl;
@@ -36,6 +40,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, IMainView {
+
+    @Bind(R.id.img_profile)
+    ImageView mImageProfile;
+    @Bind(R.id.txt_username)
+    TextView mTextUsername;
+    @Bind(R.id.txt_cluster)
+    TextView mTextCluster;
 
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
@@ -56,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private MainPresenter mainPresenter;
     private List<String> encodePolyline;
     private ProgressDialog mProgressDialog;
+    private SharedPreferences mPrefUserData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +99,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mProgressDialog.setTitle("Processing...");
         mProgressDialog.setMessage("Application Components");
         mProgressDialog.setCancelable(false);
-        mProgressDialog.show();
+//        mProgressDialog.show();
+
+        populateNav();
+    }
+
+    //TODO: Finalize clusters!
+    private void populateNav() {
+        mPrefUserData = getSharedPreferences("USER_DATA_PREF", MODE_PRIVATE);
+        mTextUsername.setText(mPrefUserData.getString("FIRST_NAME", null));
+        mTextCluster.setText("Lvl 6 | Velocity");
+        Glide.with(this)
+                .load(mPrefUserData.getString("IMG_URL", null))
+                .centerCrop()
+                .into(mImageProfile);
     }
 
     @Override
@@ -189,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void initProgressDialog() {
-        this.mProgressDialog.show();
+//        this.mProgressDialog.show();
     }
 
     @Override

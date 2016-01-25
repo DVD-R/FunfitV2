@@ -4,33 +4,18 @@
     <!--Navigation Drawer items-->
     <group>
         <item
-            android:id="@+id/home"
-            android:title="Home"/>
+            android:id="@+id/nav_arena"
+            android:title="@string/nav_arena"/>
         <item
-            android:id="@+id/nav_health_pref"
-            android:title="Health Preference"/>
+            android:id="@+id/nav_shack"
+            android:title="@string/nav_shack"/>
         <item
-            android:id="@+id/nav_meal_archeive"
-            android:title="Meal Archieve" />
+            android:id="@+id/nav_leaderBoard"
+            android:title="@string/nav_leaderBoard"/>
+        <item
+            android:id="@+id/nav_event"
+            android:title="@string/nav_events"/>
+
     </group>
-
-    <item android:title="Top Score">
-        <menu>
-            <item
-                android:id="@+id/nav_leaderBoard"
-                android:title="Leader Board"/>
-        </menu>
-    </item>
-
-    <item android:title="Current Event">
-        <menu>
-            <item
-                android:id="@+id/nav_history"
-                android:title="History"/>
-            <item
-                android:id="@+id/nav_event"
-                android:title="Event" />
-        </menu>
-    </item>
 
 </menu>

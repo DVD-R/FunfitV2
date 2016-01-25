@@ -1,16 +1,18 @@
 package com.funfit.usjr.thesis.funfitv2.notificationEvents;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.history.EventHistoryActivityImpl;
 import com.funfit.usjr.thesis.funfitv2.model.Events;
-import com.funfit.usjr.thesis.funfitv2.model.Notification;
-import com.funfit.usjr.thesis.funfitv2.viewmods.DividerItemDecoration;
 
 import java.util.ArrayList;
 
@@ -40,7 +42,7 @@ public class EventActivity extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         //Activity Setup
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notification);
+        setContentView(R.layout.activity_list);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -49,6 +51,23 @@ public class EventActivity extends AppCompatActivity{
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
         fetchEvents();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_events, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_history:
+                startActivity(new Intent(this, EventHistoryActivityImpl.class));
+                return true;
+            default:
+                return false;
+        }
     }
 
     public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {

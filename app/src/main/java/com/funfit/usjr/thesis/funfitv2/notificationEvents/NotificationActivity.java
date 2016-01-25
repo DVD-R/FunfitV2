@@ -1,6 +1,5 @@
 package com.funfit.usjr.thesis.funfitv2.notificationEvents;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -43,7 +42,7 @@ public class NotificationActivity extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         //Activity Setup
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notification);
+        setContentView(R.layout.activity_list);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

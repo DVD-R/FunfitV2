@@ -36,6 +36,7 @@ import com.funfit.usjr.thesis.funfitv2.views.IMainView;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Bind(R.id.main_pager)
     ViewPager mMainPager;
     @Bind(R.id.navigation)
-    NavigationView navigationView;
+    NavigationView mNavigationView;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private final Handler mDrawerActionHandler = new Handler();
     private static final long DRAWER_CLOSE_DELAY_MS = 250;
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setSupportActionBar(mToolBar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.setNavigationItemSelectedListener(this);
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolBar, R.string.open,
                 R.string.close);
@@ -100,8 +101,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mProgressDialog.setMessage("Application Components");
         mProgressDialog.setCancelable(false);
 //        mProgressDialog.show();
-
         populateNav();
+
+        int tabId = getIntent().getIntExtra("TAB_ID", -1);
+        if (tabId == 0)
+            mMainPager.setCurrentItem(0);
+        else if (tabId == 1)
+            mMainPager.setCurrentItem(1);
     }
 
     //TODO: Finalize clusters!
@@ -123,15 +129,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent i;
         switch (item.getItemId()) {
             case R.id.action_notification:
-                startActivity(new Intent(this, NotificationActivity.class));
+                i = new Intent(this, NotificationActivity.class);
+                startActivity(i);
                 return true;
             case R.id.action_news:
-                startActivity(new Intent(this, EventActivity.class));
+                i = new Intent(this, EventActivity.class);
+                startActivity(i);
                 return true;
             default:
-                Log.v("HEY",item.getItemId()+"");
                 return false;
         }
     }
@@ -144,23 +152,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void navigate(final int itemId) {
+        Intent i;
         switch (itemId) {
-            case R.id.home:
-//                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container_layout, new MapsFragment()).commit();
+            case R.id.nav_arena:
+                mMainPager.setCurrentItem(0);
                 break;
-            case R.id.nav_health_pref:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout, new MealPlanActivity()).commit();
-                break;
-            case R.id.nav_meal_archeive:
+            case R.id.nav_shack:
+                mMainPager.setCurrentItem(1);
                 break;
             case R.id.nav_leaderBoard:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_layout, new LeaderBoardActivity()).commit();
-                startActivity(new Intent(this, LeaderBoardActivity.class));
-                break;
-            case R.id.nav_history:
-                startActivity(new Intent(this, EventHistoryActivityImpl.class));
+                i = new Intent(this, LeaderBoardActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
                 break;
             case R.id.nav_event:
+                startActivity(new Intent(this, EventActivity.class));
                 break;
         }
     }

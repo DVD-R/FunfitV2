@@ -26,9 +26,9 @@ public abstract class EventHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_history);
         ButterKnife.bind(this);
-
         setSupportActionBar(mToolbar);
-        mToolbar.setTitle("Event History");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         configureColumn();
     }
 

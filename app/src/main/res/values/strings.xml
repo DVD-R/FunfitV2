@@ -112,4 +112,9 @@
     <string name="label_events">Events</string>
     <string name="eventHistory">Event History</string>
     <string name="broadcast_encodedpolyline">BROADCAST_ENCODEDPOLYLINE</string>
+    <string name="nav_arena">Arena</string>
+    <string name="nav_shack">Shack</string>
+    <string name="nav_leaderBoard">Hall of Fame</string>
+    <string name="nav_events">Events</string>
+    <string name="leaderBoard">Hall of Fame</string>
 </resources>

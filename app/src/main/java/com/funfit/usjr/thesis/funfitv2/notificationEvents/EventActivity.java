@@ -42,7 +42,7 @@ public class EventActivity extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         //Activity Setup
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
+        setContentView(R.layout.activity_event);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

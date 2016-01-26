@@ -75,8 +75,7 @@
         <activity
             android:name=".notificationEvents.EventActivity"
             android:label="@string/label_events"
-            android:parentActivityName=".main.MainActivity"
-            android:theme="@style/AppThemeLight">
+            android:parentActivityName=".main.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".main.MainActivity"/>

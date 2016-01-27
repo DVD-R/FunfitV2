@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void initProgressDialog() {
-//        this.mProgressDialog.show();
+        this.mProgressDialog.show();
     }
 
     @Override

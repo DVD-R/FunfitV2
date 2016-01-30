@@ -69,7 +69,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     DistanceCalculation distanceCalculation;
     PolylineOptions polylineOptions;
     LatLng newLatLng;
-
+    Location location;
     private String OVAL_POLYGON;
     private boolean mBroadcastInfoRegistered;
     private List<String> polylineList;
@@ -105,6 +105,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
         mapsFragmentPresenter = new MapsFragmentPresenter(this);
         connectClient();
+
 
         return view;
 
@@ -175,7 +176,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
     @Override
     public void onConnected(Bundle bundle) {
-        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
@@ -205,12 +206,17 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         myMap.animateCamera(cameraUpdate);
         myMap.setMyLocationEnabled(true);
 
-            polylineOptions = new PolylineOptions();
-            polylineOptions.color(Color.GREEN);
-            polylineOptions.width(4);
-            arrayPoints.add(newLatLng);
-            polylineOptions.addAll(arrayPoints);
-            myMap.addPolyline(polylineOptions);
+//            polylineOptions = new PolylineOptions();
+//            polylineOptions.color(Color.GREEN);
+//            polylineOptions.width(4);
+//            arrayPoints.add(newLatLng);
+//            polylineOptions.addAll(arrayPoints);
+//            myMap.addPolyline(polylineOptions);
+
+
+
+        //get distance
+
     }
 
     @Override
@@ -238,10 +244,18 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         if (checkClick == false) {
             myMap.addMarker(new MarkerOptions().position(latLng).title("This is my empire"));
 
-            Log.i("location",latLng.toString());
-            if(arrayPoints.size()>=2){
-                //Log.i("distance","Distance: "+distanceCalculation.CalculationByDistance(arrayPoints.get(0),arrayPoints.get(1)));
-            }
+            Log.i("location", latLng.toString());
+//            if(arrayPoints.size()>=2){
+//                //Log.i("distance","Distance: "+distanceCalculation.CalculationByDistance(arrayPoints.get(0),arrayPoints.get(1)));
+//            }
+
+            // settin polyline in the map
+            polylineOptions = new PolylineOptions();
+            polylineOptions.color(Color.GREEN);
+            polylineOptions.width(4);
+            arrayPoints.add(latLng);
+            polylineOptions.addAll(arrayPoints);
+            myMap.addPolyline(polylineOptions);
         }
     }
 
@@ -285,6 +299,9 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     }
 
     public void countPolygonPoints() {
+        float distanceInMeters;
+        double tempSpeed = 0;
+        double averageSpeed = 0;
         if (arrayPoints.size() >= 5) {
             checkClick = true;
             PolygonOptions polygonOptions = new PolygonOptions();
@@ -293,25 +310,49 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             polygonOptions.strokeWidth(7);
             polygonOptions.fillColor(Color.CYAN);
             Polygon polygon = myMap.addPolygon(polygonOptions);
+
+            for (int x = 0; arrayPoints.size() - 1 > x; x++) {
+                arrayPoints.get(x);
+                Location loc1 = new Location("");
+                loc1.setLatitude(arrayPoints.get(x).latitude);
+                loc1.setLongitude(arrayPoints.get(x).longitude);
+
+                Location loc2 = new Location("");
+                loc2.setLatitude(arrayPoints.get(x + 1).latitude);
+                loc2.setLongitude(arrayPoints.get(x + 1).longitude);
+
+                distanceInMeters = loc1.distanceTo(loc2);
+
+
+                Location location = new Location("");
+                location.setSpeed(distanceInMeters/5);
+
+                tempSpeed = tempSpeed + location.getSpeed();
+
+                averageSpeed = tempSpeed / arrayPoints.size() - 1;
+
+                Log.i("distanceTo","Distance in meters: "+distanceInMeters+" Speed: "+location.getSpeed());
+            }
+            Log.i("speed","Speed: "+averageSpeed);
         }
     }
 
     @Override
     public void populateTerritory() {
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(10.290060, 123.862453)).zoom(16).build();
-            myMap.animateCamera(CameraUpdateFactory
-                .newCameraPosition(cameraPosition));
-
-        for (String polyline: polylineList) {
-            List<LatLng> oval = PolyUtil.decode(polyline);
-                myMap.addPolygon(new PolygonOptions()
-                        .addAll(oval)
-                        .fillColor(Color.BLUE - ALPHA_ADJUSTMENT)
-                        .strokeColor(Color.BLUE)
-                        .strokeWidth(5));
-            Log.i("Polyline: ", polyline);
-            }
+//                CameraPosition cameraPosition = new CameraPosition.Builder()
+//                .target(new LatLng(10.290060, 123.862453)).zoom(16).build();
+//            myMap.animateCamera(CameraUpdateFactory
+//                .newCameraPosition(cameraPosition));
+//
+//        for (String polyline: polylineList) {
+//            List<LatLng> oval = PolyUtil.decode(polyline);
+//                myMap.addPolygon(new PolygonOptions()
+//                        .addAll(oval)
+//                        .fillColor(Color.BLUE - ALPHA_ADJUSTMENT)
+//                        .strokeColor(Color.BLUE)
+//                        .strokeWidth(5));
+//            Log.i("Polyline: ", polyline);
+//            }
         }
 
 

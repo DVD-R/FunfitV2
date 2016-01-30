@@ -19,10 +19,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.maps.MapsFragment;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.history.EventHistoryActivityImpl;
@@ -36,18 +32,10 @@ import com.funfit.usjr.thesis.funfitv2.views.IMainView;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, IMainView {
-
-    @Bind(R.id.img_profile)
-    ImageView mImageProfile;
-    @Bind(R.id.txt_username)
-    TextView mTextUsername;
-    @Bind(R.id.txt_cluster)
-    TextView mTextCluster;
 
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
@@ -58,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Bind(R.id.main_pager)
     ViewPager mMainPager;
     @Bind(R.id.navigation)
-    NavigationView mNavigationView;
+    NavigationView navigationView;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private final Handler mDrawerActionHandler = new Handler();
     private static final long DRAWER_CLOSE_DELAY_MS = 250;
@@ -68,8 +56,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private MainPresenter mainPresenter;
     private List<String> encodePolyline;
     private ProgressDialog mProgressDialog;
-    private SharedPreferences mPrefUserData;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setSupportActionBar(mToolBar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mNavigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(this);
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolBar, R.string.open,
                 R.string.close);
@@ -100,25 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mProgressDialog.setTitle("Processing...");
         mProgressDialog.setMessage("Application Components");
         mProgressDialog.setCancelable(false);
-//        mProgressDialog.show();
-        populateNav();
-
-        int tabId = getIntent().getIntExtra("TAB_ID", -1);
-        if (tabId == 0)
-            mMainPager.setCurrentItem(0);
-        else if (tabId == 1)
-            mMainPager.setCurrentItem(1);
-    }
-
-    //TODO: Finalize clusters!
-    private void populateNav() {
-        mPrefUserData = getSharedPreferences("USER_DATA_PREF", MODE_PRIVATE);
-        mTextUsername.setText(mPrefUserData.getString("FIRST_NAME", null));
-        mTextCluster.setText("Lvl 6 | Velocity");
-        Glide.with(this)
-                .load(mPrefUserData.getString("IMG_URL", null))
-                .centerCrop()
-                .into(mImageProfile);
+        mProgressDialog.show();
     }
 
     @Override
@@ -129,17 +97,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent i;
         switch (item.getItemId()) {
             case R.id.action_notification:
-                i = new Intent(this, NotificationActivity.class);
-                startActivity(i);
+                startActivity(new Intent(this, NotificationActivity.class));
                 return true;
             case R.id.action_news:
-                i = new Intent(this, EventActivity.class);
-                startActivity(i);
+                startActivity(new Intent(this, EventActivity.class));
                 return true;
             default:
+                Log.v("HEY",item.getItemId()+"");
                 return false;
         }
     }

@@ -3,7 +3,9 @@ package com.funfit.usjr.thesis.funfitv2.fatSecretImplementation;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.funfit.usjr.thesis.funfitv2.dataManager.MealDbAdapter;
 import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
+import com.funfit.usjr.thesis.funfitv2.model.Meal;
 import com.funfit.usjr.thesis.funfitv2.views.ISearchAdapterView;
 
 import org.json.JSONArray;
@@ -19,13 +21,16 @@ public class FatSecretGetPresenter {
     private ISearchAdapterView iSearchAdapterView;
     private FatSecretGet fatSecretGet;
     private FoodServing foodServing;
-
+    private MealDbAdapter mealDbAdapter;
+    private boolean flag;
     public FatSecretGetPresenter(ISearchAdapterView iSearchAdapterView){
             this.iSearchAdapterView = iSearchAdapterView;
             fatSecretGet = new FatSecretGet();
+            mealDbAdapter = new MealDbAdapter(iSearchAdapterView.getContxt());
     }
 
-    public void searchFoodWithServings(){
+    public void searchFoodWithServings(boolean flag){
+        this.flag = flag;
         DoInBackGround();
     }
 
@@ -52,7 +57,6 @@ public class FatSecretGetPresenter {
                                 items.setCarbohydrate(food_items.getString("carbohydrate"));
                                 items.setCholesterol(food_items.getString("cholesterol"));
                                 items.setFat(food_items.getString("fat"));
-//                                items.setFiber(food_items.getString("fiber"));
                                 items.setIron(food_items.getString("iron"));
                                 items.setMeasurement_description(food_items.getString("measurement_description"));
                                 items.setMetric_serving_amount(food_items.getString("metric_serving_amount"));
@@ -64,12 +68,14 @@ public class FatSecretGetPresenter {
                                 items.setProtein(food_items.getString("protein"));
                                 items.setSaturated_fat(food_items.getString("saturated_fat"));
                                 items.setServing_description(food_items.getString("serving_description"));
-                                items.setServing_id(food_items.getString("serving_id"));
-//                                items.setServing_url(food_items.getString("serving_url"));
                                 items.setSodium(food_items.getString("sodium"));
                                 foods.add(items);
                             }
+                        if (flag) {
                             iSearchAdapterView.sendList(foods);
+                        }else{
+                            iSearchAdapterView.setList(foods);
+                        }
                         }
                     }
                 }catch (Exception e){
@@ -80,5 +86,34 @@ public class FatSecretGetPresenter {
             }
         };
         doInBackGround.execute();
+    }
+
+    public void saveMeal(){
+        ArrayList<FoodServing> foodServings = (ArrayList<FoodServing>) iSearchAdapterView.getList();
+        ArrayList<Meal> mealArrayList = new ArrayList<>();
+        Meal meal = null;
+        for (FoodServing foodServing1: foodServings){
+            meal = new Meal();
+            meal.setMeal_id(iSearchAdapterView.getFoodId());
+            meal.setmName(iSearchAdapterView.getMealName());
+            meal.setFat(Double.parseDouble(foodServing1.getFat()));
+            meal.setCholesterol(Double.parseDouble(foodServing1.getCholesterol()));
+            meal.setSodium(Double.parseDouble(foodServing1.getSodium()));
+            meal.setCarbohydrate(Double.parseDouble(foodServing1.getCarbohydrate()));
+            meal.setProtein(Double.parseDouble(foodServing1.getProtein()));
+            meal.setCalories(Double.parseDouble(foodServing1.getCalories()));
+            meal.setmTime(iSearchAdapterView.getMealTime());
+        }
+            mealArrayList.add(meal);
+            long count = mealDbAdapter.saveMeal(mealArrayList);
+            Log.i("Save to Db", String.valueOf(count));
+    }
+
+    public void openDb(){
+        mealDbAdapter.openDb();
+    }
+
+    public void closeDb(){
+        mealDbAdapter.closeDb();
     }
 }

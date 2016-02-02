@@ -339,20 +339,20 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
     @Override
     public void populateTerritory() {
-//                CameraPosition cameraPosition = new CameraPosition.Builder()
-//                .target(new LatLng(10.290060, 123.862453)).zoom(16).build();
-//            myMap.animateCamera(CameraUpdateFactory
-//                .newCameraPosition(cameraPosition));
-//
-//        for (String polyline: polylineList) {
-//            List<LatLng> oval = PolyUtil.decode(polyline);
-//                myMap.addPolygon(new PolygonOptions()
-//                        .addAll(oval)
-//                        .fillColor(Color.BLUE - ALPHA_ADJUSTMENT)
-//                        .strokeColor(Color.BLUE)
-//                        .strokeWidth(5));
-//            Log.i("Polyline: ", polyline);
-//            }
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(10.290060, 123.862453)).zoom(16).build();
+            myMap.animateCamera(CameraUpdateFactory
+                .newCameraPosition(cameraPosition));
+
+        for (String polyline: polylineList) {
+            List<LatLng> oval = PolyUtil.decode(polyline);
+                myMap.addPolygon(new PolygonOptions()
+                        .addAll(oval)
+                        .fillColor(Color.BLUE - ALPHA_ADJUSTMENT)
+                        .strokeColor(Color.BLUE)
+                        .strokeWidth(5));
+            Log.i("Polyline: ", polyline);
+            }
         }
 
 

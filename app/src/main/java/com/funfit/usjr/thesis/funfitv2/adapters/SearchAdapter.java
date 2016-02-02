@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,12 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
     private Intent intent;
     private Context context;
     private int position;
+    private String food_id;
     private FatSecretGetPresenter fatSecretGetPresenter;
+    private Context activityContext;
+    private List<FoodServing> items;
+    private String mealName;
+    private String mealTime;
     @Override
     public void sendList(List<FoodServing> items) {
         android.app.FragmentManager manager = ((Activity) context).getFragmentManager();
@@ -47,7 +53,35 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
 
     @Override
     public Long getFoodId() {
-        return Long.parseLong(foodList.get(position).getFood_id());
+        return Long.parseLong(food_id);
+    }
+
+    @Override
+    public Context getContxt() {
+        return activityContext;
+    }
+
+    @Override
+    public void setList(List<FoodServing> items) {
+        this.items = items;
+        if (items != null) {
+            fatSecretGetPresenter.saveMeal();
+        }
+    }
+
+    @Override
+    public List<FoodServing> getList() {
+        return items;
+    }
+
+    @Override
+    public String getMealName() {
+        return mealName;
+    }
+
+    @Override
+    public String getMealTime() {
+        return mealTime;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -59,7 +93,9 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
                 @Override
                 public void onClick(View v) {
                     position = getPosition();
-                    fatSecretGetPresenter.searchFoodWithServings();
+                    food_id = foodList.get(position).getFood_id();
+                    mealName = foodList.get(position).getFood_name();
+                    fatSecretGetPresenter.searchFoodWithServings(true);
                 }
             });
             ButterKnife.bind(this,itemView);
@@ -75,11 +111,13 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
         return new ViewHolder(view);
     }
 
-    public SearchAdapter(List<Food> foodList){
+    public SearchAdapter(List<Food> foodList, Context activityContext, String mealTime){
         this.foodList = foodList;
+        this.activityContext = activityContext;
+        this.mealTime = mealTime;
         fatSecretGetPresenter = new FatSecretGetPresenter(this);
+        fatSecretGetPresenter.openDb();
     }
-
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -98,11 +136,14 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
                 Food food = (Food) checkBox.getTag();
 
                 food.setIsSelected(checkBox.isChecked());
+                food_id = foodList.get(pos).getFood_id();
+                mealName = foodList.get(pos).getFood_name();
+                fatSecretGetPresenter.searchFoodWithServings(false);
                 foodList.get(pos).setIsSelected(checkBox.isChecked());
-//                Toast.makeText(v.getContext(), food.getFood_name(), Toast.LENGTH_LONG).show();
             }
         });
     }
+
 
     @Override
     public int getItemCount() {
@@ -122,4 +163,7 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
         return foodList;
     }
 
+    public void onDestroy(){
+        fatSecretGetPresenter.closeDb();
+    }
 }

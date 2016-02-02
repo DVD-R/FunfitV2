@@ -1,80 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
     android:layout_width="match_parent"
-    android:layout_height="85dp"
+    android:layout_height="40dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
+        android:layout_marginBottom="1dp"
+        android:layout_marginTop="1dp"
         android:layout_height="match_parent"
         android:background="@color/background">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:orientation="horizontal"
+            android:elevation="3dp">
             <TextView
                 android:id="@+id/foodNameTxt"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Frankfurter or Hot Dog on Bun"
                 android:fontFamily="sans-sarif-medium"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                android:textStyle="bold"/>
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Light.Widget.PopupMenu.Large"
+                android:textStyle="bold"
+                android:layout_weight="3.5"/>
 
-            <LinearLayout
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_marginLeft="10dp"
-                    android:id="@+id/servingSizeTxt"
-                    android:layout_marginTop="12dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="1 frankfurter on bun"
-                    android:fontFamily="sans-sarif-light"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                    android:layout_weight="1.5"/>
+                android:text="RDI 8%"
+                android:fontFamily="sans-sarif-light"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                android:layout_marginTop="10dp"
+                android:layout_weight="11"/>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="RDI 8%"
-                    android:fontFamily="sans-sarif-light"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                    android:layout_marginTop="12dp"
-                    android:layout_weight="2.5"/>
-
-                <TextView
-                    android:id="@+id/kCalTxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="250 kcal"
-                    android:fontFamily="sans-sarif-light"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                    android:layout_marginTop="12dp"
-                    android:layout_weight="2" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="9">
-            <CheckBox
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/kCalTxt"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="17dp"
-                android:layout_marginRight="10dp"></CheckBox>
-        </LinearLayout>
+                android:text="250 kcal"
+                android:fontFamily="sans-sarif-light"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                android:layout_marginTop="10dp"
+                android:layout_weight="11" />
 
+        </LinearLayout>
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

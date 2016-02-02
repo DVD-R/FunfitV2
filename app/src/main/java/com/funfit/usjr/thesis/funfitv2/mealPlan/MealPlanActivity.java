@@ -8,13 +8,20 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.adapter.BreakFastRecyclerAdapter;
+import com.funfit.usjr.thesis.funfitv2.adapter.LunchRecyclerAdapter;
 import com.funfit.usjr.thesis.funfitv2.listener.LeftGestureListener;
 import com.funfit.usjr.thesis.funfitv2.search.SearchActivity;
 import com.funfit.usjr.thesis.funfitv2.views.IMealPlanFragmentView;
@@ -38,41 +45,88 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
 
     GestureDetectorCompat gestureDetectorCompat;
     @Bind(R.id.container)FrameLayout piechartLayout;
-    @Bind(R.id.breakfastCardView)CardView mBreakFastCardView;
+
+    //Breakfast Resources
+    @Bind(R.id.breakfast_recycler_view)RecyclerView breakfastRecyclerView;
+    @Bind(R.id.breakfastRecyclerLayout)FrameLayout breakfastRecyclerLayout;
+    @Bind(R.id.breakfastLayout)FrameLayout breakfastLayout;
+    @Bind(R.id.collapseImgBtn)ImageButton mCollapseImgBtn;
+
+    //Lunch Resources
+    @Bind(R.id.lunchLayout)FrameLayout mLunchLayout;
+    @Bind(R.id.lunchRecyclerLayout)FrameLayout mLunchRecyclerLayout;
+    @Bind(R.id.lunchCollapseImgBtn)ImageButton mLunchCollapseImgBtn;
+    @Bind(R.id.lunch_recycler_view)RecyclerView mLunchRecyclerView;
+
+    protected boolean mBreakFastFlag;
+    protected boolean mLunchFlag;
     private PieChart mPieChart;
     private float [] yData = {50, 46, 4};
     private String [] xData = {"Carbs","Fat","Protein"};
     private int descriptionViewFullHeight;
     private MealPlanPresenter mealPlanPresenter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.LayoutManager mLunchLayoutManager;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_meal_plan, container, false);
         gestureDetectorCompat = new GestureDetectorCompat(getActivity(),new LeftGestureListener(getActivity()));
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
 
         mealPlanPresenter = new MealPlanPresenter(this);
-        mBreakFastCardView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                mBreakFastCardView.getViewTreeObserver().removeOnPreDrawListener(this);
-                //save the full height
-                descriptionViewFullHeight = mBreakFastCardView.getHeight();
-
-                ViewGroup.LayoutParams layoutParams = mBreakFastCardView.getLayoutParams();
-                layoutParams.height = (int) getActivity().getResources().getDimension(R.dimen.cardview_min_height);
-                mBreakFastCardView.setLayoutParams(layoutParams);
-                return true;
-            }
-        });
-
+        mBreakFastFlag = false;
+        mLunchFlag = false;
         return view;
     }
 
+    //breakfast command <---------
     @OnClick(R.id.collapseLayout)
     public void touch(){
-        mealPlanPresenter.initCommand();
+        breakfastLayout.setVisibility(View.GONE);
+        breakfastRecyclerLayout.setVisibility(View.VISIBLE);
+        mealPlanPresenter.displayBreakfast();
     }
+
+    @OnClick(R.id.collapseImgBtn)
+    public void collapse(){
+        if (!mBreakFastFlag){
+            mCollapseImgBtn.setBackground(getResources().getDrawable(R.drawable.arrow_down));
+            breakfastRecyclerView.setVisibility(View.VISIBLE);
+            mBreakFastFlag = true;
+        } else{
+            breakfastRecyclerView.setVisibility(View.GONE);
+            mCollapseImgBtn.setBackground(getResources().getDrawable(R.drawable.arrow_right));
+            mBreakFastFlag = false;
+        }
+    }
+    //breakfast command <---------
+
+
+
+    //lunch command<--------------
+    @OnClick(R.id.lunchLayout)
+    public void lunchLayoutTouch(){
+        mLunchLayout.setVisibility(View.VISIBLE);
+        mLunchRecyclerLayout.setVisibility(View.VISIBLE);
+        mealPlanPresenter.displayLunch();
+    }
+
+    @OnClick(R.id.lunchCollapseImgBtn)
+    public void lunchCollapseImgBtn(){
+        if (!mLunchFlag){
+            mLunchCollapseImgBtn.setBackground(getResources().getDrawable(R.drawable.arrow_down));
+            mLunchRecyclerView.setVisibility(View.VISIBLE);
+            mLunchFlag = true;
+        } else{
+            mLunchCollapseImgBtn.setBackground(getResources().getDrawable(R.drawable.arrow_right));
+            mLunchRecyclerView.setVisibility(View.GONE);
+            mLunchFlag = false;
+        }
+    }
+    //lunch command<--------------
+
 
     @Override
     public void onResume() {
@@ -85,7 +139,7 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
 
         //configure pie chart
         mPieChart.setUsePercentValues(true);
-//        mPieChart.setDescription("");
+        //mPieChart.setDescription("");
 
         //enable and configure
         mPieChart.setDrawHoleEnabled(true);
@@ -178,58 +232,45 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
 
     @OnClick(R.id.breakfastClk)
     public void addBreakfast(){
-        startActivity(new Intent(getActivity(), SearchActivity.class));
+        Intent i = new Intent(getActivity(), SearchActivity.class);
+        i.putExtra("MEALTIME", "Breakfast");
+        startActivity(i);
     }
-
-
 
     @OnClick(R.id.lunchClk)
     public void addLunch(){
-        startActivity(new Intent(getActivity(), SearchActivity.class));
+        Intent i = new Intent(getActivity(), SearchActivity.class);
+        i.putExtra("MEALTIME", "Lunch");
+        startActivity(i);
     }
-
 
     @OnClick(R.id.dinnerClk)
     public void addDinner(){
-        startActivity(new Intent(getActivity(), SearchActivity.class));
+        Intent i = new Intent(getActivity(), SearchActivity.class);
+        i.putExtra("MEALTIME", "Dinner");
+        startActivity(i);
     }
-
-
 
     @OnClick(R.id.snackClk)
     public void addSnack(){
-        startActivity(new Intent(getActivity(), SearchActivity.class));
+        Intent i = new Intent(getActivity(), SearchActivity.class);
+        i.putExtra("MEALTIME", "Snack");
+        startActivity(i);
     }
 
+    @Override
+    public void displayBreakfast() {
+        BreakFastRecyclerAdapter breakFastRecyclerAdapter = new BreakFastRecyclerAdapter(3);
+        breakfastRecyclerView.setAdapter(breakFastRecyclerAdapter);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        breakfastRecyclerView.setLayoutManager(mLayoutManager);
+    }
 
     @Override
-    public void collapseCardView() {
-        int cardViewMinHeight = (int) getActivity().getResources().getDimension(R.dimen.cardview_min_height);
-        if (mBreakFastCardView.getHeight() == cardViewMinHeight){
-            //expand
-            ValueAnimator animator = ValueAnimator.ofInt(mBreakFastCardView.getMeasuredHeightAndState(), descriptionViewFullHeight);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    int value = (Integer) animation.getAnimatedValue();
-                    ViewGroup.LayoutParams layoutParams = mBreakFastCardView.getLayoutParams();
-                    layoutParams.height = value;
-                    mBreakFastCardView.setLayoutParams(layoutParams);
-                }
-            });
-            animator.start();
-        }else {
-            //collapse
-            ValueAnimator animator = ValueAnimator.ofInt(mBreakFastCardView.getMeasuredHeightAndState(), cardViewMinHeight);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    int value = (Integer) animation.getAnimatedValue();
-                    ViewGroup.LayoutParams layoutParams = mBreakFastCardView.getLayoutParams();
-                    mBreakFastCardView.setLayoutParams(layoutParams);
-                }
-            });
-            animator.start();
-        }
+    public void displayLunch() {
+        LunchRecyclerAdapter lunchRecyclerAdapter = new LunchRecyclerAdapter(3);
+        mLunchRecyclerView.setAdapter(lunchRecyclerAdapter);
+        mLunchLayoutManager = new LinearLayoutManager(getActivity());
+        mLunchRecyclerView.setLayoutManager(mLunchLayoutManager);
     }
 }

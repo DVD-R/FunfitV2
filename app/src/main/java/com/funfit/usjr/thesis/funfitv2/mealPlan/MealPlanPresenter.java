@@ -12,7 +12,9 @@ public class MealPlanPresenter {
         this.iMealPlanFragmentView = iMealPlanFragmentView;
     }
 
-    public void initCommand(){
-        iMealPlanFragmentView.collapseCardView();
+    public void displayBreakfast(){
+        iMealPlanFragmentView.displayBreakfast();
     }
+
+    public void displayLunch(){ iMealPlanFragmentView.displayLunch();}
 }

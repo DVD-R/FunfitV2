@@ -44,7 +44,7 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
     @Bind(R.id.tabs)TabLayout mTabs;
     @Bind(R.id.carddemo_progressContainer)LinearLayout mProgressBarContainer;
     private Intent intent;
-
+    private String mealTime;
     private SearchView mSearchView;
     private FatSecretPresenter fatSecretPresenter;
     private String query;
@@ -55,6 +55,8 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
         ButterKnife.bind(this);
         searchFragment = new SearchFragment();
         activitySetup();
+        Intent intent = getIntent();
+        mealTime = intent.getExtras().getString("MEALTIME");
     }
 
     private void activitySetup() {
@@ -84,11 +86,11 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
 
     @Override
     public void getFood(List<Food> items) {
-            (searchFragment).sendFoodList(items);
+            (searchFragment).sendFoodList(items, mealTime);
     }
 
     public interface DisplayList{
-        public void sendFoodList(List<Food> items);
+        public void sendFoodList(List<Food> items, String mealTime);
     }
 
     @Override

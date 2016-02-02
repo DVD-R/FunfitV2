@@ -82,11 +82,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mainPresenter = new MainPresenter(this);
         mPrefHealthSetup = getSharedPreferences("USER_HEALTH_DATA_PREF", Context.MODE_PRIVATE);
 
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setTitle("Processing...");
-        mProgressDialog.setMessage("Application Components");
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.show();
     }
 
     @Override
@@ -113,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-        mainPresenter.onResume();
+//        mainPresenter.onResume();
 //        getSupportFragmentManager().beginTransaction().replace(R.id.container,new MealPlanActivity()).commit();
     }
 
@@ -187,6 +182,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void initProgressDialog() {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setTitle("Processing...");
+        mProgressDialog.setMessage("Application Components");
+        mProgressDialog.setCancelable(false);
         this.mProgressDialog.show();
     }
 

@@ -24,7 +24,7 @@ public final class FoodServing implements Serializable{
     private  String saturated_fat;
     private  String serving_description;
     private  String serving_id;
-    private  String serving_url;
+//    private  String serving_url;
     private  String sodium;
     private  String sugar;
     private  String trans_fat;
@@ -167,21 +167,21 @@ public final class FoodServing implements Serializable{
         this.serving_description = serving_description;
     }
 
-    public String getServing_id() {
-        return serving_id;
-    }
+//    public String getServing_id() {
+//        return serving_id;
+//    }
+//
+//    public void setServing_id(String serving_id) {
+//        this.serving_id = serving_id;
+//    }
 
-    public void setServing_id(String serving_id) {
-        this.serving_id = serving_id;
-    }
-
-    public String getServing_url() {
-        return serving_url;
-    }
-
-    public void setServing_url(String serving_url) {
-        this.serving_url = serving_url;
-    }
+//    public String getServing_url() {
+//        return serving_url;
+//    }
+//
+//    public void setServing_url(String serving_url) {
+//        this.serving_url = serving_url;
+//    }
 
     public String getSodium() {
         return sodium;

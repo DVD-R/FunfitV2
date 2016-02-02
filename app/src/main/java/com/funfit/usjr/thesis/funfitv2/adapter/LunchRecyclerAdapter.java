@@ -2,7 +2,6 @@ package com.funfit.usjr.thesis.funfitv2.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,26 +18,26 @@ import butterknife.ButterKnife;
 /**
  * Created by victor on 1/12/2016.
  */
-public class SearchServingAdapter extends RecyclerView.Adapter<SearchServingAdapter.ViewHolder>{
+public class LunchRecyclerAdapter extends RecyclerView.Adapter<LunchRecyclerAdapter.ViewHolder>{
 
     private List<FoodServing> foodList;
     private int size;
     Context context;
     public class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.foodNameTxt)TextView mFoodName;
-        @Bind(R.id.servingSizeTxt)TextView mServingSize;
         @Bind(R.id.kCalTxt)TextView mKCal;
         public ViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }
+//    public BreakFastRecyclerAdapter(String foodName, List<FoodServing> foodList){
+//        this.foodList = foodList;
+//    }
 
-
-    public SearchServingAdapter(String foodName, List<FoodServing> foodList){
-        this.foodList = foodList;
+    public LunchRecyclerAdapter(int size){
+        this.size = size;
     }
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -50,15 +49,20 @@ public class SearchServingAdapter extends RecyclerView.Adapter<SearchServingAdap
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mFoodName.setText(foodList.get(position).getMeasurement_description());
-        Log.i("Measurement", foodList.get(1).getMeasurement_description());
-        Log.i("Calories", foodList.get(1).getCalories());
-        Log.i("Carb",foodList.get(1).getCarbohydrate());
-        Log.i("Protein",foodList.get(1).getProtein());
+//        holder.mFoodName.setText(foodList.get(position).getMeasurement_description());
+//        Log.i("Measurement", foodList.get(1).getMeasurement_description());
+//        Log.i("Calories", foodList.get(1).getCalories());
+//        Log.i("Carb",foodList.get(1).getCarbohydrate());
+//        Log.i("Protein",foodList.get(1).getProtein());
     }
+
+//    @Override
+//    public int getItemCount() {
+//        return foodList.size();
+//    }
 
     @Override
     public int getItemCount() {
-        return foodList.size();
+        return size;
     }
 }

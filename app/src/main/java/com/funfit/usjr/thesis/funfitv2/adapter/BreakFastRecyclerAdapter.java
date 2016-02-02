@@ -1,4 +1,4 @@
-package com.funfit.usjr.thesis.funfitv2.adapters;
+package com.funfit.usjr.thesis.funfitv2.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 /**
  * Created by victor on 1/12/2016.
  */
-public class SearchServingAdapter extends RecyclerView.Adapter<SearchServingAdapter.ViewHolder>{
+public class BreakFastRecyclerAdapter extends RecyclerView.Adapter<BreakFastRecyclerAdapter.ViewHolder>{
 
     private List<FoodServing> foodList;
     private int size;
@@ -32,12 +32,13 @@ public class SearchServingAdapter extends RecyclerView.Adapter<SearchServingAdap
             ButterKnife.bind(this, itemView);
         }
     }
+//    public BreakFastRecyclerAdapter(String foodName, List<FoodServing> foodList){
+//        this.foodList = foodList;
+//    }
 
-
-    public SearchServingAdapter(String foodName, List<FoodServing> foodList){
-        this.foodList = foodList;
+    public BreakFastRecyclerAdapter(int size){
+        this.size = size;
     }
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -49,15 +50,20 @@ public class SearchServingAdapter extends RecyclerView.Adapter<SearchServingAdap
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mFoodName.setText(foodList.get(position).getMeasurement_description());
-        Log.i("Measurement", foodList.get(1).getMeasurement_description());
-        Log.i("Calories", foodList.get(1).getCalories());
-        Log.i("Carb",foodList.get(1).getCarbohydrate());
-        Log.i("Protein",foodList.get(1).getProtein());
+//        holder.mFoodName.setText(foodList.get(position).getMeasurement_description());
+//        Log.i("Measurement", foodList.get(1).getMeasurement_description());
+//        Log.i("Calories", foodList.get(1).getCalories());
+//        Log.i("Carb",foodList.get(1).getCarbohydrate());
+//        Log.i("Protein",foodList.get(1).getProtein());
     }
+
+//    @Override
+//    public int getItemCount() {
+//        return foodList.size();
+//    }
 
     @Override
     public int getItemCount() {
-        return foodList.size();
+        return size;
     }
 }

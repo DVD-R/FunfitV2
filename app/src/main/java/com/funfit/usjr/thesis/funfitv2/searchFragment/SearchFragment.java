@@ -1,5 +1,6 @@
 package com.funfit.usjr.thesis.funfitv2.searchFragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,7 @@ public class SearchFragment extends Fragment implements SearchActivity.DisplayLi
 
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
+    private Context context;
     private RecyclerView.LayoutManager mLayoutManager;
     private LayoutManagerType mLayoutManagerType;
     private SearchAdapter searchAdapter;
@@ -40,7 +42,7 @@ public class SearchFragment extends Fragment implements SearchActivity.DisplayLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_fragment, container, false);
         ButterKnife.bind(this, view);
-
+        context = getActivity();
         setRecyclerViewLayoutManager();
         return view;
     }
@@ -57,10 +59,14 @@ public class SearchFragment extends Fragment implements SearchActivity.DisplayLi
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        searchAdapter.onDestroy();
     }
 
     public void click(){
@@ -74,11 +80,11 @@ public class SearchFragment extends Fragment implements SearchActivity.DisplayLi
     }
 
     @Override
-    public void sendFoodList(final List<Food> items) {
+    public void sendFoodList(final List<Food> items, final String mealTime) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-               searchAdapter  = new SearchAdapter(items);
+               searchAdapter  = new SearchAdapter(items, context, mealTime);
                 mRecyclerView.setAdapter(searchAdapter);
             }
         });

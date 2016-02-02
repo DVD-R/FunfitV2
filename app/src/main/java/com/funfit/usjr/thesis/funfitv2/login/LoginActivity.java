@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,8 @@ import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.client.AuthData;
@@ -44,7 +47,10 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,15 +77,15 @@ public class LoginActivity extends AppCompatActivity implements
     private CallbackManager mFacebookCallbackManager;
     /* Used to track user logging in/out off Facebook */
     private AccessTokenTracker mFacebookAccessTokenTracker;
-    private ProgressDialog mAuthProgressDialog;
 
     @Bind(R.id.text_funfit)
     TextView mTextFunfit;
     @Bind(R.id.img_login_bg)
     ImageView mImageBg;
-
+    @Bind(R.id.login_progress)
+    ProgressBar mProgressLogin;
     @Bind(R.id.facebookBtn)
-    LoginButton mButtonFacebook;
+    Button mButtonFacebook;
     @Bind(R.id.googleBtn)
     Button mButtonGoogle;
     private String mEncodedEmail;
@@ -123,25 +129,24 @@ public class LoginActivity extends AppCompatActivity implements
         mAuthStateListener = new Firebase.AuthStateListener() {
             @Override
             public void onAuthStateChanged(AuthData authData) {
-                mAuthProgressDialog.hide();
+                mProgressLogin.setVisibility(View.GONE);
+                mButtonGoogle.setVisibility(View.VISIBLE);
+                mButtonFacebook.setVisibility(View.VISIBLE);
                 setAuthenticatedUser(authData);
             }
         };
         /* Check if the user is authenticated with Firebase already. If this is the case we can set the authenticated
          * user and hide hide any login buttons */
         mFirebaseRef.addAuthStateListener(mAuthStateListener);
-
-        /* Setup the progress dialog that is displayed later when authenticating with Firebase */
-        mAuthProgressDialog = new ProgressDialog(this);
-        mAuthProgressDialog.setTitle("Loading");
-        mAuthProgressDialog.setMessage("Authenticating with Firebase...");
-        mAuthProgressDialog.setCancelable(false);
-        mAuthProgressDialog.show();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mProgressLogin.setVisibility(View.GONE);
+        mButtonGoogle.setVisibility(View.VISIBLE);
+        mButtonFacebook.setVisibility(View.VISIBLE);
+
         // if user logged in with Facebook, stop tracking their token
         if (mFacebookAccessTokenTracker != null) {
             mFacebookAccessTokenTracker.stopTracking();
@@ -151,33 +156,25 @@ public class LoginActivity extends AppCompatActivity implements
         mFirebaseRef.removeAuthStateListener(mAuthStateListener);
     }
 
-//    @OnClick(R.id.facebookBtn)
-//    public void loginFacebook() {
-//        Intent intent = new Intent(this, HealthStatisticsSetupPager.class);
-//        intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        startActivity(intent);
-//        Toast.makeText(this, "CLick", Toast.LENGTH_LONG).show();
-//    }
+    @OnClick(R.id.facebookBtn)
+    public void loginFacebook() {
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email, user_birthday"));
+    }
 
     @OnClick(R.id.googleBtn)
     public void loginGoogle() {
-//        mGoogleLoginClicked = true;
-//        if (!mGoogleApiClient.isConnecting()) {
-//            if (mGoogleConnectionResult != null) {
-//                resolveSignInError();
-//            } else if (mGoogleApiClient.isConnected()) {
-//                getGoogleOAuthTokenAndLogin();
-//            } else {
-//                    /* connect API now */
-//                Log.d(TAG, "Trying to connect to Google API");
-//                mGoogleApiClient.connect();
-//            }
-//        }
-
-
-        Intent intent = new Intent(this, TutorialActivity.class);
-        intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        mGoogleLoginClicked = true;
+        if (!mGoogleApiClient.isConnecting()) {
+            if (mGoogleConnectionResult != null) {
+                resolveSignInError();
+            } else if (mGoogleApiClient.isConnected()) {
+                getGoogleOAuthTokenAndLogin();
+            } else {
+                    /* connect API now */
+                Log.d(TAG, "Trying to connect to Google API");
+                mGoogleApiClient.connect();
+            }
+        }
     }
 
     @Override
@@ -243,8 +240,6 @@ public class LoginActivity extends AppCompatActivity implements
             }
         } else {
             /* No authenticated user show all the login buttons */
-            mButtonFacebook.setVisibility(View.VISIBLE);
-            mButtonGoogle.setVisibility(View.VISIBLE);
         }
         this.mAuthData = authData;
         /* invalidate options menu to hide/show the logout button */
@@ -269,12 +264,23 @@ public class LoginActivity extends AppCompatActivity implements
      */
     private void onFacebookAccessTokenChange(AccessToken token) {
         if (token != null) {
-            mAuthProgressDialog.show();
+            mProgressLogin.setVisibility(View.VISIBLE);
+            mButtonGoogle.setVisibility(View.GONE);
+            mButtonFacebook.setVisibility(View.GONE);
+
             mFirebaseRef.authWithOAuthToken("facebook", token.getToken(), new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
-                    //TODO:DISPLAY EMAIL
-                    Log.v(TAG, authData.getProviderData().get("displayName").toString());
+                    setFacebookUserData(authData);
+                    savePreference();
+                    facebookRegisterToFirebase(authData);
+
+                    if (authData != null) {
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
 
                 @Override
@@ -311,7 +317,9 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     private void getGoogleOAuthTokenAndLogin() {
-        mAuthProgressDialog.show();
+        mProgressLogin.setVisibility(View.VISIBLE);
+        mButtonGoogle.setVisibility(View.GONE);
+        mButtonFacebook.setVisibility(View.GONE);
         /* Get OAuth token in Background */
         AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
             String errorMessage = null;
@@ -370,7 +378,9 @@ public class LoginActivity extends AppCompatActivity implements
                         }
                     });
                 } else if (errorMessage != null) {
-                    mAuthProgressDialog.hide();
+                    mProgressLogin.setVisibility(View.GONE);
+                    mButtonGoogle.setVisibility(View.VISIBLE);
+                    mButtonFacebook.setVisibility(View.VISIBLE);
                     Log.e(TAG, errorMessage.toString());
                 }
             }
@@ -434,8 +444,65 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
+    private void setFacebookUserData(AuthData authData) {
+        String[] fullName = ((String) authData.getProviderData().get("displayName")).split("\\s+");
+
+        //fname
+        mFirstName = fullName[0];
+        //lname
+        mLastName = fullName[fullName.length-1];
+        //e-mail
+        mUnprocessedEmail = ""+authData.getProviderData().get("email");
+
+        Log.v(TAG,mUnprocessedEmail);
+
+        //TODO: fb gender
+        mGender = 0;
+        //TODO: fb birthday
+        mBirthday = null;
+        //image url
+        mImgUrl = (String) authData.getProviderData().get("profileImageURL");
+    }
+
     private void facebookRegisterToFirebase(AuthData authData) {
-        //TODO: Do facebook
+        if (authData.getProvider().equals(Constants.FACEBOOK_PROVIDER)) {
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor spe = sp.edit();
+//            if (mGoogleApiClient.isConnected()) {
+//                spe.putString(Constants.KEY_FACEBOOK_EMAIL, mUnprocessedEmail).apply();
+//            } else {
+//                mUnprocessedEmail = sp.getString(Constants.KEY_FACEBOOK_EMAIL, null);
+//            }
+            mEncodedEmail = Utils.encodeEmail(mUnprocessedEmail);
+
+            final String userName = (String) authData.getProviderData().get(Constants.FB_EMAIL);
+
+            final Firebase userLocation = new Firebase(Constants.FIREBASE_URL_USERS).child(mEncodedEmail);
+            userLocation.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() == null) {
+                        HashMap<String, Object> timestampJoined = new HashMap<>();
+                        timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+
+                        User newUser = new User(mFirstName, mLastName, mEncodedEmail, mGender, mBirthday, mImgUrl, timestampJoined);
+                        userLocation.setValue(newUser);
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Log.d(TAG, firebaseError.getMessage());
+                }
+            });
+        }
+
+        if (authData != null) {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override

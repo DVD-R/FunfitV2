@@ -18,4 +18,8 @@ public final class Constants {
     public static final String GOOGLE_PROVIDER = "google";
     public static final String KEY_GOOGLE_EMAIL = "GOOGLE_EMAIL";
     public static final String PROVIDER_DATA_DISPLAY_NAME = "displayName";
+
+    public static final String FACEBOOK_PROVIDER = "facebook";
+    public static final String KEY_FACEBOOK_EMAIL = "FACEBOOK_EMAIL";
+    public static final String FB_EMAIL = "email";
 }

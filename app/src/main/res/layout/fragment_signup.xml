@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/recycler_notification"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:fitsSystemWindows="true">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:fitsSystemWindows="true"
-        android:src="@android:color/white"
-        android:id="@+id/img_signup"/>
+<android.support.design.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="12dp">
+        android:layout_margin="12dp"
+        android:paddingBottom="80dp">
 
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -82,9 +78,9 @@
             android:id="@+id/txt_gender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/input_layout_email"
             android:layout_marginLeft="4dp"
             android:layout_marginTop="8dp"
-            android:layout_below="@+id/input_layout_email"
             android:text="Gender" />
 
         <RadioGroup
@@ -126,6 +122,40 @@
                 android:hint="Date of Birth" />
         </android.support.design.widget.TextInputLayout>
 
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_weight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/input_layout_dob">
+
+            <EditText
+                android:id="@+id/edt_weight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_arrow_drop_down"
+                android:focusable="false"
+                android:hint="Weight" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_height"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/input_layout_weight">
+
+            <EditText
+                android:id="@+id/edt_height"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_arrow_drop_down"
+                android:focusable="false"
+                android:hint="Height" />
+        </android.support.design.widget.TextInputLayout>
+
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -139,3 +169,4 @@
         app:rippleColor="@android:color/transparent" />
 
 </android.support.design.widget.CoordinatorLayout>
+</android.support.v4.widget.NestedScrollView>

@@ -276,8 +276,12 @@ public class LoginActivity extends AppCompatActivity implements
                     facebookRegisterToFirebase(authData);
 
                     if (authData != null) {
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.putExtra(SignUpActivity.PROFILE_IMG_URL,mImgUrl);
+                        intent.putExtra(SignUpActivity.PROFILE_EMAIL,mUnprocessedEmail);
+                        intent.putExtra(SignUpActivity.PROFILE_FNAME,mFirstName);
+                        intent.putExtra(SignUpActivity.PROFILE_LNAME,mLastName);
                         startActivity(intent);
                         finish();
                     }
@@ -367,6 +371,10 @@ public class LoginActivity extends AppCompatActivity implements
                             if (authData != null) {
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent.putExtra(SignUpActivity.PROFILE_IMG_URL,mImgUrl);
+                                intent.putExtra(SignUpActivity.PROFILE_EMAIL,mUnprocessedEmail);
+                                intent.putExtra(SignUpActivity.PROFILE_FNAME,mFirstName);
+                                intent.putExtra(SignUpActivity.PROFILE_LNAME,mLastName);
                                 startActivity(intent);
                                 finish();
                             }

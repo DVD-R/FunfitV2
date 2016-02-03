@@ -89,16 +89,16 @@
     </string-array>
 
     <string name="sedentary">Sedentary</string>
-    <string name="sedentary_description">Daily activities require minimal effort such as resting, desk work or driving</string>
+    <string name="sedentary_description">Sedentary - Daily activities require minimal effort such as resting, desk work or driving</string>
 
     <string name="low_active">Low Active</string>
-    <string name="low_active_description">Daily activities require some effort such as periods of standing, housework or some light exercise</string>
+    <string name="low_active_description">Low Active - Daily activities require some effort such as periods of standing, housework or some light exercise</string>
 
     <string name="active">Active</string>
-    <string name="active_description">Daily activities require reasonable effort such as standing, physical work or regular moderate exercise</string>
+    <string name="active_description">Active - Daily activities require reasonable effort such as standing, physical work or regular moderate exercise</string>
 
     <string name="very_active">Very Active</string>
-    <string name="very_active_description">Daily activities require intense physical effort such as construction work or regular vigorous exercise</string>
+    <string name="very_active_description">Very Active - Daily activities require intense physical effort such as construction work or regular vigorous exercise</string>
 
     <string name="login">Login</string>
     <string name="action_search">Search</string>
@@ -118,4 +118,6 @@
     <string name="nav_events">Events</string>
     <string name="leaderBoard">Hall of Fame</string>
     <string name="label_signup">Sign Up</string>
+    <string name="impulse">impulse</string>
+    <string name="velocity">velocity</string>
 </resources>

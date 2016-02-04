@@ -24,6 +24,7 @@ import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.adapter.BreakFastRecyclerAdapter;
 import com.funfit.usjr.thesis.funfitv2.adapter.LunchRecyclerAdapter;
 import com.funfit.usjr.thesis.funfitv2.listener.LeftGestureListener;
+import com.funfit.usjr.thesis.funfitv2.model.Meal;
 import com.funfit.usjr.thesis.funfitv2.search.SearchActivity;
 import com.funfit.usjr.thesis.funfitv2.views.IMealPlanFragmentView;
 import com.github.mikephil.charting.charts.PieChart;
@@ -37,6 +38,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -68,6 +70,7 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
     private MealPlanPresenter mealPlanPresenter;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.LayoutManager mLunchLayoutManager;
+    private List<Meal> mealList;
 
     @Nullable
     @Override
@@ -83,15 +86,8 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
     }
 
     //breakfast command <---------
-    @OnClick(R.id.collapseLayout)
-    public void touch(){
-        breakfastLayout.setVisibility(View.GONE);
-        breakfastRecyclerLayout.setVisibility(View.VISIBLE);
-        mealPlanPresenter.displayBreakfast();
-    }
-
     @OnClick(R.id.collapseImgBtn)
-    public void collapse(){
+    public void collapse() {
         if (!mBreakFastFlag){
             mCollapseImgBtn.setBackground(getResources().getDrawable(R.drawable.arrow_down));
             breakfastRecyclerView.setVisibility(View.VISIBLE);
@@ -107,13 +103,6 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
 
 
     //lunch command<--------------
-    @OnClick(R.id.lunchLayout)
-    public void lunchLayoutTouch(){
-        mLunchLayout.setVisibility(View.VISIBLE);
-        mLunchRecyclerLayout.setVisibility(View.VISIBLE);
-        mealPlanPresenter.displayLunch();
-    }
-
     @OnClick(R.id.lunchCollapseImgBtn)
     public void lunchCollapseImgBtn(){
         if (!mLunchFlag){
@@ -180,7 +169,7 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
         l.setYEntrySpace(3);
 
         //QUERY FROM LOCAL DATABASE FOR MOST RECENT FOOD LIST
-        mealPlanPresenter.getMealList();
+        mealPlanPresenter.queryMealList();
 
     }
 
@@ -273,7 +262,16 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
 
     @Override
     public void displayBreakfast() {
-        BreakFastRecyclerAdapter breakFastRecyclerAdapter = new BreakFastRecyclerAdapter(3);
+        Meal meals = null;
+        List<Meal> breakfastlist = new ArrayList<>();
+        for (int i = 0; i < mealList.size(); i++) {
+            if (mealList.get(i).getmTime().equals("Breakfast")) {
+                meals = new Meal();
+                meals = getMeal(i, mealList);
+                breakfastlist.add(meals);
+            }
+        }
+        BreakFastRecyclerAdapter breakFastRecyclerAdapter = new BreakFastRecyclerAdapter(breakfastlist);
         breakfastRecyclerView.setAdapter(breakFastRecyclerAdapter);
         mLayoutManager = new LinearLayoutManager(getActivity());
         breakfastRecyclerView.setLayoutManager(mLayoutManager);
@@ -281,14 +279,65 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
 
     @Override
     public void displayLunch() {
-        LunchRecyclerAdapter lunchRecyclerAdapter = new LunchRecyclerAdapter(3);
+        Meal meals = null;
+        List<Meal> lunchList = new ArrayList<>();
+        for (int i = 0; i < mealList.size(); i++) {
+            if (mealList.get(i).getmTime().equals("Lunch")) {
+                meals = new Meal();
+                meals = getMeal(i, mealList);
+                lunchList.add(meals);
+            }
+        }
+        LunchRecyclerAdapter lunchRecyclerAdapter = new LunchRecyclerAdapter(lunchList);
         mLunchRecyclerView.setAdapter(lunchRecyclerAdapter);
         mLunchLayoutManager = new LinearLayoutManager(getActivity());
         mLunchRecyclerView.setLayoutManager(mLunchLayoutManager);
     }
 
+    public Meal getMeal(int i, List<Meal> mealList){
+        Meal meal = new Meal();
+        meal.setMeal_id(mealList.get(i).getMeal_id());
+        meal.setmName(mealList.get(i).getmName());
+        meal.setFat(mealList.get(i).getFat());
+        meal.setCholesterol(mealList.get(i).getCholesterol());
+        meal.setSodium(mealList.get(i).getSodium());
+        meal.setCarbohydrate(mealList.get(i).getCarbohydrate());
+        meal.setProtein(mealList.get(i).getProtein());
+        meal.setCalories(mealList.get(i).getCalories());
+        meal.setmTime(mealList.get(i).getmTime());
+        Log.i("Name", meal.getmName());
+        return meal;
+    }
+
     @Override
     public Context getContxt() {
         return getActivity();
+    }
+
+    @Override
+    public void setMealList(List<Meal> mealList) {
+        this.mealList = mealList;
+        if (mealList.size() != 0){
+            mealPlanPresenter.checkTimeValidity();
+        }
+    }
+
+    @Override
+    public List<Meal> getMealList() {
+        return mealList;
+    }
+
+    @Override
+    public void unhideBreakfast() {
+        breakfastLayout.setVisibility(View.GONE);
+        breakfastRecyclerLayout.setVisibility(View.VISIBLE);
+        mealPlanPresenter.displayBreakfast();
+    }
+
+    @Override
+    public void unhideLunch() {
+        mLunchLayout.setVisibility(View.GONE);
+        mLunchRecyclerLayout.setVisibility(View.VISIBLE);
+        mealPlanPresenter.displayLunch();
     }
 }

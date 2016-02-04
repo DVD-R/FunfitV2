@@ -1,6 +1,7 @@
 package com.funfit.usjr.thesis.funfitv2.mealPlan;
 
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
@@ -132,6 +133,9 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
     public void onResume() {
         super.onResume();
 
+        //OPEN LOCAL DATABASE CONNECTION
+        mealPlanPresenter.openDb();
+
         mPieChart = new PieChart(getActivity());
         //add pie chart to pie chart layout
         piechartLayout.addView(mPieChart);
@@ -175,8 +179,17 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
         l.setXEntrySpace(5);
         l.setYEntrySpace(3);
 
+        //QUERY FROM LOCAL DATABASE FOR MOST RECENT FOOD LIST
+        mealPlanPresenter.getMealList();
+
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //CLOSE LOCAL DATABASE CONNECTION
+        mealPlanPresenter.closeDb();
+    }
 
     private void addData(){
         ArrayList<Entry> yValue = new ArrayList<Entry>();
@@ -272,5 +285,10 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
         mLunchRecyclerView.setAdapter(lunchRecyclerAdapter);
         mLunchLayoutManager = new LinearLayoutManager(getActivity());
         mLunchRecyclerView.setLayoutManager(mLunchLayoutManager);
+    }
+
+    @Override
+    public Context getContxt() {
+        return getActivity();
     }
 }

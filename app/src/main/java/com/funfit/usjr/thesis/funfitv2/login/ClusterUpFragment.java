@@ -1,6 +1,7 @@
 package com.funfit.usjr.thesis.funfitv2.login;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.main.MainActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -39,11 +41,15 @@ public class ClusterUpFragment extends Fragment {
     @Bind(R.id.fab_forward)
     FloatingActionButton mFabForward;
 
+    private SharedPreferences mPrefUserData;
+    private String mUserCluster;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_cluster_up, container, false);
         ButterKnife.bind(this, rootView);
+        mPrefUserData = getActivity().getSharedPreferences(SignUpActivity.USER_PREF_ID, getActivity().MODE_PRIVATE);
 
         Glide.with(this).load("https://igcdn-photos-b-a.akamaihd.net/hphotos-ak-xft1/t51.2885-15/e15/11327164_866674696733105_1005355604_n.jpg")
                 .centerCrop().crossFade().into(mImageVelocity);
@@ -59,6 +65,7 @@ public class ClusterUpFragment extends Fragment {
 
     @OnClick(R.id.velocity_container)
     public void onVelocityClick(){
+        mUserCluster = "velocity";
         mFilterVelocity.setImageResource(R.color.filter_velocity);
         mFilterImpulse.setImageResource(R.color.filter_passive);
         mFabForward.show();
@@ -66,8 +73,17 @@ public class ClusterUpFragment extends Fragment {
 
     @OnClick(R.id.impulse_container)
     public void onImpulseClick(){
+        mUserCluster = "impulse";
         mFilterImpulse.setImageResource(R.color.filter_impulse);
         mFilterVelocity.setImageResource(R.color.filter_passive);
         mFabForward.show();
+    }
+
+    @OnClick(R.id.fab_forward)
+    public void onClickForward(){
+        mPrefUserData.edit().putString(SignUpActivity.PROFILE_CLUSTER, mUserCluster).apply();
+
+        Intent i = new Intent(getActivity(), MainActivity.class);
+        startActivity(i);
     }
 }

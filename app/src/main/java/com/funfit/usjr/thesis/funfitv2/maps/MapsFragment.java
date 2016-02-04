@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
@@ -51,9 +52,12 @@ import com.google.maps.android.PolyUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class MapsFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerClickListener, IMapFragmentView {
+        LocationListener, IMapFragmentView, GoogleMap.OnMarkerClickListener {
 
     MapView mMapView;
     private GoogleMap myMap;
@@ -74,13 +78,17 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     private boolean mBroadcastInfoRegistered;
     private List<String> polylineList;
 
+    @Bind(R.id.txtSpeed)
+    TextView getSpeed;
+    @Bind(R.id.txtDistance)
+    TextView getDistance;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_maps, container, false);
-
+        ButterKnife.bind(this,view);
         //instantiate DistanceCalculation
         distanceCalculation = new DistanceCalculation();
 
-//        ButterKnife.inject(getActivity(), view);
         mMapView = (MapView) view.findViewById(R.id.mapView);
 
         mMapView.onCreate(savedInstanceState);
@@ -121,7 +129,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     public void onResume() {
         super.onResume();
 
-        if (!mBroadcastInfoRegistered){
+        if (!mBroadcastInfoRegistered) {
             getActivity().registerReceiver(encodedPolylineBroadcast, new IntentFilter(getString(R.string.broadcast_encodedpolyline)));
             mBroadcastInfoRegistered = true;
         }
@@ -132,12 +140,11 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         super.onStop();
         mGoogleApiClient.disconnect();
 
-        if (!mBroadcastInfoRegistered){
+        if (!mBroadcastInfoRegistered) {
             getActivity().unregisterReceiver(encodedPolylineBroadcast);
             mBroadcastInfoRegistered = false;
         }
     }
-
 
     private BroadcastReceiver encodedPolylineBroadcast = new BroadcastReceiver() {
         @Override
@@ -148,7 +155,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                 mapsFragmentPresenter.populateTerritory();
         }
     };
-
 
     private void connectClient() {
         // Connect the client.
@@ -164,7 +170,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
             case CONNECTION_FAILURE_RESOLUTION_REQUEST:
             /*
-			 * If the result code is Activity.RESULT_OK, try to connect again
+             * If the result code is Activity.RESULT_OK, try to connect again
 			 */
                 switch (resultCode) {
                     case Activity.RESULT_OK:
@@ -184,9 +190,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             myMap.setMyLocationEnabled(true);
             polylineOptions = new PolylineOptions();
             //arrayPoints.add(latLng);
-
-            myMap.setOnMapClickListener(this);
-            myMap.setOnMapLongClickListener(this);
             myMap.setOnMarkerClickListener(this);
             startLocationUpdates();
         } else {
@@ -201,78 +204,69 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
     @Override
     public void onLocationChanged(Location location) {
+        float getDistanceInMeters = 0;
+        double tempSpeed = 0;
+        double averageSpeed = 0;
         newLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(newLatLng, 18);
         myMap.animateCamera(cameraUpdate);
         myMap.setMyLocationEnabled(true);
 
-//            polylineOptions = new PolylineOptions();
-//            polylineOptions.color(Color.GREEN);
-//            polylineOptions.width(4);
-//            arrayPoints.add(newLatLng);
-//            polylineOptions.addAll(arrayPoints);
-//            myMap.addPolyline(polylineOptions);
+        // settin polyline in the map
+        polylineOptions = new PolylineOptions();
+        polylineOptions.color(Color.GREEN);
+        polylineOptions.width(4);
+        arrayPoints.add(newLatLng);
+        polylineOptions.addAll(arrayPoints);
+        myMap.addPolyline(polylineOptions);
+
+        for (int x = 0; arrayPoints.size() - 1 > x; x++) {
+            arrayPoints.get(x);
+            Location loc1 = new Location("");
+            loc1.setLatitude(arrayPoints.get(x).latitude);
+            loc1.setLongitude(arrayPoints.get(x).longitude);
+
+            Location loc2 = new Location("");
+            loc2.setLatitude(arrayPoints.get(x + 1).latitude);
+            loc2.setLongitude(arrayPoints.get(x + 1).longitude);
+
+            getDistanceInMeters = getDistanceInMeters + loc1.distanceTo(loc2);
+
+            float displaySpeed = location.getSpeed();
 
 
+            tempSpeed = tempSpeed + location.getSpeed();
+        }
 
-        //get distance
+        getSpeed.setText("Speed: " + location.getSpeed());
+        getDistance.setText("Distance: " + getDistanceInMeters);
+        averageSpeed = tempSpeed / arrayPoints.size() - 1;
 
-    }
+        Log.i("distanceTo", "Distance in meters: " + getDistanceInMeters + " Speed: " + location.getSpeed());
+//        }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        if (connectionResult.hasResolution()) {
-            try {
-                // Start an Activity that tries to resolve the error
-                connectionResult.startResolutionForResult(getActivity(),
-                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
-				/*
-				 * Thrown if Google Play services canceled the original
-				 * PendingIntent
-				 */
-            } catch (IntentSender.SendIntentException e) {
-                // Log the error
-                e.printStackTrace();
+        Log.i("distanceTo", "Distance in meters: " + getDistanceInMeters);
+        if (getDistanceInMeters > 200) {
+            int controller = arrayPoints.size() - 1;
+            Log.i("distanceTo", "distance: " + distanceCalculation.CalculationByDistance(arrayPoints.get(0), arrayPoints.get(controller)));
+
+            Location loc1 = new Location("");
+            loc1.setLatitude(arrayPoints.get(0).latitude);
+            loc1.setLongitude(arrayPoints.get(0).longitude);
+
+            Location loc2 = new Location("");
+            loc2.setLatitude(arrayPoints.get(controller).latitude);
+            loc2.setLongitude(arrayPoints.get(controller).longitude);
+
+            float distanceCondition = loc1.distanceTo(loc2);
+
+            if (distanceCondition < 20) {
+                Log.i("location1", "Distance of: " + distanceCalculation.CalculationByDistance(arrayPoints.get(0), arrayPoints.get(controller)));
+                arrayPoints.add(arrayPoints.get(0));
+
+                countPolygonPoints();
             }
-        } else {
-            Log.w("Location Service: ", "Sorry. Location services not available to you");
         }
-    }
-
-    @Override
-    public void onMapClick(LatLng latLng) {
-        if (checkClick == false) {
-            myMap.addMarker(new MarkerOptions().position(latLng).title("This is my empire"));
-
-            Log.i("location", latLng.toString());
-//            if(arrayPoints.size()>=2){
-//                //Log.i("distance","Distance: "+distanceCalculation.CalculationByDistance(arrayPoints.get(0),arrayPoints.get(1)));
-//            }
-
-            // settin polyline in the map
-            polylineOptions = new PolylineOptions();
-            polylineOptions.color(Color.GREEN);
-            polylineOptions.width(4);
-            arrayPoints.add(latLng);
-            polylineOptions.addAll(arrayPoints);
-            myMap.addPolyline(polylineOptions);
-        }
-    }
-
-    @Override
-    public void onMapLongClick(LatLng latLng) {
-        myMap.clear();
-        arrayPoints.clear();
-        checkClick = false;
-    }
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        if (arrayPoints.get(0).equals(marker.getPosition())) {
-            System.out.println("********First Point choose************");
-            countPolygonPoints();
-        }
-        return false;
     }
 
     private boolean isGooglePlayServicesAvailable() {
@@ -308,55 +302,58 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             polygonOptions.addAll(arrayPoints);
             polygonOptions.strokeColor(Color.BLUE);
             polygonOptions.strokeWidth(7);
-            polygonOptions.fillColor(Color.CYAN);
+            polygonOptions.fillColor(Color.BLUE);
             Polygon polygon = myMap.addPolygon(polygonOptions);
 
-            for (int x = 0; arrayPoints.size() - 1 > x; x++) {
-                arrayPoints.get(x);
-                Location loc1 = new Location("");
-                loc1.setLatitude(arrayPoints.get(x).latitude);
-                loc1.setLongitude(arrayPoints.get(x).longitude);
-
-                Location loc2 = new Location("");
-                loc2.setLatitude(arrayPoints.get(x + 1).latitude);
-                loc2.setLongitude(arrayPoints.get(x + 1).longitude);
-
-                distanceInMeters = loc1.distanceTo(loc2);
-
-
-                Location location = new Location("");
-                location.setSpeed(distanceInMeters/5);
-
-                tempSpeed = tempSpeed + location.getSpeed();
-
-                averageSpeed = tempSpeed / arrayPoints.size() - 1;
-
-                Log.i("distanceTo","Distance in meters: "+distanceInMeters+" Speed: "+location.getSpeed());
-            }
-            Log.i("speed","Speed: "+averageSpeed);
         }
     }
 
     @Override
     public void populateTerritory() {
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(10.290060, 123.862453)).zoom(16).build();
-            myMap.animateCamera(CameraUpdateFactory
-                .newCameraPosition(cameraPosition));
+//                CameraPosition cameraPosition = new CameraPosition.Builder()
+//                .target(new LatLng(10.290060, 123.862453)).zoom(16).build();
+//            myMap.animateCamera(CameraUpdateFactory
+//                .newCameraPosition(cameraPosition));
+//
+//        for (String polyline: polylineList) {
+//            List<LatLng> oval = PolyUtil.decode(polyline);
+//                myMap.addPolygon(new PolygonOptions()
+//                        .addAll(oval)
+//                        .fillColor(Color.BLUE - ALPHA_ADJUSTMENT)
+//                        .strokeColor(Color.BLUE)
+//                        .strokeWidth(5));
+//            Log.i("Polyline: ", polyline);
+//            }
+    }
 
-        for (String polyline: polylineList) {
-            List<LatLng> oval = PolyUtil.decode(polyline);
-                myMap.addPolygon(new PolygonOptions()
-                        .addAll(oval)
-                        .fillColor(Color.BLUE - ALPHA_ADJUSTMENT)
-                        .strokeColor(Color.BLUE)
-                        .strokeWidth(5));
-            Log.i("Polyline: ", polyline);
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        if (connectionResult.hasResolution()) {
+            try {
+                // Start an Activity that tries to resolve the error
+                connectionResult.startResolutionForResult(getActivity(),
+                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
+                /*
+                 * Thrown if Google Play services canceled the original
+				 * PendingIntent
+				 */
+            } catch (IntentSender.SendIntentException e) {
+                // Log the error
+                e.printStackTrace();
             }
+        } else {
+            Log.w("Location Service: ", "Sorry. Location services not available to you");
         }
+    }
 
 
-        // Simplified oval polygon
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
+    }
+
+
+    // Simplified oval polygon
 //        tolerance = 10; // meters
 //        List simplifiedOval= PolyUtil.simplify(oval, tolerance);
 //        mMap.addPolygon(new PolygonOptions()
@@ -365,5 +362,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 //                .strokeColor(Color.YELLOW)
 //                .strokeWidth(5));
 }
+
 
 

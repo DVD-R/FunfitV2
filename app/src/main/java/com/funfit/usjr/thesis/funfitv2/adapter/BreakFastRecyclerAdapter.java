@@ -1,6 +1,7 @@
 package com.funfit.usjr.thesis.funfitv2.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,9 @@ import android.widget.TextView;
 
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
+import com.funfit.usjr.thesis.funfitv2.model.Meal;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -21,23 +25,23 @@ import butterknife.ButterKnife;
  */
 public class BreakFastRecyclerAdapter extends RecyclerView.Adapter<BreakFastRecyclerAdapter.ViewHolder>{
 
-    private List<FoodServing> foodList;
+    private List<Meal> mealList;
     private int size;
+    private int position;
     Context context;
     public class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.foodNameTxt)TextView mFoodName;
+        @Bind(R.id.rdiTxt)TextView mRdi;
         @Bind(R.id.kCalTxt)TextView mKCal;
         public ViewHolder(final View itemView) {
             super(itemView);
+            position = getPosition();
             ButterKnife.bind(this, itemView);
         }
     }
-//    public BreakFastRecyclerAdapter(String foodName, List<FoodServing> foodList){
-//        this.foodList = foodList;
-//    }
 
-    public BreakFastRecyclerAdapter(int size){
-        this.size = size;
+    public BreakFastRecyclerAdapter(List<Meal> mealList){
+        this.mealList = mealList;
     }
 
     @Override
@@ -50,20 +54,15 @@ public class BreakFastRecyclerAdapter extends RecyclerView.Adapter<BreakFastRecy
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-//        holder.mFoodName.setText(foodList.get(position).getMeasurement_description());
-//        Log.i("Measurement", foodList.get(1).getMeasurement_description());
-//        Log.i("Calories", foodList.get(1).getCalories());
-//        Log.i("Carb",foodList.get(1).getCarbohydrate());
-//        Log.i("Protein",foodList.get(1).getProtein());
+        if (mealList.get(position).getmTime().equals("Breakfast")) {
+            holder.mFoodName.setText(mealList.get(position).getmName());
+            holder.mKCal.setText(String.valueOf(mealList.get(position).getCalories()) + " kcal");
+        }
     }
-
-//    @Override
-//    public int getItemCount() {
-//        return foodList.size();
-//    }
 
     @Override
     public int getItemCount() {
-        return size;
+        return mealList.size();
     }
+
 }

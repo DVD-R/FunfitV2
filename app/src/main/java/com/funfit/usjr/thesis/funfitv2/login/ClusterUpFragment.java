@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.main.MainActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -69,5 +70,10 @@ public class ClusterUpFragment extends Fragment {
         mFilterImpulse.setImageResource(R.color.filter_impulse);
         mFilterVelocity.setImageResource(R.color.filter_passive);
         mFabForward.show();
+    }
+
+    @OnClick(R.id.fab_forward)
+    public void redirect(){
+        startActivity(new Intent(getActivity(), MainActivity.class));
     }
 }

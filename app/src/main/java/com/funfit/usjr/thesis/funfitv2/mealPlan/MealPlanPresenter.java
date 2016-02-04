@@ -6,6 +6,7 @@ import com.funfit.usjr.thesis.funfitv2.dataManager.MealDbAdapter;
 import com.funfit.usjr.thesis.funfitv2.model.Meal;
 import com.funfit.usjr.thesis.funfitv2.views.IMealPlanFragmentView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,9 +28,28 @@ public class MealPlanPresenter {
 
     public void displayLunch(){ iMealPlanFragmentView.displayLunch();}
 
-    public void getMealList(){
+    public void queryMealList(){
         List<Meal> mealList= mealDbAdapter.getMeals();
-        Log.i("Meal list", String.valueOf(mealList.size()));
+        iMealPlanFragmentView.setMealList(mealList);
+    }
+
+    public void checkTimeValidity(){
+        for(int i = 0; i < iMealPlanFragmentView.getMealList().size(); i++) {
+            switch (iMealPlanFragmentView.getMealList().get(i).getmTime()) {
+                case "Breakfast":
+                    iMealPlanFragmentView.unhideBreakfast();
+                    break;
+                case "Lunch":
+                    iMealPlanFragmentView.unhideLunch();
+                    break;
+                case "Dinner":
+                    Log.i("Check3", "Dinner");
+                    break;
+                case "Snack":
+                    Log.i("Check4", "Snack");
+                    break;
+            }
+        }
     }
 
     public void openDb(){

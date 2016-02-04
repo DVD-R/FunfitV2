@@ -15,8 +15,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.R;
-import com.funfit.usjr.thesis.funfitv2.main.MainActivity;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -72,8 +70,4 @@ public class ClusterUpFragment extends Fragment {
         mFabForward.show();
     }
 
-    @OnClick(R.id.fab_forward)
-    public void redirect(){
-        startActivity(new Intent(getActivity(), MainActivity.class));
-    }
 }

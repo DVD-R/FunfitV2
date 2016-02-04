@@ -92,8 +92,6 @@ public class LoginActivity extends AppCompatActivity implements
     private String mUnprocessedEmail, mFirstName, mLastName, mBirthday, mImgUrl;
     private int mGender;
 
-    private SharedPreferences mPrefUserData;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +103,6 @@ public class LoginActivity extends AppCompatActivity implements
                 .into(mImageBg);
         mTextFunfit.setTypeface(Typeface.createFromAsset(getAssets(), "HelveticaBold.otf"));
 
-        mPrefUserData = getSharedPreferences("USER_DATA_PREF", MODE_PRIVATE);
         mFirebaseRef = new Firebase(Constants.FIREBASE_URL);
 
         //Facebook
@@ -246,18 +243,6 @@ public class LoginActivity extends AppCompatActivity implements
         supportInvalidateOptionsMenu();
     }
 
-    private void savePreference() {
-        mPrefUserData.edit().putString("FIRST_NAME", mFirstName).apply();
-        mPrefUserData.edit().putString("LAST_NAME", mLastName).apply();
-        mPrefUserData.edit().putString("BIRTHDAY", mBirthday).apply();
-        mPrefUserData.edit().putString("EMAIL", mEncodedEmail).apply();
-        mPrefUserData.edit().putString("IMG_URL", mImgUrl).apply();
-        if(mGender==0)
-            mPrefUserData.edit().putString("GENDER", "male").apply();
-        if(mGender==1)
-            mPrefUserData.edit().putString("GENDER", "female").apply();
-    }
-
     /* ************************************
      *             FACEBOOK               *
      **************************************
@@ -272,7 +257,7 @@ public class LoginActivity extends AppCompatActivity implements
                 @Override
                 public void onAuthenticated(AuthData authData) {
                     setFacebookUserData(authData);
-                    savePreference();
+                    //TODO:Save Pref
                     facebookRegisterToFirebase(authData);
 
                     if (authData != null) {
@@ -365,7 +350,7 @@ public class LoginActivity extends AppCompatActivity implements
                         @Override
                         public void onAuthenticated(AuthData authData) {
                             setGoogleUserData();
-                            savePreference();
+                            //TODO:Save pref
                             googleRegisterToFirebase(authData);
 
                             if (authData != null) {

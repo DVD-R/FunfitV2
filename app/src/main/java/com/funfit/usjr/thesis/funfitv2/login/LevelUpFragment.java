@@ -1,6 +1,7 @@
 package com.funfit.usjr.thesis.funfitv2.login;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -54,11 +55,15 @@ public class LevelUpFragment extends Fragment{
     @Bind(R.id.fab_forward)
     FloatingActionButton mFabForward;
 
+    private SharedPreferences mPrefUserData;
+    private String mUserLevel;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_level_up, container, false);
         ButterKnife.bind(this, rootView);
+        mPrefUserData = getActivity().getSharedPreferences(SignUpActivity.USER_PREF_ID, getActivity().MODE_PRIVATE);
 
         Glide.with(this).load("https://igcdn-photos-d-a.akamaihd.net/hphotos-ak-xtp1/t51.2885-15/e35/11849843_458857934284187_1515928877_n.jpg")
                 .centerCrop().crossFade().into(mImageSedentary);
@@ -80,6 +85,7 @@ public class LevelUpFragment extends Fragment{
 
     @OnClick(R.id.sedentary_container)
     public void onSedentaryClick(){
+        mUserLevel = "sedentary";
         mFilterSedentary.setImageResource(R.color.filter_sedentary);
         mFilterLowActive.setImageResource(R.color.filter_passive);
         mFilterActive.setImageResource(R.color.filter_passive);
@@ -90,6 +96,7 @@ public class LevelUpFragment extends Fragment{
 
     @OnClick(R.id.lowactive_container)
     public void onLowActiveClick(){
+        mUserLevel = "low active";
         mFilterSedentary.setImageResource(R.color.filter_passive);
         mFilterLowActive.setImageResource(R.color.filter_lowactive);
         mFilterActive.setImageResource(R.color.filter_passive);
@@ -100,6 +107,7 @@ public class LevelUpFragment extends Fragment{
 
     @OnClick(R.id.active_container)
     public void onActiveClick(){
+        mUserLevel = "active";
         mFilterSedentary.setImageResource(R.color.filter_passive);
         mFilterLowActive.setImageResource(R.color.filter_passive);
         mFilterActive.setImageResource(R.color.filter_active);
@@ -110,6 +118,7 @@ public class LevelUpFragment extends Fragment{
 
     @OnClick(R.id.veryactive_container)
     public void onVeryActiveClick(){
+        mUserLevel = "very active";
         mFilterSedentary.setImageResource(R.color.filter_passive);
         mFilterLowActive.setImageResource(R.color.filter_passive);
         mFilterActive.setImageResource(R.color.filter_passive);
@@ -120,6 +129,7 @@ public class LevelUpFragment extends Fragment{
 
     @OnClick(R.id.fab_forward)
     public void onClickForward(){
+        mPrefUserData.edit().putString(SignUpActivity.PROFILE_ACTIVITY_LEVEL, mUserLevel).apply();
         ((ViewPager)getActivity().findViewById(R.id.viewpager_signup)).setCurrentItem(2);
     }
 }

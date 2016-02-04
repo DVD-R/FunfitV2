@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SharedPreferences mPrefHealthSetup;
     private MainPresenter mainPresenter;
     private List<String> encodePolyline;
-    private ProgressDialog mProgressDialog;
+//    private ProgressDialog mProgressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,11 +82,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mainPresenter = new MainPresenter(this);
         mPrefHealthSetup = getSharedPreferences("USER_HEALTH_DATA_PREF", Context.MODE_PRIVATE);
 
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setTitle("Processing...");
-        mProgressDialog.setMessage("Application Components");
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.show();
+//        mProgressDialog = new ProgressDialog(this);
+//        mProgressDialog.setTitle("Processing...");
+//        mProgressDialog.setMessage("Application Components");
+//        mProgressDialog.setCancelable(false);
+//        mProgressDialog.show();
     }
 
     @Override
@@ -187,12 +187,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void initProgressDialog() {
-        this.mProgressDialog.show();
+//        this.mProgressDialog.show();
     }
 
     @Override
     public void hideProgressDialog() {
-        this.mProgressDialog.hide();
+//        this.mProgressDialog.hide();
     }
 
 

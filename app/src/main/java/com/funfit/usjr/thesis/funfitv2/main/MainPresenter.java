@@ -30,7 +30,7 @@ public class MainPresenter {
     public void onResume()
     {
 //            iMainView.initProgressDialog();
-            DoInBackground();
+            //DoInBackground();
     }
 
     private void DoInBackground(){

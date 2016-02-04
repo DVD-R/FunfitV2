@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
@@ -51,9 +52,12 @@ import com.google.maps.android.PolyUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class MapsFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, IMapFragmentView, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerClickListener {
+        LocationListener, IMapFragmentView, GoogleMap.OnMarkerClickListener {
 
     MapView mMapView;
     private GoogleMap myMap;
@@ -74,13 +78,17 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     private boolean mBroadcastInfoRegistered;
     private List<String> polylineList;
 
+    @Bind(R.id.txtSpeed)
+    TextView getSpeed;
+    @Bind(R.id.txtDistance)
+    TextView getDistance;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_maps, container, false);
-
+        ButterKnife.bind(this,view);
         //instantiate DistanceCalculation
         distanceCalculation = new DistanceCalculation();
 
-//        ButterKnife.inject(getActivity(), view);
         mMapView = (MapView) view.findViewById(R.id.mapView);
 
         mMapView.onCreate(savedInstanceState);
@@ -182,9 +190,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             myMap.setMyLocationEnabled(true);
             polylineOptions = new PolylineOptions();
             //arrayPoints.add(latLng);
-
-            myMap.setOnMapClickListener(this);
-            myMap.setOnMapLongClickListener(this);
             myMap.setOnMarkerClickListener(this);
             startLocationUpdates();
         } else {
@@ -200,7 +205,8 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onLocationChanged(Location location) {
         float getDistanceInMeters = 0;
-        float distanceTemp = 0;
+        double tempSpeed = 0;
+        double averageSpeed = 0;
         newLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(newLatLng, 18);
         myMap.animateCamera(cameraUpdate);
@@ -226,16 +232,19 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
             getDistanceInMeters = getDistanceInMeters + loc1.distanceTo(loc2);
 
-//            Location location = new Location("");
-//            location.setSpeed(getDistanceInMeters / 5);
-//
-//            tempSpeed = tempSpeed + location.getSpeed();
-//
-//            averageSpeed = tempSpeed / arrayPoints.size() - 1;
-//
-//            Log.i("distanceTo", "Distance in meters: " + distanceInMeters + " Speed: " + location.getSpeed());
-//        }
+            float displaySpeed = location.getSpeed();
+
+
+            tempSpeed = tempSpeed + location.getSpeed();
         }
+
+        getSpeed.setText("Speed: " + location.getSpeed());
+        getDistance.setText("Distance: " + getDistanceInMeters);
+        averageSpeed = tempSpeed / arrayPoints.size() - 1;
+
+        Log.i("distanceTo", "Distance in meters: " + getDistanceInMeters + " Speed: " + location.getSpeed());
+//        }
+
         Log.i("distanceTo", "Distance in meters: " + getDistanceInMeters);
         if (getDistanceInMeters > 200) {
             int controller = arrayPoints.size() - 1;
@@ -249,7 +258,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             loc2.setLatitude(arrayPoints.get(controller).latitude);
             loc2.setLongitude(arrayPoints.get(controller).longitude);
 
-            float distanceCondition =  loc1.distanceTo(loc2);
+            float distanceCondition = loc1.distanceTo(loc2);
 
             if (distanceCondition < 20) {
                 Log.i("location1", "Distance of: " + distanceCalculation.CalculationByDistance(arrayPoints.get(0), arrayPoints.get(controller)));
@@ -296,29 +305,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             polygonOptions.fillColor(Color.BLUE);
             Polygon polygon = myMap.addPolygon(polygonOptions);
 
-//            for (int x = 0; arrayPoints.size() - 1 > x; x++) {
-//                arrayPoints.get(x);
-//                Location loc1 = new Location("");
-//                loc1.setLatitude(arrayPoints.get(x).latitude);
-//                loc1.setLongitude(arrayPoints.get(x).longitude);
-//
-//                Location loc2 = new Location("");
-//                loc2.setLatitude(arrayPoints.get(x + 1).latitude);
-//                loc2.setLongitude(arrayPoints.get(x + 1).longitude);
-//
-//                distanceInMeters = loc1.distanceTo(loc2);
-//
-//
-//                Location location = new Location("");
-//                location.setSpeed(distanceInMeters / 5);
-//
-//                tempSpeed = tempSpeed + location.getSpeed();
-//
-//                averageSpeed = tempSpeed / arrayPoints.size() - 1;
-//
-//                Log.i("distanceTo", "Distance in meters: " + distanceInMeters + " Speed: " + location.getSpeed());
-//            }
-//            Log.i("speed", "Speed: " + averageSpeed);
         }
     }
 
@@ -360,85 +346,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         }
     }
 
-    @Override
-    public void onMapClick(LatLng latLng) {
-        float getDistanceInMeters = 0;
-        float distanceTemp = 0;
-
-//        if (checkClick == false) {
-//            myMap.addMarker(new MarkerOptions().position(latLng).title("This is my empire"));
-//
-//            Log.i("location", latLng.toString());
-////            if(arrayPoints.size()>=2){
-////                //Log.i("distance","Distance: "+distanceCalculation.CalculationByDistance(arrayPoints.get(0),arrayPoints.get(1)));
-////            }
-//
-//            // settin polyline in the map
-//            polylineOptions = new PolylineOptions();
-//            polylineOptions.color(Color.GREEN);
-//            polylineOptions.width(4);
-//            arrayPoints.add(latLng);
-//            polylineOptions.addAll(arrayPoints);
-//            myMap.addPolyline(polylineOptions);
-//
-//            for (int x = 0; arrayPoints.size() - 1 > x; x++) {
-//                arrayPoints.get(x);
-//                Location loc1 = new Location("");
-//                loc1.setLatitude(arrayPoints.get(x).latitude);
-//                loc1.setLongitude(arrayPoints.get(x).longitude);
-//
-//                Location loc2 = new Location("");
-//                loc2.setLatitude(arrayPoints.get(x + 1).latitude);
-//                loc2.setLongitude(arrayPoints.get(x + 1).longitude);
-//
-//                getDistanceInMeters = getDistanceInMeters + loc1.distanceTo(loc2);
-//
-////            Location location = new Location("");
-////            location.setSpeed(getDistanceInMeters / 5);
-////
-////            tempSpeed = tempSpeed + location.getSpeed();
-////
-////            averageSpeed = tempSpeed / arrayPoints.size() - 1;
-////
-////            Log.i("distanceTo", "Distance in meters: " + distanceInMeters + " Speed: " + location.getSpeed());
-////        }
-//            }
-//            Log.i("distanceTo", "Distance in meters: " + getDistanceInMeters);
-//            if (getDistanceInMeters > 200) {
-//                int controller = arrayPoints.size() - 1;
-//                Log.i("distanceTo", "distance: " + distanceCalculation.CalculationByDistance(arrayPoints.get(0), arrayPoints.get(controller)));
-//
-//                Location loc1 = new Location("");
-//                loc1.setLatitude(arrayPoints.get(0).latitude);
-//                loc1.setLongitude(arrayPoints.get(0).longitude);
-//
-//                Location loc2 = new Location("");
-//                loc2.setLatitude(arrayPoints.get(controller).latitude);
-//                loc2.setLongitude(arrayPoints.get(controller).longitude);
-//
-//                float distanceCondition =  loc1.distanceTo(loc2);
-//
-//                if (distanceCondition < 20) {
-//                    Log.i("location1", "Distance of: " + distanceCalculation.CalculationByDistance(arrayPoints.get(0), arrayPoints.get(controller)));
-//                    polylineOptions = new PolylineOptions();
-//                    polylineOptions.color(Color.GREEN);
-//                    polylineOptions.width(4);
-//                    arrayPoints.add(arrayPoints.get(0));
-//                    polylineOptions.addAll(arrayPoints);
-////                myMap.addPolyline(polylineOptions);
-//
-//                    countPolygonPoints();
-//                }
-//            }
-//        }
-    }
-
-    @Override
-    public void onMapLongClick(LatLng latLng) {
-        myMap.clear();
-        arrayPoints.clear();
-        checkClick = false;
-    }
 
     @Override
     public boolean onMarkerClick(Marker marker) {

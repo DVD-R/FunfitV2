@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.model.Constants;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -63,7 +64,7 @@ public class LevelUpFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_level_up, container, false);
         ButterKnife.bind(this, rootView);
-        mPrefUserData = getActivity().getSharedPreferences(SignUpActivity.USER_PREF_ID, getActivity().MODE_PRIVATE);
+        mPrefUserData = getActivity().getSharedPreferences(Constants.USER_PREF_ID, getActivity().MODE_PRIVATE);
 
         Glide.with(this).load("https://igcdn-photos-d-a.akamaihd.net/hphotos-ak-xtp1/t51.2885-15/e35/11849843_458857934284187_1515928877_n.jpg")
                 .centerCrop().crossFade().into(mImageSedentary);
@@ -129,7 +130,7 @@ public class LevelUpFragment extends Fragment{
 
     @OnClick(R.id.fab_forward)
     public void onClickForward(){
-        mPrefUserData.edit().putString(SignUpActivity.PROFILE_ACTIVITY_LEVEL, mUserLevel).apply();
+        mPrefUserData.edit().putString(Constants.PROFILE_ACTIVITY_LEVEL, mUserLevel).apply();
         ((ViewPager)getActivity().findViewById(R.id.viewpager_signup)).setCurrentItem(2);
     }
 }

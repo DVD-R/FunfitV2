@@ -1,6 +1,7 @@
 package com.funfit.usjr.thesis.funfitv2.login;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -10,9 +11,20 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ServerValue;
+import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.model.Constants;
+import com.funfit.usjr.thesis.funfitv2.model.User;
+import com.funfit.usjr.thesis.funfitv2.model.Utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -22,17 +34,7 @@ import butterknife.ButterKnife;
  * Created by Dj on 2/3/2016.
  */
 public class SignUpActivity extends AppCompatActivity {
-    public static final String USER_PREF_ID = "user_info";
-    public static final String PROFILE_IMG_URL = "img_profile";
-    public static final String PROFILE_FNAME = "profile_fname";
-    public static final String PROFILE_LNAME = "profile_lname";
-    public static final String PROFILE_EMAIL = "profile_email";
-    public static final String PROFILE_GENDER = "profile_gender";
-    public static final String PROFILE_DOB = "profile_dob";
-    public static final String PROFILE_WEIGHT = "profile_weight";
-    public static final String PROFILE_HEIGHT = "profile_height";
-    public static final String PROFILE_ACTIVITY_LEVEL = "profile_activity_level";
-    public static final String PROFILE_CLUSTER = "profile_cluster";
+    private static final String LOG_TAG = SignUpActivity.class.getSimpleName();
 
     @Bind(R.id.viewpager_signup)
     ViewPager mViewPager;
@@ -116,5 +118,38 @@ public class SignUpActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }
+
+    public static void registerUserToFirebase(final SharedPreferences userData){
+        final String email = Utils.encodeEmail(userData.getString(Constants.PROFILE_EMAIL, null));
+        final Firebase userFirebase = new Firebase(Constants.FIREBASE_URL_USERS)
+                .child(email);
+        userFirebase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    HashMap<String, Object> timestampJoined = new HashMap<>();
+                    timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+
+                    User newUser = new User(userData.getString(Constants.PROFILE_FNAME, null),
+                            userData.getString(Constants.PROFILE_LNAME, null),
+                            email,
+                            userData.getString(Constants.PROFILE_GENDER, null),
+                            userData.getString(Constants.PROFILE_DOB, null),
+                            userData.getString(Constants.PROFILE_IMG_URL, null),
+                            userData.getString(Constants.PROFILE_WEIGHT, null),
+                            userData.getString(Constants.PROFILE_HEIGHT, null),
+                            userData.getString(Constants.PROFILE_ACTIVITY_LEVEL, null),
+                            userData.getString(Constants.PROFILE_CLUSTER, null),
+                            timestampJoined);
+                    userFirebase.setValue(newUser);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.d(LOG_TAG, firebaseError.getMessage());
+            }
+        });
     }
 }

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.main.MainActivity;
+import com.funfit.usjr.thesis.funfitv2.model.Constants;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -49,7 +50,7 @@ public class ClusterUpFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_cluster_up, container, false);
         ButterKnife.bind(this, rootView);
-        mPrefUserData = getActivity().getSharedPreferences(SignUpActivity.USER_PREF_ID, getActivity().MODE_PRIVATE);
+        mPrefUserData = getActivity().getSharedPreferences(Constants.USER_PREF_ID, getActivity().MODE_PRIVATE);
 
         Glide.with(this).load("https://igcdn-photos-b-a.akamaihd.net/hphotos-ak-xft1/t51.2885-15/e15/11327164_866674696733105_1005355604_n.jpg")
                 .centerCrop().crossFade().into(mImageVelocity);
@@ -81,9 +82,11 @@ public class ClusterUpFragment extends Fragment {
 
     @OnClick(R.id.fab_forward)
     public void onClickForward(){
-        mPrefUserData.edit().putString(SignUpActivity.PROFILE_CLUSTER, mUserCluster).apply();
+        mPrefUserData.edit().putString(Constants.PROFILE_CLUSTER, mUserCluster).apply();
 
+        SignUpActivity.registerUserToFirebase(mPrefUserData);
         Intent i = new Intent(getActivity(), MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
     }
 }

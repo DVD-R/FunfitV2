@@ -22,6 +22,7 @@ import android.widget.RadioGroup;
 
 import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.model.Constants;
 
 import java.util.Calendar;
 
@@ -63,13 +64,15 @@ public class SignUpFragment extends Fragment implements View.OnFocusChangeListen
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_signup, container, false);
         ButterKnife.bind(this, rootView);
-        mPrefUserData = getActivity().getSharedPreferences(SignUpActivity.USER_PREF_ID, getActivity().MODE_PRIVATE);
+        mPrefUserData = getActivity().getSharedPreferences(Constants.USER_PREF_ID, getActivity().MODE_PRIVATE);
 
         Intent i = getActivity().getIntent();
-        mImageUrl = i.getStringExtra(SignUpActivity.PROFILE_IMG_URL);
-        mEditFname.setText(i.getStringExtra(SignUpActivity.PROFILE_FNAME));
-        mEditLname.setText(i.getStringExtra(SignUpActivity.PROFILE_LNAME));
-        mEditEmail.setText(i.getStringExtra(SignUpActivity.PROFILE_EMAIL));
+        String email = i.getStringExtra(Constants.PROFILE_EMAIL);
+        mImageUrl = i.getStringExtra(Constants.PROFILE_IMG_URL);
+        mEditFname.setText(i.getStringExtra(Constants.PROFILE_FNAME));
+        mEditLname.setText(i.getStringExtra(Constants.PROFILE_LNAME));
+        if(!email.equals("null"))
+            mEditEmail.setText(i.getStringExtra(Constants.PROFILE_EMAIL));
         Glide.with(this).load(mImageUrl)
                 .centerCrop().crossFade().into(mImageProfile);
         mFabForward.hide();
@@ -194,17 +197,17 @@ public class SignUpFragment extends Fragment implements View.OnFocusChangeListen
 
     @OnClick(R.id.fab_forward)
     public void onClickForward(){
-        mPrefUserData.edit().putString(SignUpActivity.PROFILE_FNAME, mEditFname.getText().toString()).apply();
-        mPrefUserData.edit().putString(SignUpActivity.PROFILE_LNAME, mEditLname.getText().toString()).apply();
-        mPrefUserData.edit().putString(SignUpActivity.PROFILE_DOB, mEditDob.getText().toString()).apply();
-        mPrefUserData.edit().putString(SignUpActivity.PROFILE_EMAIL, mEditEmail.getText().toString()).apply();
-        mPrefUserData.edit().putString(SignUpActivity.PROFILE_IMG_URL, mImageUrl).apply();
+        mPrefUserData.edit().putString(Constants.PROFILE_FNAME, mEditFname.getText().toString()).apply();
+        mPrefUserData.edit().putString(Constants.PROFILE_LNAME, mEditLname.getText().toString()).apply();
+        mPrefUserData.edit().putString(Constants.PROFILE_DOB, mEditDob.getText().toString()).apply();
+        mPrefUserData.edit().putString(Constants.PROFILE_EMAIL, mEditEmail.getText().toString()).apply();
+        mPrefUserData.edit().putString(Constants.PROFILE_IMG_URL, mImageUrl).apply();
         if(mRadioGroup.getCheckedRadioButtonId()==R.id.rad_btn_male)
-            mPrefUserData.edit().putString(SignUpActivity.PROFILE_GENDER, "male").apply();
+            mPrefUserData.edit().putString(Constants.PROFILE_GENDER, "male").apply();
         else
-            mPrefUserData.edit().putString(SignUpActivity.PROFILE_GENDER, "female").apply();
-        mPrefUserData.edit().putString(SignUpActivity.PROFILE_WEIGHT, mEditWeight.getText().toString()).apply();
-        mPrefUserData.edit().putString(SignUpActivity.PROFILE_HEIGHT, mEditHeight.getText().toString()).apply();
+            mPrefUserData.edit().putString(Constants.PROFILE_GENDER, "female").apply();
+        mPrefUserData.edit().putString(Constants.PROFILE_WEIGHT, mEditWeight.getText().toString()).apply();
+        mPrefUserData.edit().putString(Constants.PROFILE_HEIGHT, mEditHeight.getText().toString()).apply();
 
         ((ViewPager)getActivity().findViewById(R.id.viewpager_signup)).setCurrentItem(1);
     }

@@ -1,0 +1,58 @@
+package com.funfit.usjr.thesis.funfitv2.adapter;
+
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.model.Meal;
+
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
+/**
+ * Created by victor on 1/12/2016.
+ */
+public class SnackRecyclerAdapter extends RecyclerView.Adapter<SnackRecyclerAdapter.ViewHolder>{
+
+    private List<Meal> mealList;
+    private int size;
+    Context context;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.foodNameTxt)TextView mFoodName;
+        @Bind(R.id.rdiTxt)TextView mRdi;
+        @Bind(R.id.kCalTxt)TextView mKCal;
+        public ViewHolder(final View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    public SnackRecyclerAdapter(List<Meal> mealList){
+        this.mealList = mealList;
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_serving_adapter_layout, parent, false);
+        context = parent.getContext();
+        view.setFocusable(true);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.mFoodName.setText(mealList.get(position).getmName());
+        holder.mKCal.setText(String.valueOf(mealList.get(position).getCalories()) + " kcal");
+    }
+
+    @Override
+    public int getItemCount() {
+        return mealList.size();
+    }
+}

@@ -32,6 +32,8 @@ public class SearchFragment extends Fragment implements SearchActivity.DisplayLi
     private RecyclerView.LayoutManager mLayoutManager;
     private LayoutManagerType mLayoutManagerType;
     private SearchAdapter searchAdapter;
+    private  List<Food> item;
+    private String melTime;
     private enum LayoutManagerType{
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
@@ -66,6 +68,7 @@ public class SearchFragment extends Fragment implements SearchActivity.DisplayLi
     @Override
     public void onDestroy() {
         super.onDestroy();
+        searchAdapter  = new SearchAdapter(item, context, melTime);
         searchAdapter.onDestroy();
     }
 
@@ -84,6 +87,8 @@ public class SearchFragment extends Fragment implements SearchActivity.DisplayLi
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                item = items;
+                melTime = mealTime;
                searchAdapter  = new SearchAdapter(items, context, mealTime);
                 mRecyclerView.setAdapter(searchAdapter);
             }

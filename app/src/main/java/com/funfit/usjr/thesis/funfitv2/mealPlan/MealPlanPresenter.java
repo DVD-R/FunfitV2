@@ -14,7 +14,10 @@ import java.util.List;
  */
 public class MealPlanPresenter {
     private IMealPlanFragmentView iMealPlanFragmentView;
-
+    private double breakfastTotalkCal;
+    private double lunchTotalkCal;
+    private double dinnerTotalkCal;
+    private double snackTotalkCal;
     private MealDbAdapter mealDbAdapter;
 
     public MealPlanPresenter(IMealPlanFragmentView iMealPlanFragmentView){
@@ -22,11 +25,15 @@ public class MealPlanPresenter {
         this.mealDbAdapter = new MealDbAdapter(iMealPlanFragmentView.getContxt());
     }
 
-    public void displayBreakfast(){
-        iMealPlanFragmentView.displayBreakfast();
-    }
+    //Collapse/Expand commands<-----------------
+    public void displayBreakfast(){iMealPlanFragmentView.displayBreakfast();}
 
     public void displayLunch(){ iMealPlanFragmentView.displayLunch();}
+
+    public void displayDinner(){iMealPlanFragmentView.displaDinner();}
+
+    public void displaySnack(){iMealPlanFragmentView.displaySnack();}
+    //Collapse/Expand commands<-----------------
 
     public void queryMealList(){
         List<Meal> mealList= mealDbAdapter.getMeals();
@@ -43,20 +50,25 @@ public class MealPlanPresenter {
                     iMealPlanFragmentView.unhideLunch();
                     break;
                 case "Dinner":
-                    Log.i("Check3", "Dinner");
+                    iMealPlanFragmentView.unhideDinner();
                     break;
                 case "Snack":
-                    Log.i("Check4", "Snack");
+                    iMealPlanFragmentView.unhideSnack();
                     break;
             }
         }
     }
 
+    //OPEN DATABASE CONNECTION FOR LOCAL PERSISTENCE<----------
     public void openDb(){
         mealDbAdapter.openDb();
     }
+    //OPEN DATABASE CONNECTION FOR LOCAL PERSISTENCE<----------
 
+    //CLOSE DATABASE CONNECTION FOR LOCAL PERSISTENCE<---------
     public void closeDb(){
         mealDbAdapter.closeDb();
     }
+    //CLOSE DATABASE CONNECTION FOR LOCAL PERSISTENCE<---------
+
 }

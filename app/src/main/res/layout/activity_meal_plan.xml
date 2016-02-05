@@ -53,6 +53,7 @@
                         android:textColor="@android:color/primary_text_light"/>
 
                     <TextView
+                        android:id="@+id/breakfastMealCountTxt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -106,6 +107,17 @@
                         android:layout_marginRight="10dp"
                         android:layout_marginTop="5dp"
                         android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/breafastTotalkCalTxt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-sarif-light"
+                            android:text="Total kCal: 450"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                            android:textColor="@android:color/primary_text_light"
+                            android:layout_gravity="left"
+                            android:layout_marginBottom="10dp"/>
 
                         <ImageButton
                             android:id="@+id/collapseImgBtn"
@@ -169,6 +181,7 @@
                         android:textColor="@android:color/primary_text_light"/>
 
                     <TextView
+                        android:id="@+id/lunchMealCountTxt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -216,6 +229,17 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
                     android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/lunchTotalkCalTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-sarif-light"
+                        android:text="Total kCal: 450"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                        android:textColor="@android:color/primary_text_light"
+                        android:layout_gravity="left"
+                        android:layout_marginBottom="10dp"/>
 
                     <ImageButton
                         android:id="@+id/lunchCollapseImgBtn"
@@ -278,6 +302,7 @@
                         android:textColor="@android:color/primary_text_light"/>
 
                     <TextView
+                        android:id="@+id/dinnerMealCountTxt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -301,6 +326,7 @@
                 </LinearLayout>
 
                 <FrameLayout
+                    android:id="@+id/dinnerLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
@@ -324,6 +350,17 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
                     android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/dinnerTotalkCalTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-sarif-light"
+                        android:text="Total kCal: 450"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                        android:textColor="@android:color/primary_text_light"
+                        android:layout_gravity="left"
+                        android:layout_marginBottom="10dp"/>
 
                     <ImageButton
                         android:id="@+id/dinnerCollapseImgBtn"
@@ -386,6 +423,7 @@
                         android:textColor="@android:color/primary_text_light"/>
 
                     <TextView
+                        android:id="@+id/snackMealCountTxt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -409,6 +447,7 @@
                 </LinearLayout>
 
                 <FrameLayout
+                    android:id="@+id/snackLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
@@ -432,6 +471,17 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
                     android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/snackTotalkCalTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-sarif-light"
+                        android:text="Total kCal: 450"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                        android:textColor="@android:color/primary_text_light"
+                        android:layout_gravity="left"
+                        android:layout_marginBottom="10dp"/>
 
                     <ImageButton
                         android:id="@+id/snackCollapseImgBtn"

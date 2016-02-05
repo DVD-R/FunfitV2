@@ -19,4 +19,8 @@ public class Utils {
         }else
             return R.color.velocity;
     }
+
+    public static String encodeEmail(String userEmail) {
+        return userEmail.replace(".", ",");
+    }
 }

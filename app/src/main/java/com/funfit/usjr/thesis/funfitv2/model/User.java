@@ -12,33 +12,27 @@ public class User {
     private String gender;
     private String dob;
     private String img_url;
+    private String weight;
+    private String height;
+    private String activity_level;
+    private String cluster;
     private HashMap<String, Object> timestampJoined;
 
-    /**
-     * Required public constructor
-     */
     public User() {
     }
 
-    /**
-     * Use this constructor to create new User.
-     * Takes user name, email and timestampJoined as params
-     *
-     * @param fname
-     * @param email
-     * @param timestampJoined
-     */
-    public User(String fname, String lname, String email, int gender, String dob,
-                String img_url, HashMap<String, Object> timestampJoined) {
+    public User(String fname, String lname, String email, String gender, String dob, String img_url,
+                String weight, String height, String activity_level, String cluster, HashMap<String, Object> timestampJoined) {
         this.fname = fname;
         this.lname = lname;
         this.email = email;
-        if(gender == 0)
-            this.gender = "male";
-        else
-            this.gender = "female";
+        this.gender = gender;
         this.dob = dob;
         this.img_url = img_url;
+        this.weight = weight;
+        this.height = height;
+        this.activity_level = activity_level;
+        this.cluster = cluster;
         this.timestampJoined = timestampJoined;
     }
 
@@ -64,6 +58,22 @@ public class User {
 
     public String getImg_url() {
         return img_url;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public String getActivity_level() {
+        return activity_level;
+    }
+
+    public String getCluster() {
+        return cluster;
     }
 
     public HashMap<String, Object> getTimestampJoined() {

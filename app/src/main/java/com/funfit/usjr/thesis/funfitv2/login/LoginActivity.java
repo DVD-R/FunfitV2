@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -24,6 +25,7 @@ import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.client.AuthData;
@@ -32,13 +34,14 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ServerValue;
 import com.firebase.client.ValueEventListener;
+import com.funfit.usjr.thesis.funfitv2.FunfitApplication;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.healthPreference.HealthStatisticsSetupPager;
 import com.funfit.usjr.thesis.funfitv2.main.MainActivity;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.User;
-import com.funfit.usjr.thesis.funfitv2.model.Utils;
 import com.funfit.usjr.thesis.funfitv2.tutorial.TutorialActivity;
+import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -155,7 +158,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     @OnClick(R.id.facebookBtn)
     public void loginFacebook() {
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email, user_birthday"));
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile, user_about_me", "email, user_birthday"));
     }
 
     @OnClick(R.id.googleBtn)
@@ -247,7 +250,7 @@ public class LoginActivity extends AppCompatActivity implements
      *             FACEBOOK               *
      **************************************
      */
-    private void onFacebookAccessTokenChange(AccessToken token) {
+    private void onFacebookAccessTokenChange(final AccessToken token) {
         if (token != null) {
             mProgressLogin.setVisibility(View.VISIBLE);
             mButtonGoogle.setVisibility(View.GONE);
@@ -257,16 +260,15 @@ public class LoginActivity extends AppCompatActivity implements
                 @Override
                 public void onAuthenticated(AuthData authData) {
                     setFacebookUserData(authData);
-                    //TODO:Save Pref
                     facebookRegisterToFirebase(authData);
 
                     if (authData != null) {
                         Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        intent.putExtra(SignUpActivity.PROFILE_IMG_URL,mImgUrl);
-                        intent.putExtra(SignUpActivity.PROFILE_EMAIL,mUnprocessedEmail);
-                        intent.putExtra(SignUpActivity.PROFILE_FNAME,mFirstName);
-                        intent.putExtra(SignUpActivity.PROFILE_LNAME,mLastName);
+                        intent.putExtra(Constants.PROFILE_IMG_URL, getFacebookProfileImage(token));
+                        intent.putExtra(Constants.PROFILE_EMAIL,mUnprocessedEmail);
+                        intent.putExtra(Constants.PROFILE_FNAME,mFirstName);
+                        intent.putExtra(Constants.PROFILE_LNAME,mLastName);
                         startActivity(intent);
                         finish();
                     }
@@ -284,6 +286,30 @@ public class LoginActivity extends AppCompatActivity implements
                 setAuthenticatedUser(null);
             }
         }
+    }
+
+    private String getFacebookProfileImage(AccessToken token) {
+        Bundle params = new Bundle();
+        params.putString("fields", "picture.type(large)");
+        new GraphRequest(token, "me", params, HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    @Override
+                    public void onCompleted(GraphResponse response) {
+                        if (response != null) {
+                            try {
+                                JSONObject data = response.getJSONObject();
+                                if (data.has("picture")) {
+                                    mImgUrl = data.getJSONObject("picture").getJSONObject("data").getString("url");
+                                    Log.v(TAG,mImgUrl);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }).executeAsync();
+
+        return mImgUrl;
     }
 
     /* ************************************
@@ -350,16 +376,15 @@ public class LoginActivity extends AppCompatActivity implements
                         @Override
                         public void onAuthenticated(AuthData authData) {
                             setGoogleUserData();
-                            //TODO:Save pref
                             googleRegisterToFirebase(authData);
 
                             if (authData != null) {
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                intent.putExtra(SignUpActivity.PROFILE_IMG_URL,mImgUrl);
-                                intent.putExtra(SignUpActivity.PROFILE_EMAIL,mUnprocessedEmail);
-                                intent.putExtra(SignUpActivity.PROFILE_FNAME,mFirstName);
-                                intent.putExtra(SignUpActivity.PROFILE_LNAME,mLastName);
+                                intent.putExtra(Constants.PROFILE_IMG_URL,mImgUrl);
+                                intent.putExtra(Constants.PROFILE_EMAIL,mUnprocessedEmail);
+                                intent.putExtra(Constants.PROFILE_FNAME,mFirstName);
+                                intent.putExtra(Constants.PROFILE_LNAME,mLastName);
                                 startActivity(intent);
                                 finish();
                             }
@@ -417,8 +442,8 @@ public class LoginActivity extends AppCompatActivity implements
                         HashMap<String, Object> timestampJoined = new HashMap<>();
                         timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
 
-                        User newUser = new User(mFirstName, mLastName, mEncodedEmail, mGender, mBirthday, mImgUrl, timestampJoined);
-                        userLocation.setValue(newUser);
+                        //TODO: User newUser = new User(mFirstName, mLastName, mEncodedEmail, mGender, mBirthday, mImgUrl, timestampJoined);
+                        //userLocation.setValue(newUser);
                     }
                 }
 
@@ -478,8 +503,8 @@ public class LoginActivity extends AppCompatActivity implements
                         HashMap<String, Object> timestampJoined = new HashMap<>();
                         timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
 
-                        User newUser = new User(mFirstName, mLastName, mEncodedEmail, mGender, mBirthday, mImgUrl, timestampJoined);
-                        userLocation.setValue(newUser);
+                        //TODO: User newUser = new User(mFirstName, mLastName, mEncodedEmail, mGender, mBirthday, mImgUrl, timestampJoined);
+                        //userLocation.setValue(newUser);
                     }
                 }
 

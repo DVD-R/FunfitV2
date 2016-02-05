@@ -55,11 +55,6 @@
             android:label="@string/label_signup"
             android:theme="@style/SemiTransparentBar"
             android:parentActivityName=".login.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
 
         <activity android:name=".main.MainActivity"/>

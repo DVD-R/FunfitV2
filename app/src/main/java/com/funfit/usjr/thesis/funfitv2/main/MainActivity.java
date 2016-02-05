@@ -19,6 +19,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.maps.MapsFragment;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.history.EventHistoryActivityImpl;
@@ -49,6 +53,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ViewPager mMainPager;
     @Bind(R.id.navigation)
     NavigationView navigationView;
+
+    @Bind(R.id.txt_username)
+    TextView mTextUsername;
+    @Bind(R.id.txt_cluster)
+    TextView mTextCluster;
+    @Bind(R.id.img_profile)
+    ImageView mImageProfile;
+
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private final Handler mDrawerActionHandler = new Handler();
     private static final long DRAWER_CLOSE_DELAY_MS = 250;
@@ -84,17 +96,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mainPresenter = new MainPresenter(this);
         mPrefHealthSetup = getSharedPreferences("USER_HEALTH_DATA_PREF", Context.MODE_PRIVATE);
 
-
-        testPreference();
+        setNavViews();
     }
 
-    private void testPreference() {
+    private void setNavViews() {
         SharedPreferences userData =
                 getSharedPreferences(Constants.USER_PREF_ID, MODE_PRIVATE);
 
         Log.v(LOG_TAG,
                 userData.getString(Constants.PROFILE_FNAME, null) + "\n" +
-                        userData.getString(Constants.PROFILE_LNAME, null) + "\n" +
                         userData.getString(Constants.PROFILE_LNAME, null) + "\n" +
                         userData.getString(Constants.PROFILE_GENDER, null) + "\n" +
                         userData.getString(Constants.PROFILE_DOB, null) + "\n" +
@@ -103,6 +113,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         userData.getString(Constants.PROFILE_HEIGHT, null) + "\n" +
                         userData.getString(Constants.PROFILE_ACTIVITY_LEVEL, null) + "\n" +
                         userData.getString(Constants.PROFILE_CLUSTER, null));
+
+        mTextUsername.setText(userData.getString(Constants.PROFILE_FNAME, null));
+        mTextCluster.setText(userData.getString(Constants.PROFILE_CLUSTER, null));
+        Glide.with(this).load(userData.getString(Constants.PROFILE_IMG_URL, null))
+                .centerCrop().crossFade().into(mImageProfile);
     }
 
     @Override

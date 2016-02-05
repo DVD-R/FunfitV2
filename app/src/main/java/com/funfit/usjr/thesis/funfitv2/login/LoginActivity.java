@@ -219,9 +219,8 @@ public class LoginActivity extends AppCompatActivity implements
 
     private void setAuthenticatedUser(AuthData authData) {
         if (authData != null) {
-            //Login Successful
-            Intent intent = new Intent(this, HealthStatisticsSetupPager.class);
-            intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
 
             /* show a provider specific status text */
@@ -259,19 +258,7 @@ public class LoginActivity extends AppCompatActivity implements
             mFirebaseRef.authWithOAuthToken("facebook", token.getToken(), new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
-                    setFacebookUserData(authData);
-                    facebookRegisterToFirebase(authData);
-
-                    if (authData != null) {
-                        Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        intent.putExtra(Constants.PROFILE_IMG_URL, getFacebookProfileImage(token));
-                        intent.putExtra(Constants.PROFILE_EMAIL,mUnprocessedEmail);
-                        intent.putExtra(Constants.PROFILE_FNAME,mFirstName);
-                        intent.putExtra(Constants.PROFILE_LNAME,mLastName);
-                        startActivity(intent);
-                        finish();
-                    }
+                    startSignupFacebook(authData, token);
                 }
 
                 @Override
@@ -288,7 +275,7 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
-    private String getFacebookProfileImage(AccessToken token) {
+    private void startSignupFacebook(final AuthData authData, AccessToken token) {
         Bundle params = new Bundle();
         params.putString("fields", "picture.type(large)");
         new GraphRequest(token, "me", params, HttpMethod.GET,
@@ -299,8 +286,15 @@ public class LoginActivity extends AppCompatActivity implements
                             try {
                                 JSONObject data = response.getJSONObject();
                                 if (data.has("picture")) {
-                                    mImgUrl = data.getJSONObject("picture").getJSONObject("data").getString("url");
-                                    Log.v(TAG,mImgUrl);
+                                    if (authData != null) {
+                                        String email, fname, lname, img_url;
+                                        String[] fullName = ((String) authData.getProviderData().get("displayName")).split("\\s+");
+                                        img_url = data.getJSONObject("picture").getJSONObject("data").getString("url");
+                                        email = authData.getProviderData().get("email") + "";
+                                        fname = fullName[0];
+                                        lname = fullName[fullName.length - 1];
+                                        isUserOnFirebase(email, fname, lname, img_url);
+                                    }
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -308,8 +302,56 @@ public class LoginActivity extends AppCompatActivity implements
                         }
                     }
                 }).executeAsync();
+    }
 
-        return mImgUrl;
+    private void isUserOnFirebase(final String email, final String fname, final String lname, final String img_url) {
+        final Firebase userFirebase = new Firebase(Constants.FIREBASE_URL_USERS + "/" + Utils.encodeEmail(email));
+        userFirebase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                try {
+                    if (dataSnapshot.getValue() != null) {
+                        Log.v(TAG, dataSnapshot.getValue().toString());
+                        savePreferenceRegisteredUser(dataSnapshot);
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                } catch (NullPointerException e) {
+                    Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.putExtra(Constants.PROFILE_IMG_URL, img_url);
+                    intent.putExtra(Constants.PROFILE_EMAIL, email);
+                    intent.putExtra(Constants.PROFILE_FNAME, fname);
+                    intent.putExtra(Constants.PROFILE_LNAME, lname);
+
+                    startActivity(intent);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+    }
+
+    private void savePreferenceRegisteredUser(DataSnapshot dataSnapshot) {
+        User user = dataSnapshot.getValue(User.class);
+        final SharedPreferences userPreferences = getSharedPreferences(Constants.USER_PREF_ID, MODE_PRIVATE);
+        userPreferences.edit().putString(Constants.PROFILE_FNAME, user.getFname()).apply();
+        userPreferences.edit().putString(Constants.PROFILE_LNAME, user.getLname()).apply();
+        userPreferences.edit().putString(Constants.PROFILE_EMAIL, user.getEmail()).apply();
+        userPreferences.edit().putString(Constants.PROFILE_GENDER, user.getGender()).apply();
+        userPreferences.edit().putString(Constants.PROFILE_DOB, user.getDob()).apply();
+        userPreferences.edit().putString(Constants.PROFILE_IMG_URL, user.getImg_url()).apply();
+        userPreferences.edit().putString(Constants.PROFILE_WEIGHT, user.getWeight()).apply();
+        userPreferences.edit().putString(Constants.PROFILE_HEIGHT, user.getHeight()).apply();
+        userPreferences.edit().putString(Constants.PROFILE_ACTIVITY_LEVEL, user.getActivity_level()).apply();
+        userPreferences.edit().putString(Constants.PROFILE_CLUSTER, user.getCluster()).apply();
     }
 
     /* ************************************
@@ -381,10 +423,10 @@ public class LoginActivity extends AppCompatActivity implements
                             if (authData != null) {
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                intent.putExtra(Constants.PROFILE_IMG_URL,mImgUrl);
-                                intent.putExtra(Constants.PROFILE_EMAIL,mUnprocessedEmail);
-                                intent.putExtra(Constants.PROFILE_FNAME,mFirstName);
-                                intent.putExtra(Constants.PROFILE_LNAME,mLastName);
+                                intent.putExtra(Constants.PROFILE_IMG_URL, mImgUrl);
+                                intent.putExtra(Constants.PROFILE_EMAIL, mUnprocessedEmail);
+                                intent.putExtra(Constants.PROFILE_FNAME, mFirstName);
+                                intent.putExtra(Constants.PROFILE_LNAME, mLastName);
                                 startActivity(intent);
                                 finish();
                             }
@@ -433,67 +475,6 @@ public class LoginActivity extends AppCompatActivity implements
             mEncodedEmail = Utils.encodeEmail(mUnprocessedEmail);
 
             final String userName = (String) authData.getProviderData().get(Constants.PROVIDER_DATA_DISPLAY_NAME);
-
-            final Firebase userLocation = new Firebase(Constants.FIREBASE_URL_USERS).child(mEncodedEmail);
-            userLocation.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue() == null) {
-                        HashMap<String, Object> timestampJoined = new HashMap<>();
-                        timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
-
-                        //TODO: User newUser = new User(mFirstName, mLastName, mEncodedEmail, mGender, mBirthday, mImgUrl, timestampJoined);
-                        //userLocation.setValue(newUser);
-                    }
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                    Log.d(TAG, firebaseError.getMessage());
-                }
-            });
-        }
-
-        if (authData != null) {
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        }
-    }
-
-    private void setFacebookUserData(AuthData authData) {
-        String[] fullName = ((String) authData.getProviderData().get("displayName")).split("\\s+");
-
-        //fname
-        mFirstName = fullName[0];
-        //lname
-        mLastName = fullName[fullName.length-1];
-        //e-mail
-        mUnprocessedEmail = ""+authData.getProviderData().get("email");
-
-        Log.v(TAG,mUnprocessedEmail);
-
-        //TODO: fb gender
-        mGender = 0;
-        //TODO: fb birthday
-        mBirthday = null;
-        //image url
-        mImgUrl = (String) authData.getProviderData().get("profileImageURL");
-    }
-
-    private void facebookRegisterToFirebase(AuthData authData) {
-        if (authData.getProvider().equals(Constants.FACEBOOK_PROVIDER)) {
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            SharedPreferences.Editor spe = sp.edit();
-//            if (mGoogleApiClient.isConnected()) {
-//                spe.putString(Constants.KEY_FACEBOOK_EMAIL, mUnprocessedEmail).apply();
-//            } else {
-//                mUnprocessedEmail = sp.getString(Constants.KEY_FACEBOOK_EMAIL, null);
-//            }
-            mEncodedEmail = Utils.encodeEmail(mUnprocessedEmail);
-
-            final String userName = (String) authData.getProviderData().get(Constants.FB_EMAIL);
 
             final Firebase userLocation = new Firebase(Constants.FIREBASE_URL_USERS).child(mEncodedEmail);
             userLocation.addListenerForSingleValueEvent(new ValueEventListener() {

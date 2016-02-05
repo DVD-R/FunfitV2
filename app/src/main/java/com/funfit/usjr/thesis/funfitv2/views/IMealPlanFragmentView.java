@@ -17,4 +17,8 @@ public interface IMealPlanFragmentView {
     public List<Meal> getMealList();
     public void unhideBreakfast();
     public void unhideLunch();
+    public void unhideDinner();
+    public void unhideSnack();
+    public void displaDinner();
+    public void displaySnack();
 }

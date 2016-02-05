@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
@@ -18,9 +19,11 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.adapter.BreakFastRecyclerAdapter;
 import com.funfit.usjr.thesis.funfitv2.adapter.DinnerRecyclerAdapter;
@@ -46,45 +49,88 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
+public class MealPlanFragment extends Fragment implements IMealPlanFragmentView {
 
     GestureDetectorCompat gestureDetectorCompat;
-    @Bind(R.id.container)FrameLayout piechartLayout;
+    @Bind(R.id.container)
+    FrameLayout piechartLayout;
 
     //Breakfast Resources Binding
-    @Bind(R.id.breakfast_recycler_view)RecyclerView breakfastRecyclerView;
-    @Bind(R.id.breakfastRecyclerLayout)FrameLayout breakfastRecyclerLayout;
-    @Bind(R.id.breakfastLayout)FrameLayout breakfastLayout;
-    @Bind(R.id.collapseImgBtn)ImageButton mCollapseImgBtn;
-    @Bind(R.id.breakfastMealCountTxt)TextView mBreakfastMealCount;
-    @Bind(R.id.breafastTotalkCalTxt)TextView mBreakFastTotalkCal;
+    @Bind(R.id.img_breakfast)
+    ImageView mImageBreakfast;
+    @Bind(R.id.txt_breakfast_name)
+    TextView mTextBreakfastName;
+    @Bind(R.id.breakfast_recycler_view)
+    RecyclerView breakfastRecyclerView;
+    @Bind(R.id.breakfastRecyclerLayout)
+    FrameLayout breakfastRecyclerLayout;
+    @Bind(R.id.breakfastLayout)
+    FrameLayout breakfastLayout;
+    @Bind(R.id.collapseImgBtn)
+    ImageButton mCollapseImgBtn;
+    @Bind(R.id.breakfastMealCountTxt)
+    TextView mBreakfastMealCount;
+    @Bind(R.id.breafastTotalkCalTxt)
+    TextView mBreakFastTotalkCal;
     //Breakfast Resources Binding
 
     //Lunch Resources Binding
-    @Bind(R.id.lunchLayout)FrameLayout mLunchLayout;
-    @Bind(R.id.lunchRecyclerLayout)FrameLayout mLunchRecyclerLayout;
-    @Bind(R.id.lunchCollapseImgBtn)ImageButton mLunchCollapseImgBtn;
-    @Bind(R.id.lunch_recycler_view)RecyclerView mLunchRecyclerView;
-    @Bind(R.id.lunchMealCountTxt)TextView mLunchMealCount;
-    @Bind(R.id.lunchTotalkCalTxt)TextView mLunchTotalkCal;
+    @Bind(R.id.img_lunch)
+    ImageView mImageLunch;
+    @Bind(R.id.txt_lunch_name)
+    TextView mTextLunchName;
+    @Bind(R.id.lunchLayout)
+    FrameLayout mLunchLayout;
+    @Bind(R.id.lunchRecyclerLayout)
+    FrameLayout mLunchRecyclerLayout;
+    @Bind(R.id.lunchCollapseImgBtn)
+    ImageButton mLunchCollapseImgBtn;
+    @Bind(R.id.lunch_recycler_view)
+    RecyclerView mLunchRecyclerView;
+    @Bind(R.id.lunchMealCountTxt)
+    TextView mLunchMealCount;
+    @Bind(R.id.lunchTotalkCalTxt)
+    TextView mLunchTotalkCal;
     //Lunch Resources Binding
 
     //Dinner Resources Binding
-    @Bind(R.id.dinnerLayout)FrameLayout mDinnerLayout;
-    @Bind(R.id.dinnerRecyclerLayout)FrameLayout mDinnerRecyclerLayout;
-    @Bind(R.id.dinnerCollapseImgBtn)ImageButton mDinnerCollapseImgBtn;
-    @Bind(R.id.dinner_recycler_view)RecyclerView mDinnerRecyclerView;
-    @Bind(R.id.dinnerMealCountTxt)TextView mDinnerMealCount;
-    @Bind(R.id.dinnerTotalkCalTxt)TextView mDinnerTotalkCal;
+    @Bind(R.id.img_dinner)
+    ImageView mImageDinner;
+    @Bind(R.id.txt_dinner_name)
+    TextView mTextDinnerName;
+    @Bind(R.id.dinnerLayout)
+    FrameLayout mDinnerLayout;
+    @Bind(R.id.dinnerRecyclerLayout)
+    FrameLayout mDinnerRecyclerLayout;
+    @Bind(R.id.dinnerCollapseImgBtn)
+    ImageButton mDinnerCollapseImgBtn;
+    @Bind(R.id.dinner_recycler_view)
+    RecyclerView mDinnerRecyclerView;
+    @Bind(R.id.dinnerMealCountTxt)
+    TextView mDinnerMealCount;
+    @Bind(R.id.dinnerTotalkCalTxt)
+    TextView mDinnerTotalkCal;
     //Dinner Resources Binding
 
     //Snack/Others Resource Binding
-    @Bind(R.id.snackLayout)FrameLayout mSnackLayout;
-    @Bind(R.id.snackRecyclerLayout)FrameLayout mSnackRecyclerLayout;
-    @Bind(R.id.snackCollapseImgBtn)ImageButton mSnackCollapseImgBtn;
-    @Bind(R.id.snack_recycler_view)RecyclerView mSnackRecyclerView;
-    @Bind(R.id.snackMealCountTxt)TextView mSnackMealCount;
-    @Bind(R.id.snackTotalkCalTxt)TextView mSnackTotalkCal;
+    @Bind(R.id.img_snack)
+    ImageView mImageSnack;
+    @Bind(R.id.txt_snack_name)
+    TextView mTextSnackName;
+    @Bind(R.id.snackLayout)
+    FrameLayout mSnackLayout;
+    @Bind(R.id.snackRecyclerLayout)
+    FrameLayout mSnackRecyclerLayout;
+    @Bind(R.id.snackCollapseImgBtn)
+    ImageButton mSnackCollapseImgBtn;
+    @Bind(R.id.snack_recycler_view)
+    RecyclerView mSnackRecyclerView;
+    @Bind(R.id.snackMealCountTxt)
+    TextView mSnackMealCount;
+    @Bind(R.id.snackTotalkCalTxt)
+    TextView mSnackTotalkCal;
+    @Bind(R.id.txt_summary)
+    TextView mTextSummary;
     //Snack/Others Resources Binding
 
     protected boolean mBreakFastFlag;
@@ -92,8 +138,8 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
     protected boolean mDinnerFlag;
     protected boolean mSnackFlag;
     private PieChart mPieChart;
-    private float [] yData = {50, 46, 4};
-    private String [] xData = {"Carbs","Fat","Protein"};
+    private float[] yData = {50, 46, 4};
+    private String[] xData = {"Carbs", "Fat", "Protein"};
     private int descriptionViewFullHeight;
     private MealPlanPresenter mealPlanPresenter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -101,12 +147,14 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
     private RecyclerView.LayoutManager mDinnerLayoutManager;
     private RecyclerView.LayoutManager mSnackLayoutManager;
     private List<Meal> mealList;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_meal_plan, container, false);
-        gestureDetectorCompat = new GestureDetectorCompat(getActivity(),new LeftGestureListener(getActivity()));
+        gestureDetectorCompat = new GestureDetectorCompat(getActivity(), new LeftGestureListener(getActivity()));
         ButterKnife.bind(this, view);
+        setLayoutEnhancements();
 
         mealPlanPresenter = new MealPlanPresenter(this);
         mBreakFastFlag = false;
@@ -116,14 +164,30 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
         return view;
     }
 
+    private void setLayoutEnhancements() {
+        Glide.with(this).load("https://igcdn-photos-e-a.akamaihd.net/hphotos-ak-xtf1/t51.2885-15/sh0.08/e35/p640x640/11377778_1678871282346140_1451965866_n.jpg")
+                .crossFade().centerCrop().into(mImageBreakfast);
+        Glide.with(this).load("https://igcdn-photos-a-a.akamaihd.net/hphotos-ak-xfa1/t51.2885-15/e35/12237452_1036452903083192_2102231120_n.jpg")
+                .crossFade().centerCrop().into(mImageLunch);
+        Glide.with(this).load("https://igcdn-photos-g-a.akamaihd.net/hphotos-ak-xpt1/t51.2885-15/e15/10903333_1593596717528478_1325058089_n.jpg")
+                .crossFade().centerCrop().into(mImageDinner);
+        Glide.with(this).load("https://igcdn-photos-f-a.akamaihd.net/hphotos-ak-xtp1/t51.2885-15/sh0.08/e35/p640x640/12394013_723004407801613_1182819768_n.jpg")
+                .crossFade().centerCrop().into(mImageSnack);
+        mTextBreakfastName.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "HelveticaBold.otf"));
+        mTextLunchName.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "HelveticaBold.otf"));
+        mTextDinnerName.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "HelveticaBold.otf"));
+        mTextSnackName.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "HelveticaBold.otf"));
+        mTextSummary.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "HelveticaBold.otf"));
+    }
+
     //breakfast command <---------
-    @OnClick(R.id.collapseImgBtn)
-    public void collapse() {
-        if (!mBreakFastFlag){
+    @OnClick(R.id.collapseLayout)
+    public void breakfastCollapse() {
+        if (!mBreakFastFlag) {
             mCollapseImgBtn.setBackground(getResources().getDrawable(R.drawable.arrow_down));
             breakfastRecyclerView.setVisibility(View.VISIBLE);
             mBreakFastFlag = true;
-        } else{
+        } else {
             breakfastRecyclerView.setVisibility(View.GONE);
             mCollapseImgBtn.setBackground(getResources().getDrawable(R.drawable.arrow_right));
             mBreakFastFlag = false;
@@ -132,15 +196,14 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
     //breakfast command <---------
 
 
-
     //lunch command<--------------
-    @OnClick(R.id.lunchCollapseImgBtn)
-    public void lunchCollapseImgBtn(){
-        if (!mLunchFlag){
+    @OnClick(R.id.lunchRecyclerLayout)
+    public void lunchCollapseImgBtn() {
+        if (!mLunchFlag) {
             mLunchCollapseImgBtn.setBackground(getResources().getDrawable(R.drawable.arrow_down));
             mLunchRecyclerView.setVisibility(View.VISIBLE);
             mLunchFlag = true;
-        } else{
+        } else {
             mLunchCollapseImgBtn.setBackground(getResources().getDrawable(R.drawable.arrow_right));
             mLunchRecyclerView.setVisibility(View.GONE);
             mLunchFlag = false;
@@ -150,13 +213,13 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
 
 
     //dinner command<-------------
-    @OnClick(R.id.dinnerCollapseImgBtn)
-    public void dinnerCollapseBtn(){
-        if (!mDinnerFlag){
+    @OnClick(R.id.dinnerRecyclerLayout)
+    public void dinnerCollapseBtn() {
+        if (!mDinnerFlag) {
             mDinnerCollapseImgBtn.setBackground(getResources().getDrawable(R.drawable.arrow_down));
             mDinnerRecyclerView.setVisibility(View.VISIBLE);
             mDinnerFlag = true;
-        } else{
+        } else {
             mDinnerCollapseImgBtn.setBackground(getResources().getDrawable(R.drawable.arrow_right));
             mDinnerRecyclerView.setVisibility(View.GONE);
             mDinnerFlag = false;
@@ -165,15 +228,14 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
     //dinner command<-------------
 
 
-
     //snack command<--------------
-    @OnClick(R.id.snackCollapseImgBtn)
-    public void snackCollapseImgBtn(){
-        if (!mSnackFlag){
+    @OnClick(R.id.snackRecyclerLayout)
+    public void snackCollapseImgBtn() {
+        if (!mSnackFlag) {
             mSnackCollapseImgBtn.setBackground(getResources().getDrawable(R.drawable.arrow_down));
             mSnackRecyclerView.setVisibility(View.VISIBLE);
             mSnackFlag = true;
-        } else{
+        } else {
             mSnackCollapseImgBtn.setBackground(getResources().getDrawable(R.drawable.arrow_right));
             mSnackRecyclerView.setVisibility(View.GONE);
             mSnackFlag = false;
@@ -243,7 +305,7 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
         mealPlanPresenter.closeDb();
     }
 
-    private void addData(){
+    private void addData() {
         ArrayList<Entry> yValue = new ArrayList<Entry>();
 
         for (int i = 0; i < yData.length; i++)
@@ -262,19 +324,19 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
         //add many colors
         ArrayList<Integer> colors = new ArrayList<Integer>();
 
-        for (int c: ColorTemplate.VORDIPLOM_COLORS)
+        for (int c : ColorTemplate.VORDIPLOM_COLORS)
             colors.add(c);
 
-        for (int c: ColorTemplate.PASTEL_COLORS)
+        for (int c : ColorTemplate.PASTEL_COLORS)
             colors.add(c);
 
-        for (int c: ColorTemplate.COLORFUL_COLORS)
+        for (int c : ColorTemplate.COLORFUL_COLORS)
             colors.add(c);
 
-        for (int c: ColorTemplate.LIBERTY_COLORS)
+        for (int c : ColorTemplate.LIBERTY_COLORS)
             colors.add(c);
 
-        for (int c: ColorTemplate.PASTEL_COLORS)
+        for (int c : ColorTemplate.PASTEL_COLORS)
             colors.add(c);
 
         colors.add(ColorTemplate.getHoloBlue());
@@ -296,28 +358,28 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
     }
 
     @OnClick(R.id.breakfastClk)
-    public void addBreakfast(){
+    public void addBreakfast() {
         Intent i = new Intent(getActivity(), SearchActivity.class);
         i.putExtra("MEALTIME", "Breakfast");
         startActivity(i);
     }
 
     @OnClick(R.id.lunchClk)
-    public void addLunch(){
+    public void addLunch() {
         Intent i = new Intent(getActivity(), SearchActivity.class);
         i.putExtra("MEALTIME", "Lunch");
         startActivity(i);
     }
 
     @OnClick(R.id.dinnerClk)
-    public void addDinner(){
+    public void addDinner() {
         Intent i = new Intent(getActivity(), SearchActivity.class);
         i.putExtra("MEALTIME", "Dinner");
         startActivity(i);
     }
 
     @OnClick(R.id.snackClk)
-    public void addSnack(){
+    public void addSnack() {
         Intent i = new Intent(getActivity(), SearchActivity.class);
         i.putExtra("MEALTIME", "Snack");
         startActivity(i);
@@ -331,7 +393,7 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
     @Override
     public void setMealList(List<Meal> mealList) {
         this.mealList = mealList;
-        if (mealList.size() != 0){
+        if (mealList.size() != 0) {
             mealPlanPresenter.checkTimeValidity();
         }
     }
@@ -380,7 +442,7 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
                 breakfastlist.add(meals);
             }
         }
-        mBreakfastMealCount.setText(String.valueOf(breakfastlist.size()));
+        mBreakfastMealCount.setText(String.valueOf(breakfastlist.size()) + " items");
         BreakFastRecyclerAdapter breakFastRecyclerAdapter = new BreakFastRecyclerAdapter(breakfastlist);
         breakfastRecyclerView.setAdapter(breakFastRecyclerAdapter);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -398,7 +460,7 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
                 lunchList.add(meals);
             }
         }
-        mLunchMealCount.setText(String.valueOf(lunchList.size()));
+        mLunchMealCount.setText(String.valueOf(lunchList.size()) + " items");
         LunchRecyclerAdapter lunchRecyclerAdapter = new LunchRecyclerAdapter(lunchList);
         mLunchRecyclerView.setAdapter(lunchRecyclerAdapter);
         mLunchLayoutManager = new LinearLayoutManager(getActivity());
@@ -409,14 +471,14 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
     public void displaDinner() {
         Meal meals = null;
         List<Meal> dinnerList = new ArrayList<>();
-        for (int i = 0; i <mealList.size(); i++){
-            if (mealList.get(i).getmTime().equals("Dinner")){
+        for (int i = 0; i < mealList.size(); i++) {
+            if (mealList.get(i).getmTime().equals("Dinner")) {
                 meals = new Meal();
-                meals = getMeal(i,mealList);
+                meals = getMeal(i, mealList);
                 dinnerList.add(meals);
             }
         }
-        mDinnerMealCount.setText(String.valueOf(dinnerList.size()));
+        mDinnerMealCount.setText(String.valueOf(dinnerList.size()) + " items");
         DinnerRecyclerAdapter dinnerRecyclerAdapter = new DinnerRecyclerAdapter(dinnerList);
         mDinnerRecyclerView.setAdapter(dinnerRecyclerAdapter);
         mDinnerLayoutManager = new LinearLayoutManager(getActivity());
@@ -427,21 +489,21 @@ public class MealPlanActivity extends Fragment implements IMealPlanFragmentView{
     public void displaySnack() {
         Meal meals = null;
         List<Meal> snackList = new ArrayList<>();
-        for (int i = 0; i <mealList.size(); i++){
-            if (mealList.get(i).getmTime().equals("Snack")){
+        for (int i = 0; i < mealList.size(); i++) {
+            if (mealList.get(i).getmTime().equals("Snack")) {
                 meals = new Meal();
-                meals = getMeal(i,mealList);
+                meals = getMeal(i, mealList);
                 snackList.add(meals);
             }
         }
-        mSnackMealCount.setText(String.valueOf(snackList.size()));
+        mSnackMealCount.setText(String.valueOf(snackList.size()) + " items");
         DinnerRecyclerAdapter dinnerRecyclerAdapter = new DinnerRecyclerAdapter(snackList);
         mSnackRecyclerView.setAdapter(dinnerRecyclerAdapter);
         mSnackLayoutManager = new LinearLayoutManager(getActivity());
         mSnackRecyclerView.setLayoutManager(mSnackLayoutManager);
     }
 
-    public Meal getMeal(int i, List<Meal> mealList){
+    public Meal getMeal(int i, List<Meal> mealList) {
         Meal meal = new Meal();
         meal.setMeal_id(mealList.get(i).getMeal_id());
         meal.setmName(mealList.get(i).getmName());

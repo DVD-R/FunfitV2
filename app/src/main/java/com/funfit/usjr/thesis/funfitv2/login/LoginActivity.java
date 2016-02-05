@@ -219,9 +219,11 @@ public class LoginActivity extends AppCompatActivity implements
 
     private void setAuthenticatedUser(AuthData authData) {
         if (authData != null) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            if(getSharedPreferences(Constants.USER_PREF_ID, MODE_PRIVATE).getString(Constants.PROFILE_EMAIL, null)!=null) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
 
             /* show a provider specific status text */
             String name = null;
@@ -315,6 +317,16 @@ public class LoginActivity extends AppCompatActivity implements
                         savePreferenceRegisteredUser(dataSnapshot);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }else{
+                        Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.putExtra(Constants.PROFILE_IMG_URL, img_url);
+                        intent.putExtra(Constants.PROFILE_EMAIL, email);
+                        intent.putExtra(Constants.PROFILE_FNAME, fname);
+                        intent.putExtra(Constants.PROFILE_LNAME, lname);
+
                         startActivity(intent);
                         finish();
                     }

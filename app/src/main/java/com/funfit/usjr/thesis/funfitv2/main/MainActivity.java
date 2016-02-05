@@ -25,9 +25,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.maps.MapsFragment;
 import com.funfit.usjr.thesis.funfitv2.R;
-import com.funfit.usjr.thesis.funfitv2.history.EventHistoryActivityImpl;
 import com.funfit.usjr.thesis.funfitv2.leaderBoard.LeaderBoardActivity;
-import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanActivity;
+import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanFragment;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.EventActivity;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.NotificationActivity;
@@ -145,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
 //        mainPresenter.onResume();
-//        getSupportFragmentManager().beginTransaction().replace(R.id.container,new MealPlanActivity()).commit();
+//        getSupportFragmentManager().beginTransaction().replace(R.id.container,new MealPlanFragment()).commit();
     }
 
     private void navigate(final int itemId) {
@@ -185,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new MapsFragment(), "Arena");
-        adapter.addFragment(new MealPlanActivity(), "Shack");
+        adapter.addFragment(new MealPlanFragment(), "Shack");
         viewPager.setAdapter(adapter);
     }
 

@@ -24,6 +24,7 @@ import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.history.EventHistoryActivityImpl;
 import com.funfit.usjr.thesis.funfitv2.leaderBoard.LeaderBoardActivity;
 import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanActivity;
+import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.EventActivity;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.NotificationActivity;
 import com.funfit.usjr.thesis.funfitv2.services.CreatePolylineService;
@@ -37,6 +38,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, IMainView {
 
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
     @Bind(R.id.toolbar)
@@ -82,6 +84,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mainPresenter = new MainPresenter(this);
         mPrefHealthSetup = getSharedPreferences("USER_HEALTH_DATA_PREF", Context.MODE_PRIVATE);
 
+
+        testPreference();
+    }
+
+    private void testPreference() {
+        SharedPreferences userData =
+                getSharedPreferences(Constants.USER_PREF_ID, MODE_PRIVATE);
+
+        Log.v(LOG_TAG,
+                userData.getString(Constants.PROFILE_FNAME, null) + "\n" +
+                        userData.getString(Constants.PROFILE_LNAME, null) + "\n" +
+                        userData.getString(Constants.PROFILE_LNAME, null) + "\n" +
+                        userData.getString(Constants.PROFILE_GENDER, null) + "\n" +
+                        userData.getString(Constants.PROFILE_DOB, null) + "\n" +
+                        userData.getString(Constants.PROFILE_IMG_URL, null) + "\n" +
+                        userData.getString(Constants.PROFILE_WEIGHT, null) + "\n" +
+                        userData.getString(Constants.PROFILE_HEIGHT, null) + "\n" +
+                        userData.getString(Constants.PROFILE_ACTIVITY_LEVEL, null) + "\n" +
+                        userData.getString(Constants.PROFILE_CLUSTER, null));
     }
 
     @Override

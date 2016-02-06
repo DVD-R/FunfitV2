@@ -7,11 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
 import com.funfit.usjr.thesis.funfitv2.model.Meal;
+import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 
 import org.w3c.dom.Text;
 
@@ -33,6 +35,7 @@ public class BreakFastRecyclerAdapter extends RecyclerView.Adapter<BreakFastRecy
         @Bind(R.id.foodNameTxt)TextView mFoodName;
         @Bind(R.id.rdiTxt)TextView mRdi;
         @Bind(R.id.kCalTxt)TextView mKCal;
+        @Bind(R.id.search_serving_layout)LinearLayout mServingLayout;
         public ViewHolder(final View itemView) {
             super(itemView);
             position = getPosition();
@@ -54,6 +57,10 @@ public class BreakFastRecyclerAdapter extends RecyclerView.Adapter<BreakFastRecy
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        if(Utils.getCluster(context).equals("impulse"))
+            holder.mServingLayout.setBackgroundColor(context.getResources().getColor(R.color.filter_impulse));
+        else
+            holder.mServingLayout.setBackgroundColor(context.getResources().getColor(R.color.filter_velocity));
         if (mealList.get(position).getmTime().equals("Breakfast")) {
             holder.mFoodName.setText(mealList.get(position).getmName());
             holder.mKCal.setText(String.valueOf(mealList.get(position).getCalories()) + " kcal");

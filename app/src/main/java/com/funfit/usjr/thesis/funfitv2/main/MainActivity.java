@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -31,11 +33,13 @@ import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.EventActivity;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.NotificationActivity;
 import com.funfit.usjr.thesis.funfitv2.services.CreatePolylineService;
+import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.views.IMainView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -53,10 +57,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Bind(R.id.navigation)
     NavigationView navigationView;
 
+    @Bind(R.id.nav_layout)
+    RelativeLayout mNavLayout;
     @Bind(R.id.txt_username)
     TextView mTextUsername;
-    @Bind(R.id.txt_cluster)
-    TextView mTextCluster;
+    @Bind(R.id.txt_level)
+    TextView mTextLevel;
+    @Bind(R.id.img_cluster)
+    ImageView mImageCluster;
     @Bind(R.id.img_profile)
     ImageView mImageProfile;
 
@@ -69,9 +77,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private MainPresenter mainPresenter;
     private List<String> encodePolyline;
     private ProgressDialog mProgressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Utils.getCluster(this).equals("impulse"))
+            setTheme(R.style.ImpulseAppTheme);
+        else
+            setTheme(R.style.VelocityAppTheme);
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
@@ -101,20 +115,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setNavViews() {
         SharedPreferences userData =
                 getSharedPreferences(Constants.USER_PREF_ID, MODE_PRIVATE);
+        String cluster = userData.getString(Constants.PROFILE_CLUSTER, null);
 
-        Log.v(LOG_TAG,
-                userData.getString(Constants.PROFILE_FNAME, null) + "\n" +
-                        userData.getString(Constants.PROFILE_LNAME, null) + "\n" +
-                        userData.getString(Constants.PROFILE_GENDER, null) + "\n" +
-                        userData.getString(Constants.PROFILE_DOB, null) + "\n" +
-                        userData.getString(Constants.PROFILE_IMG_URL, null) + "\n" +
-                        userData.getString(Constants.PROFILE_WEIGHT, null) + "\n" +
-                        userData.getString(Constants.PROFILE_HEIGHT, null) + "\n" +
-                        userData.getString(Constants.PROFILE_ACTIVITY_LEVEL, null) + "\n" +
-                        userData.getString(Constants.PROFILE_CLUSTER, null));
-
+        if (cluster.equals("impulse")) {
+            mNavLayout.setBackground(getResources().getDrawable(R.drawable.nav_header_impulse));
+            mImageCluster.setImageResource(R.drawable.up_impulse);
+        }
+        else {
+            mNavLayout.setBackground(getResources().getDrawable(R.drawable.nav_header_velocity));
+            mImageCluster.setImageResource(R.drawable.up_velocity);
+        }
         mTextUsername.setText(userData.getString(Constants.PROFILE_FNAME, null));
-        mTextCluster.setText(userData.getString(Constants.PROFILE_CLUSTER, null));
         Glide.with(this).load(userData.getString(Constants.PROFILE_IMG_URL, null))
                 .centerCrop().crossFade().into(mImageProfile);
     }
@@ -135,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(this, EventActivity.class));
                 return true;
             default:
-                Log.v("HEY",item.getItemId()+"");
+                Log.v("HEY", item.getItemId() + "");
                 return false;
         }
     }

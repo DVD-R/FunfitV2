@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">FunFitV2Wear</string>
+    <string name="my_analog_name">My Analog</string>
+    <string name="hello_round">Hello Round World!</string>
+    <string name="hello_square">Hello Square World!</string>
+    <string name="intro_text">Long click to exit the map.</string>
+</resources>

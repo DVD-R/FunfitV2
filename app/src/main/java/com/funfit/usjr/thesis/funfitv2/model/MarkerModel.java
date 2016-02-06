@@ -4,23 +4,33 @@ package com.funfit.usjr.thesis.funfitv2.model;
  * Created by ocabafox on 2/7/2016.
  */
 public final class MarkerModel {
-    public final long id;
-    public final String location;
+    public final long marker_id;
+    public final double lng;
+    public final double lat;
     public final String name;
-    public final String event;
-    public final String status;
-    public final String cluster;
-    public final long invade;
-    public final String eventTitle;
+    public final long lvl;
+    public final Cluster_id cluster_id;
+    public final Cluster_name cluster_name;
 
-    public MarkerModel(long id, String location, String name, String event, String status, String cluster, long invade, String eventTitle){
-        this.id = id;
-        this.location = location;
+    public MarkerModel(long marker_id, double lng, double lat, String name, long lvl, Cluster_id cluster_id, Cluster_name cluster_name){
+        this.marker_id = marker_id;
+        this.lng = lng;
+        this.lat = lat;
         this.name = name;
-        this.event = event;
-        this.status = status;
-        this.cluster = cluster;
-        this.invade = invade;
-        this.eventTitle = eventTitle;
+        this.lvl = lvl;
+        this.cluster_id = cluster_id;
+        this.cluster_name = cluster_name;
+    }
+
+    public static final class Cluster_id {
+
+        public Cluster_id(){
+        }
+    }
+
+    public static final class Cluster_name {
+
+        public Cluster_name(){
+        }
     }
 }

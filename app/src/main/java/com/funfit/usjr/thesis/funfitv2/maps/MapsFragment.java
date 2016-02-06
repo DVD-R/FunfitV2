@@ -103,7 +103,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_maps, container, false);
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
         //instantiate DistanceCalculation
         distanceCalculation = new DistanceCalculation();
 
@@ -216,7 +216,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         }
     }
 
-    public void CustomMarker(){
+    public void CustomMarker() {
         LatLng MELBOURNE = new LatLng(10.288000, 123.867256);
         Marker melbourne = myMap.addMarker(new MarkerOptions()
                 .position(MELBOURNE)
@@ -344,7 +344,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         }
     }
 
-    public void setup(){
+    public void setup() {
         RestAdapter.Builder builder = new RestAdapter.Builder()
                 .setEndpoint("") // address sa data
                 .setClient(new OkClient(new OkHttpClient()))
@@ -359,20 +359,12 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
                 arrayMarker = new ArrayList<MarkerModel>();
 
-                for(int x = 0; arrayMarker.size() > x; x++){
-
-                    String[] latlong = markerModel.location.trim().split(",");
-                    Double lat = Double.parseDouble(latlong[0]);
-                    Double lng = Double.parseDouble(latlong[1]);
-
-                    LatLng POSITION = new LatLng(lat, lng);
-                    Marker melbourne = myMap.addMarker(new MarkerOptions()
-                            .position(POSITION)
-                            .title(markerModel.name)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.arrow)));
-                }
                 //think about ArrayList
-
+                LatLng POSITION = new LatLng(markerModel.lat, markerModel.lng);
+                Marker melbourne = myMap.addMarker(new MarkerOptions()
+                        .position(POSITION)
+                        .title(markerModel.name)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.arrow)));
             }
 
             @Override
@@ -380,8 +372,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
             }
         });
-
-
     }
 
     @Override
@@ -410,7 +400,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         //FragmentManager fm = getFragmentManager();
         markerDialogFragment dialogFragment = new markerDialogFragment();
         dialogFragment.show(getActivity().getFragmentManager(), "Sample Fragment");
-        Log.i("marker","Location: "+marker.getPosition());
+        Log.i("marker", "Location: " + marker.getPosition());
         return false;
     }
 }

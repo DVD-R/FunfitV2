@@ -27,6 +27,7 @@ import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.MostEatenSearchFragment;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.RecentlyEatenSearchFragment;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.SearchFragment;
+import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.views.ISearchView;
 
 import java.io.Serializable;
@@ -51,6 +52,10 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Utils.getCluster(this).equals("impulse"))
+            setTheme(R.style.ImpulseAppThemeLight);
+        else
+            setTheme(R.style.VelocityAppThemeLight);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
         searchFragment = new SearchFragment();

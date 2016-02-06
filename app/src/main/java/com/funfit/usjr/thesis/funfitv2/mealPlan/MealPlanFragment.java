@@ -169,7 +169,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
                 .crossFade().centerCrop().into(mImageBreakfast);
         Glide.with(this).load("https://igcdn-photos-a-a.akamaihd.net/hphotos-ak-xfa1/t51.2885-15/e35/12237452_1036452903083192_2102231120_n.jpg")
                 .crossFade().centerCrop().into(mImageLunch);
-        Glide.with(this).load("https://igcdn-photos-g-a.akamaihd.net/hphotos-ak-xpt1/t51.2885-15/e15/10903333_1593596717528478_1325058089_n.jpg")
+        Glide.with(this).load("https://igcdn-photos-e-a.akamaihd.net/hphotos-ak-xap1/t51.2885-15/e35/12224493_553293684823468_894543425_n.jpg")
                 .crossFade().centerCrop().into(mImageDinner);
         Glide.with(this).load("https://igcdn-photos-f-a.akamaihd.net/hphotos-ak-xtp1/t51.2885-15/sh0.08/e35/p640x640/12394013_723004407801613_1182819768_n.jpg")
                 .crossFade().centerCrop().into(mImageSnack);

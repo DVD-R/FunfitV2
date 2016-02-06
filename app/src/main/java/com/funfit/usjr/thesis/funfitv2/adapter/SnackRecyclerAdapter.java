@@ -5,10 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.Meal;
+import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class SnackRecyclerAdapter extends RecyclerView.Adapter<SnackRecyclerAdap
         @Bind(R.id.foodNameTxt)TextView mFoodName;
         @Bind(R.id.rdiTxt)TextView mRdi;
         @Bind(R.id.kCalTxt)TextView mKCal;
+        @Bind(R.id.search_serving_layout)LinearLayout mServingLayout;
         public ViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -47,6 +50,10 @@ public class SnackRecyclerAdapter extends RecyclerView.Adapter<SnackRecyclerAdap
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        if(Utils.getCluster(context).equals("impulse"))
+            holder.mServingLayout.setBackgroundColor(context.getResources().getColor(R.color.filter_impulse));
+        else
+            holder.mServingLayout.setBackgroundColor(context.getResources().getColor(R.color.filter_velocity));
         holder.mFoodName.setText(mealList.get(position).getmName());
         holder.mKCal.setText(String.valueOf(mealList.get(position).getCalories()) + " kcal");
     }

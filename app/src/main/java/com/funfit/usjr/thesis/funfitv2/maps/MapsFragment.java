@@ -10,10 +10,12 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +26,11 @@ import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.distance.DistanceCalculation;
+import com.funfit.usjr.thesis.funfitv2.fragmentDialog.markerDialogFragment;
+import com.funfit.usjr.thesis.funfitv2.model.MarkerModel;
+import com.funfit.usjr.thesis.funfitv2.model.PolygonModel;
+import com.funfit.usjr.thesis.funfitv2.services.MarkerService;
+import com.funfit.usjr.thesis.funfitv2.services.PolygonService;
 import com.funfit.usjr.thesis.funfitv2.views.IMapFragmentView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.ErrorDialogFragment;
@@ -48,16 +55,22 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.OkClient;
+import retrofit.client.Response;
 
 public class MapsFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, IMapFragmentView, GoogleMap.OnMarkerClickListener {
+        LocationListener, GoogleMap.OnMarkerClickListener {
 
     MapView mMapView;
     private GoogleMap myMap;
@@ -82,6 +95,11 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     TextView getSpeed;
     @Bind(R.id.txtDistance)
     TextView getDistance;
+
+    //Populate marker from database using webservice
+    private MarkerModel markerModel;
+    private MarkerService markerService;
+    private ArrayList<MarkerModel> arrayMarker;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_maps, container, false);
@@ -111,7 +129,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                 .addOnConnectionFailedListener(this).build();
         myMap.setMyLocationEnabled(true);
 
-        mapsFragmentPresenter = new MapsFragmentPresenter(this);
         connectClient();
 
 
@@ -191,10 +208,21 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             polylineOptions = new PolylineOptions();
             //arrayPoints.add(latLng);
             myMap.setOnMarkerClickListener(this);
+            CustomMarker();
             startLocationUpdates();
+            new LoadAsyntask().execute();
         } else {
             Log.e("Location Service: ", "GPS not connected!");
         }
+    }
+
+    public void CustomMarker(){
+        LatLng MELBOURNE = new LatLng(10.288000, 123.867256);
+        Marker melbourne = myMap.addMarker(new MarkerOptions()
+                .position(MELBOURNE)
+                .title("Melbourne")
+                .snippet("Population: 4,137,400")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.arrow)));
     }
 
     @Override
@@ -308,22 +336,52 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         }
     }
 
-    @Override
-    public void populateTerritory() {
-//                CameraPosition cameraPosition = new CameraPosition.Builder()
-//                .target(new LatLng(10.290060, 123.862453)).zoom(16).build();
-//            myMap.animateCamera(CameraUpdateFactory
-//                .newCameraPosition(cameraPosition));
-//
-//        for (String polyline: polylineList) {
-//            List<LatLng> oval = PolyUtil.decode(polyline);
-//                myMap.addPolygon(new PolygonOptions()
-//                        .addAll(oval)
-//                        .fillColor(Color.BLUE - ALPHA_ADJUSTMENT)
-//                        .strokeColor(Color.BLUE)
-//                        .strokeWidth(5));
-//            Log.i("Polyline: ", polyline);
-//            }
+    class LoadAsyntask extends AsyncTask<Void, Void, MarkerModel> {
+        @Override
+        protected MarkerModel doInBackground(Void... params) {
+            setup();
+            return markerModel;
+        }
+    }
+
+    public void setup(){
+        RestAdapter.Builder builder = new RestAdapter.Builder()
+                .setEndpoint("") // address sa data
+                .setClient(new OkClient(new OkHttpClient()))
+                .setLogLevel(RestAdapter.LogLevel.FULL);
+
+        RestAdapter restAdapter = builder.build();
+        markerService = restAdapter.create(MarkerService.class);
+
+        markerService.getMarker(new Callback<MarkerModel>() {
+            @Override
+            public void success(MarkerModel markerModel, Response response) {
+
+                arrayMarker = new ArrayList<MarkerModel>();
+
+                for(int x = 0; arrayMarker.size() > x; x++){
+
+                    String[] latlong = markerModel.location.trim().split(",");
+                    Double lat = Double.parseDouble(latlong[0]);
+                    Double lng = Double.parseDouble(latlong[1]);
+
+                    LatLng POSITION = new LatLng(lat, lng);
+                    Marker melbourne = myMap.addMarker(new MarkerOptions()
+                            .position(POSITION)
+                            .title(markerModel.name)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.arrow)));
+                }
+                //think about ArrayList
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+
+
     }
 
     @Override
@@ -349,18 +407,12 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        //FragmentManager fm = getFragmentManager();
+        markerDialogFragment dialogFragment = new markerDialogFragment();
+        dialogFragment.show(getActivity().getFragmentManager(), "Sample Fragment");
+        Log.i("marker","Location: "+marker.getPosition());
         return false;
     }
-
-
-    // Simplified oval polygon
-//        tolerance = 10; // meters
-//        List simplifiedOval= PolyUtil.simplify(oval, tolerance);
-//        mMap.addPolygon(new PolygonOptions()
-//                .addAll(simplifiedOval)
-//                .fillColor(Color.YELLOW - ALPHA_ADJUSTMENT)
-//                .strokeColor(Color.YELLOW)
-//                .strokeWidth(5));
 }
 
 

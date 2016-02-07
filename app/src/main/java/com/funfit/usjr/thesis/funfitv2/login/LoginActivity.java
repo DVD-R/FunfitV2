@@ -91,7 +91,6 @@ public class LoginActivity extends AppCompatActivity implements
     Button mButtonFacebook;
     @Bind(R.id.googleBtn)
     Button mButtonGoogle;
-    private String mEncodedEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

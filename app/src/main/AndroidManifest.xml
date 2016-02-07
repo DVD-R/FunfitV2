@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.funfit.usjr.thesis.funfitv2"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.funfit.usjr.thesis.funfitv2">
 
     <permission
         android:name="com.example.mapdemo.permission.MAPS_RECEIVE"
-        android:protectionLevel="signature"/>
+        android:protectionLevel="signature" />
 
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="com.example.mapdemo.permission.MAPS_RECEIVE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="com.example.mapdemo.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-feature android:name="android.hardware.camera"/>
-    <uses-feature android:name="android.hardware.camera.autofocus"/>
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
         android:name=".FunfitApplication"
@@ -28,7 +28,7 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
+            android:value="@string/facebook_app_id" />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -36,103 +36,113 @@
              Note that the API key is linked to the encryption key used to sign the APK.
              You need a different API key for each encryption key, including the release key that is used to
              sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
 
         <activity
             android:name=".login.LoginActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/SemiTransparentBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
             android:name=".login.SignUpActivity"
             android:label="@string/label_signup"
-            android:theme="@style/SemiTransparentBar"
-            android:parentActivityName=".login.LoginActivity">
-        </activity>
+            android:parentActivityName=".login.LoginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SemiTransparentBar"></activity>
 
-        <activity android:name=".main.MainActivity"/>
-        <activity android:name=".healthPreference.HealthStatisticsSetupPager"/>
+        <activity
+            android:name=".main.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".healthPreference.HealthStatisticsSetupPager" />
         <activity
             android:name=".search.SearchActivity"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight">
             <intent-filter>
-                <action android:name="ANDROID.INTENT.ACTION.SEARCH"/>
+                <action android:name="ANDROID.INTENT.ACTION.SEARCH" />
             </intent-filter>
 
             <meta-data
                 android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
+                android:resource="@xml/searchable" />
         </activity>
         <activity
             android:name=".notificationEvents.NotificationActivity"
             android:label="@string/label_notification"
             android:parentActivityName=".main.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".main.MainActivity"/>
+                android:value=".main.MainActivity" />
         </activity>
         <activity
             android:name=".notificationEvents.EventActivity"
             android:label="@string/label_events"
-            android:parentActivityName=".main.MainActivity">
+            android:parentActivityName=".main.MainActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".main.MainActivity"/>
+                android:value=".main.MainActivity" />
         </activity>
         <activity
             android:name=".history.EventHistoryActivityImpl"
             android:label="@string/eventHistory"
-            android:parentActivityName=".notificationEvents.EventActivity">
+            android:parentActivityName=".notificationEvents.EventActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".main.MainActivity"/>
+                android:value=".main.MainActivity" />
         </activity>
         <activity
             android:name=".notificationEvents.EventDetailActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/NoStatusBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".notificationEvents.EventActivity"/>
+                android:value=".notificationEvents.EventActivity" />
         </activity>
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <activity android:name=".tutorial.TutorialActivity"/>
+        <activity android:name=".tutorial.TutorialActivity" />
 
         <activity
             android:name=".leaderBoard.LeaderBoardActivity"
             android:label="@string/leaderBoard"
-            android:theme="@style/AppTheme"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
 
-        <activity android:name=".notificationEvents.QRScannerActivity"/>
+        <activity android:name=".notificationEvents.QRScannerActivity" />
 
         <service
             android:name=".services.FoodInfoService"
-            android:enabled="true"/>
+            android:enabled="true" />
 
         <service
             android:name=".services.CreatePolylineService"
-            android:enabled="true"/>
+            android:enabled="true" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="9724157045ff7d083492c6d9ae03e60e8609d461"/>
+            android:value="9724157045ff7d083492c6d9ae03e60e8609d461" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key"/>
+            android:value="@string/google_maps_key" />
     </application>
 
 </manifest>

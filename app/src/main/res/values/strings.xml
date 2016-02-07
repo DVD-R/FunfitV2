@@ -116,6 +116,7 @@
     <string name="nav_shack">Shack</string>
     <string name="nav_leaderBoard">Hall of Fame</string>
     <string name="nav_events">Events</string>
+    <string name="nav_logout">Logout</string>
     <string name="leaderBoard">Hall of Fame</string>
     <string name="label_signup">Sign Up</string>
     <string name="impulse">impulse</string>

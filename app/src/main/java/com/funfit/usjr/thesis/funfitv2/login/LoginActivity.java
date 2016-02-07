@@ -91,9 +91,6 @@ public class LoginActivity extends AppCompatActivity implements
     Button mButtonFacebook;
     @Bind(R.id.googleBtn)
     Button mButtonGoogle;
-    private String mEncodedEmail;
-    private String mUnprocessedEmail, mFirstName, mLastName, mBirthday, mImgUrl;
-    private int mGender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +121,7 @@ public class LoginActivity extends AppCompatActivity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
+                .addScope(Plus.SCOPE_PLUS_PROFILE)
                 .build();
 
         mAuthStateListener = new Firebase.AuthStateListener() {
@@ -196,29 +194,12 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
-    private void logout() {
-        if (this.mAuthData != null) {
-            /* logout of Firebase */
-            mFirebaseRef.unauth();
-            /* Logout of any of the Frameworks. This step is optional, but ensures the user is not logged into
-             * Facebook/Google+ after logging out of Firebase. */
-            if (this.mAuthData.getProvider().equals("facebook")) {
-                /* Logout from Facebook */
-                LoginManager.getInstance().logOut();
-            } else if (this.mAuthData.getProvider().equals("google")) {
-                /* Logout from Google+ */
-                if (mGoogleApiClient.isConnected()) {
-                    Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-                    mGoogleApiClient.disconnect();
-                }
-            }
-            /* Update authenticated user and show login buttons */
-            setAuthenticatedUser(null);
-        }
-    }
-
     private void setAuthenticatedUser(AuthData authData) {
         if (authData != null) {
+            ((FunfitApplication)getApplicationContext()).setLoginAuth(authData);
+            ((FunfitApplication)getApplicationContext()).setFirebaseRef(mFirebaseRef);
+            ((FunfitApplication)getApplicationContext()).setGoogleApiClient(mGoogleApiClient);
+
             if(getSharedPreferences(Constants.USER_PREF_ID, MODE_PRIVATE).getString(Constants.PROFILE_EMAIL, null)!=null) {
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -429,19 +410,7 @@ public class LoginActivity extends AppCompatActivity implements
                     mFirebaseRef.authWithOAuthToken("google", token, new Firebase.AuthResultHandler() {
                         @Override
                         public void onAuthenticated(AuthData authData) {
-                            setGoogleUserData();
-                            googleRegisterToFirebase(authData);
-
-                            if (authData != null) {
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                intent.putExtra(Constants.PROFILE_IMG_URL, mImgUrl);
-                                intent.putExtra(Constants.PROFILE_EMAIL, mUnprocessedEmail);
-                                intent.putExtra(Constants.PROFILE_FNAME, mFirstName);
-                                intent.putExtra(Constants.PROFILE_LNAME, mLastName);
-                                startActivity(intent);
-                                finish();
-                            }
+                            startSignupGoogle();
                         }
 
                         @Override
@@ -460,60 +429,13 @@ public class LoginActivity extends AppCompatActivity implements
         task.execute();
     }
 
-    private void setGoogleUserData() {
-        //fname
-        mFirstName = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getName().getGivenName();
-        //lname
-        mLastName = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getName().getFamilyName();
-        //e-mail
-        mUnprocessedEmail = Plus.AccountApi.getAccountName(mGoogleApiClient);
-        //gender
-        mGender = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getGender();
-        //birthday
-        mBirthday = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getBirthday();
-        //image url
-        mImgUrl = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl();
-    }
-
-    private void googleRegisterToFirebase(AuthData authData) {
-        if (authData.getProvider().equals(Constants.GOOGLE_PROVIDER)) {
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            SharedPreferences.Editor spe = sp.edit();
-            if (mGoogleApiClient.isConnected()) {
-                spe.putString(Constants.KEY_GOOGLE_EMAIL, mUnprocessedEmail).apply();
-            } else {
-                mUnprocessedEmail = sp.getString(Constants.KEY_GOOGLE_EMAIL, null);
-            }
-            mEncodedEmail = Utils.encodeEmail(mUnprocessedEmail);
-
-            final String userName = (String) authData.getProviderData().get(Constants.PROVIDER_DATA_DISPLAY_NAME);
-
-            final Firebase userLocation = new Firebase(Constants.FIREBASE_URL_USERS).child(mEncodedEmail);
-            userLocation.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue() == null) {
-                        HashMap<String, Object> timestampJoined = new HashMap<>();
-                        timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
-
-                        //TODO: User newUser = new User(mFirstName, mLastName, mEncodedEmail, mGender, mBirthday, mImgUrl, timestampJoined);
-                        //userLocation.setValue(newUser);
-                    }
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                    Log.d(TAG, firebaseError.getMessage());
-                }
-            });
-        }
-
-        if (authData != null) {
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        }
+    private void startSignupGoogle() {
+        String email, fname, lname, img_url;
+        fname = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getName().getGivenName();
+        lname = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getName().getFamilyName();
+        email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+        img_url = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl();
+        isUserOnFirebase(email, fname, lname, img_url);
     }
 
     @Override

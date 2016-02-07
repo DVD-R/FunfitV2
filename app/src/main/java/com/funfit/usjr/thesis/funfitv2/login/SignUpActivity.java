@@ -2,6 +2,7 @@ package com.funfit.usjr.thesis.funfitv2.login;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -12,6 +13,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -19,10 +21,15 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ServerValue;
 import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.main.MainActivity;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.User;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +42,8 @@ import butterknife.ButterKnife;
  */
 public class SignUpActivity extends AppCompatActivity {
     private static final String LOG_TAG = SignUpActivity.class.getSimpleName();
+    private GoogleCloudMessaging gcm;
+    private String regid = "", msg = "";
 
     @Bind(R.id.viewpager_signup)
     ViewPager mViewPager;
@@ -60,10 +69,10 @@ public class SignUpActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                if(position==1){
+                if (position == 1) {
                     showSnackbar(SignUpActivity.this, "Choose your Level");
                 }
-                if(position==2){
+                if (position == 2) {
                     showSnackbar(SignUpActivity.this, "Choose a Cluster");
                 }
             }
@@ -72,19 +81,75 @@ public class SignUpActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+
+
+        //GCM
+        if (checkPlayServices()) {
+            gcm = GoogleCloudMessaging.getInstance(this);
+
+            registerInBackground();
+
+        } else {
+            Log.i(LOG_TAG, "No valid Google Play Services APK found.");
+        }
     }
+
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        Constants.PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i(LOG_TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+
+    private void registerInBackground() {
+        new AsyncTask() {
+            @Override
+            protected String doInBackground(Object[] params) {
+                try {
+
+                    if (gcm == null) {
+                        gcm = GoogleCloudMessaging.getInstance(SignUpActivity.this);
+                    }
+                    regid = gcm.register(Constants.SENDER_ID);
+                    msg = regid;
+                } catch (IOException ex) {
+                    msg = "Error :" + ex.getMessage();
+                }
+                return msg;
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                super.onPostExecute(o);
+                SignUpActivity.this.getSharedPreferences(Constants.USER_PREF_ID,MODE_PRIVATE)
+                        .edit().putString(Constants.PROFILE_CLUSTER, Constants.GCM_KEY).apply();
+                Toast.makeText(SignUpActivity.this, o.toString(), Toast.LENGTH_LONG).show();
+            }
+        }.execute();
+    }
+
 
     @Override
     public void onBackPressed() {
-        if(mViewPager.getCurrentItem()==1)
+        if (mViewPager.getCurrentItem() == 1)
             mViewPager.setCurrentItem(0);
-        else if(mViewPager.getCurrentItem()==2)
+        else if (mViewPager.getCurrentItem() == 2)
             mViewPager.setCurrentItem(1);
         else
             super.onBackPressed();
     }
 
-    public static void showSnackbar(SignUpActivity activity, String message){
+    public static void showSnackbar(SignUpActivity activity, String message) {
         Snackbar snackbar = Snackbar
                 .make(activity.mCoordinatorLayout, message, Snackbar.LENGTH_LONG);
 
@@ -120,7 +185,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    public static void registerUserToFirebase(final SharedPreferences userData){
+    public static void registerUserToFirebase(final SharedPreferences userData) {
         final String email = Utils.encodeEmail(userData.getString(Constants.PROFILE_EMAIL, null));
         final Firebase userFirebase = new Firebase(Constants.FIREBASE_URL_USERS)
                 .child(email);

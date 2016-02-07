@@ -25,6 +25,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.funfit.usjr.thesis.funfitv2.FunfitApplication;
+import com.funfit.usjr.thesis.funfitv2.login.LoginActivity;
 import com.funfit.usjr.thesis.funfitv2.maps.MapsFragment;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.leaderBoard.LeaderBoardActivity;
@@ -174,6 +176,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_event:
                 startActivity(new Intent(this, EventActivity.class));
+                break;
+            case R.id.nav_logout:
+                ((FunfitApplication) getApplicationContext()).logout();
+                i = new Intent(this, LoginActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                getSharedPreferences(Constants.USER_PREF_ID, Context.MODE_PRIVATE).edit().clear();
+                startActivity(i);
                 break;
         }
     }

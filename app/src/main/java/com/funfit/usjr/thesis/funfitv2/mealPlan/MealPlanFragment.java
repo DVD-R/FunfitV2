@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.GestureDetectorCompat;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,7 +27,6 @@ import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.adapter.BreakFastRecyclerAdapter;
 import com.funfit.usjr.thesis.funfitv2.adapter.DinnerRecyclerAdapter;
 import com.funfit.usjr.thesis.funfitv2.adapter.LunchRecyclerAdapter;
-import com.funfit.usjr.thesis.funfitv2.listener.LeftGestureListener;
 import com.funfit.usjr.thesis.funfitv2.model.Meal;
 import com.funfit.usjr.thesis.funfitv2.search.SearchActivity;
 import com.funfit.usjr.thesis.funfitv2.views.IMealPlanFragmentView;
@@ -51,7 +49,6 @@ import butterknife.OnClick;
 
 public class MealPlanFragment extends Fragment implements IMealPlanFragmentView {
 
-    GestureDetectorCompat gestureDetectorCompat;
     @Bind(R.id.container)
     FrameLayout piechartLayout;
 
@@ -152,7 +149,6 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_meal_plan, container, false);
-        gestureDetectorCompat = new GestureDetectorCompat(getActivity(), new LeftGestureListener(getActivity()));
         ButterKnife.bind(this, view);
         setLayoutEnhancements();
 

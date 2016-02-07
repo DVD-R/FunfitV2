@@ -196,29 +196,11 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
-    private void logout() {
-        if (this.mAuthData != null) {
-            /* logout of Firebase */
-            mFirebaseRef.unauth();
-            /* Logout of any of the Frameworks. This step is optional, but ensures the user is not logged into
-             * Facebook/Google+ after logging out of Firebase. */
-            if (this.mAuthData.getProvider().equals("facebook")) {
-                /* Logout from Facebook */
-                LoginManager.getInstance().logOut();
-            } else if (this.mAuthData.getProvider().equals("google")) {
-                /* Logout from Google+ */
-                if (mGoogleApiClient.isConnected()) {
-                    Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-                    mGoogleApiClient.disconnect();
-                }
-            }
-            /* Update authenticated user and show login buttons */
-            setAuthenticatedUser(null);
-        }
-    }
-
     private void setAuthenticatedUser(AuthData authData) {
         if (authData != null) {
+            ((FunfitApplication)getApplicationContext()).setLoginAuth(authData);
+            ((FunfitApplication)getApplicationContext()).setFirebaseRef(mFirebaseRef);
+
             if(getSharedPreferences(Constants.USER_PREF_ID, MODE_PRIVATE).getString(Constants.PROFILE_EMAIL, null)!=null) {
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

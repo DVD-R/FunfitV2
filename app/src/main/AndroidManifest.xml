@@ -61,7 +61,6 @@
         <activity
             android:name=".main.MainActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".healthPreference.HealthStatisticsSetupPager" />
         <activity
             android:name=".search.SearchActivity"
             android:launchMode="singleTop"

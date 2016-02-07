@@ -2,24 +2,31 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--Navigation Drawer items-->
-    <group>
+    <group
+        android:id="@+id/menu_top">
         <item
             android:id="@+id/nav_arena"
-            android:title="@string/nav_arena"
-            android:icon="@drawable/ic_nav_sword"/>
+            android:icon="@drawable/ic_nav_sword"
+            android:title="@string/nav_arena" />
         <item
             android:id="@+id/nav_shack"
-            android:title="@string/nav_shack"
-            android:icon="@drawable/ic_nav_bread"/>
+            android:icon="@drawable/ic_nav_bread"
+            android:title="@string/nav_shack" />
         <item
             android:id="@+id/nav_leaderBoard"
-            android:title="@string/nav_leaderBoard"
-            android:icon="@drawable/ic_nav_medal"/>
+            android:icon="@drawable/ic_nav_medal"
+            android:title="@string/nav_leaderBoard" />
         <item
             android:id="@+id/nav_event"
-            android:title="@string/nav_events"
-            android:icon="@drawable/ic_nav_event"/>
-
+            android:icon="@drawable/ic_nav_event"
+            android:title="@string/nav_events" />
+    </group>
+    <group
+        android:id="@+id/menu_bottom">
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_exit"
+            android:title="@string/nav_logout" />
     </group>
 
 </menu>

@@ -21,4 +21,11 @@ public class Utils {
     public static String encodeEmail(String userEmail) {
         return userEmail.replace(".", ",");
     }
+
+    //weight(kg), time(hour), speed(km/h)
+    public static int getCaloriesBurned(int weight, int time, int speed){
+        //millisecond to hour
+        time = (int) ((time / (1000*60*60)) % 24);
+        return (int)((0.0215 * (speed*3) - 0.1765 * (speed*2) + 0.8710 * (speed) + 1.4577) * weight * time);
+    }
 }

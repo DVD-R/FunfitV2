@@ -13,6 +13,6 @@ import retrofit.http.GET;
  */
 public interface MarkerInfoService {
 
-    @GET("/marker.json")
+    @GET("/getMarkers")
     void getMarkerInfo(Callback<List<MarkerInfoModel>> markerModelCallback);
 }

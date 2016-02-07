@@ -118,8 +118,6 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <activity android:name=".tutorial.TutorialActivity" />
-
         <activity
             android:name=".leaderBoard.LeaderBoardActivity"
             android:label="@string/leaderBoard"

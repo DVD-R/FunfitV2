@@ -32,7 +32,7 @@
                     android:layout_height="match_parent"
                     android:clickable="true"
                     android:fitsSystemWindows="true"
-                    android:foreground="?attr/selectableItemBackground">
+                    android:background="?attr/selectableItemBackground">
 
                     <ImageView
                         android:id="@+id/img_breakfast"

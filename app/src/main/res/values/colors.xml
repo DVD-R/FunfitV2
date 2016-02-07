@@ -2,7 +2,7 @@
 <resources>
     <color name="primary">#212121</color>
     <color name="primary_dark">#212121</color>
-    <color name="accent">@color/velocity</color>
+    <color name="accent">#FFFFFF</color>
     <color name="fb_button">#3c5c9d</color>
     <color name="plus_button">#ef3f2b</color>
     <color name="white">#FFFFFF</color>

@@ -10,6 +10,7 @@
         android:layout_marginBottom="1dp"
         android:layout_marginTop="1dp"
         android:layout_height="match_parent"
+        android:id="@+id/search_serving_layout"
         android:background="@color/background">
 
         <LinearLayout
@@ -24,6 +25,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Frankfurter or Hot Dog on Bun"
+                android:singleLine="true"
+
                 android:fontFamily="sans-sarif-medium"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Light.Widget.PopupMenu.Large"
                 android:textStyle="bold"

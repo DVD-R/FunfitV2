@@ -35,4 +35,8 @@ public final class Constants {
     public static final String PROFILE_HEIGHT = "profile_height";
     public static final String PROFILE_ACTIVITY_LEVEL = "profile_activity_level";
     public static final String PROFILE_CLUSTER = "profile_cluster";
+    public static final String GCM_KEY = "gcm_key";
+
+    public final static String SENDER_ID = "209690052574";
+    public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 }

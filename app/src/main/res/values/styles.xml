@@ -14,6 +14,22 @@
         <item name="colorAccent">@color/accent</item>
     </style>
 
+    <style name="VelocityAppTheme" parent="AppTheme">
+        <item name="colorAccent">@color/velocity</item>
+    </style>
+
+    <style name="ImpulseAppTheme" parent="AppTheme">
+        <item name="colorAccent">@color/impulse</item>
+    </style>
+
+    <style name="VelocityAppThemeLight" parent="AppThemeLight">
+        <item name="colorAccent">@color/velocity</item>
+    </style>
+
+    <style name="ImpulseAppThemeLight" parent="AppThemeLight">
+        <item name="colorAccent">@color/impulse</item>
+    </style>
+
     <style name="SemiTransparentBar" parent="AppTheme">
     </style>
 

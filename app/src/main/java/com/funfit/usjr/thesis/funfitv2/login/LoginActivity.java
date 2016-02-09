@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.v4.content.IntentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -199,7 +200,8 @@ public class LoginActivity extends AppCompatActivity implements
 
             if(getSharedPreferences(Constants.USER_PREF_ID, MODE_PRIVATE).getString(Constants.PROFILE_EMAIL, null)!=null) {
                 Intent intent = new Intent(this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                        IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
 
@@ -294,12 +296,14 @@ public class LoginActivity extends AppCompatActivity implements
                         Log.v(TAG, dataSnapshot.getValue().toString());
                         savePreferenceRegisteredUser(dataSnapshot);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();
                     }else{
                         Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.putExtra(Constants.PROFILE_IMG_URL, img_url);
                         intent.putExtra(Constants.PROFILE_EMAIL, email);
                         intent.putExtra(Constants.PROFILE_FNAME, fname);
@@ -310,7 +314,8 @@ public class LoginActivity extends AppCompatActivity implements
                     }
                 } catch (NullPointerException e) {
                     Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                            IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putExtra(Constants.PROFILE_IMG_URL, img_url);
                     intent.putExtra(Constants.PROFILE_EMAIL, email);
                     intent.putExtra(Constants.PROFILE_FNAME, fname);

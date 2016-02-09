@@ -1,64 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    >
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="130dp"
-        android:background="@color/primary"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ImageView
-            android:layout_marginTop="20dp"
-            android:layout_gravity="center"
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/up_impulse"/>
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/img_leader_status"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@android:color/transparent"
+                app:civ_border_color="@android:color/white"
+                app:civ_border_width="3dp" />
+
+            <TextView
+                android:id="@+id/txt_territory_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+        </FrameLayout>
 
         <TextView
-            android:layout_marginTop="20dp"
-            android:gravity="center"
-            android:layout_width="match_parent"
+            android:id="@+id/text_location"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="NAME"/>
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:gravity="center"
+            android:text="Name of Place"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <ImageView
+        <RelativeLayout
+            android:id="@+id/layout_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/com_facebook_favicon_white"/>
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:layout_toEndOf="@+id/img_user"
+            android:layout_toRightOf="@+id/img_user">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="vertical">
+            <TextView
+                android:id="@+id/txt_owner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OWNER" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="OWNER"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="LEVEL"/>
-        </LinearLayout>
+                android:layout_below="@+id/txt_owner"
+                android:gravity=""
+                android:text="LEVEL" />
+        </RelativeLayout>
 
         <Button
+            android:id="@+id/btnInvade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Invade"
-            android:id="@+id/btnInvade" />
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="right"
+            android:layout_marginEnd="23dp"
+            android:layout_marginRight="12dp"
+            android:text="Invade" />
 
-    </LinearLayout>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_user"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:src="@android:color/darker_gray" />
+
+    </RelativeLayout>
+
 
 </LinearLayout>

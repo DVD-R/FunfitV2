@@ -9,10 +9,10 @@ public final class MarkerModel {
     public final double lng;
     public final String name;
     public final long lvl;
-    public final Cluster_name cluster_name;
-    public final Faction faction;
+    public final String cluster_name;
+    public final long faction;
 
-    public MarkerModel(long id, double lat, double lng, String name, long lvl, Cluster_name cluster_name, Faction faction){
+    public MarkerModel(long id, double lat, double lng, String name, long lvl, String cluster_name, long faction){
         this.id = id;
         this.lat = lat;
         this.lng = lng;
@@ -20,17 +20,5 @@ public final class MarkerModel {
         this.lvl = lvl;
         this.cluster_name = cluster_name;
         this.faction = faction;
-    }
-
-    public static final class Cluster_name {
-
-        public Cluster_name(){
-        }
-    }
-
-    public static final class Faction {
-
-        public Faction(){
-        }
     }
 }

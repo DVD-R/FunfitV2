@@ -4,26 +4,36 @@ package com.funfit.usjr.thesis.funfitv2.maps;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.distance.DistanceCalculation;
+import com.funfit.usjr.thesis.funfitv2.fragmentDialog.FilterViewDialog;
 import com.funfit.usjr.thesis.funfitv2.fragmentDialog.markerDialogFragment;
+import com.funfit.usjr.thesis.funfitv2.model.CapturingModel;
+import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.MarkerModel;
+import com.funfit.usjr.thesis.funfitv2.services.CapturingService;
 import com.funfit.usjr.thesis.funfitv2.services.MarkerService;
+import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -50,6 +60,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -61,6 +72,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         LocationListener, GoogleMap.OnMarkerClickListener {
     private static final String LOG_TAG = MapsFragment.class.getSimpleName();
     public static final int REQUEST_CODE = 1;
+    public static final int REQUEST_CODE2 = 30;
     MapView mMapView;
     private GoogleMap myMap;
     private GoogleApiClient mGoogleApiClient;
@@ -81,18 +93,12 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     private boolean mBroadcastInfoRegistered;
     private List<String> polylineList;
     markerDialogFragment dialogFragment;
-    @Bind(R.id.txtSpeed)
-    TextView getSpeed;
-    @Bind(R.id.txtDistance)
-    TextView getDistance;
-
-    @Bind(R.id.fab_run)
-    FloatingActionButton floatingActionButtonRun;
-    @Bind(R.id.fab_search)
-    FloatingActionButton floatingActionButtonSearch;
+    FilterViewDialog filterViewDialog;
 
     //Populate marker from database using webservice
     private static final String ROOT = "http://192.168.1.44:8081/funfit-backend";
+    //Send Captured Data
+    private static final String CAPTUREDROOT = "http://192.168.1.44:8081";
     private MarkerModel markerModel;
     private MarkerService markerService;
     private ArrayList<MarkerModel> arrayMarker;
@@ -103,6 +109,15 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
     //Polygon checker
     ArrayList<LatLng> clickedMarker;
+
+    //boolean controller.
+    private boolean mapController = false;
+
+    private String filter;
+
+    //Capturing
+    CapturingModel capturingModel;
+    CapturingService capturingService;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_maps, container, false);
@@ -133,7 +148,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         myMap.setMyLocationEnabled(true);
 
         connectClient();
-
 
 
         return view;
@@ -183,8 +197,37 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                 }
 
             case REQUEST_CODE:
+                mapController = data.getExtras().containsKey("true");
                 receivedMarkerPosition = (ArrayList<LatLng>) data.getExtras().getSerializable("location");
-                Log.i("testtest","zzzzaaa "+data.getStringExtra("location"));
+
+
+//                filter = data.getStringExtra("filter");
+//                Log.i("hala", "zzzzaaa " + filter);
+//                if(filter.equals("faction")){
+//                    //myMap.clear();
+//                    Toast.makeText(getActivity(), "Faction", Toast.LENGTH_SHORT).show();
+//                }
+//                else{
+//                    //myMap.clear();
+//                    Toast.makeText(getActivity(), "Conquered", Toast.LENGTH_SHORT).show();
+//                }
+                break;
+
+            case REQUEST_CODE2:
+//                mapController = data.getExtras().containsKey("true");
+//                receivedMarkerPosition = (ArrayList<LatLng>) data.getExtras().getSerializable("location");
+
+
+                filter = data.getStringExtra("filter");
+                Log.i("hala", "zzzzaaa " + filter);
+                if(filter.equals("faction")){
+                    //myMap.clear();
+                    Toast.makeText(getActivity(), "Faction", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    //myMap.clear();
+                    Toast.makeText(getActivity(), "Conquered", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
@@ -204,6 +247,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             startLocationUpdates();
             new LoadAsyntask().execute();
 
+
             //dialogFragment.setTargetFragment(this, REQUEST_CODE);
         } else {
             Log.e("Location Service: ", "GPS not connected!");
@@ -218,65 +262,88 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onLocationChanged(Location location) {
         float getDistanceInMeters = 0;
-        double tempSpeed = 0;
-        double averageSpeed = 0;
-        newLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(newLatLng, 18);
-        myMap.animateCamera(cameraUpdate);
-        myMap.setMyLocationEnabled(true);
+        float tempSpeed = 0;
+        float speed = 0;
+        float distance = 0;
+        long tempDuration = 0;
+        long duration = 0;
 
-        // settin polyline in the map
-        polylineOptions = new PolylineOptions();
-        polylineOptions.color(Color.GREEN);
-        polylineOptions.width(4);
-        arrayPoints.add(newLatLng);
-        polylineOptions.addAll(arrayPoints);
-        myMap.addPolyline(polylineOptions);
+        if (mapController) {
 
-        for (int x = 0; arrayPoints.size() - 1 > x; x++) {
-            arrayPoints.get(x);
-            Location loc1 = new Location("");
-            loc1.setLatitude(arrayPoints.get(x).latitude);
-            loc1.setLongitude(arrayPoints.get(x).longitude);
+            newLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(newLatLng, 16);
+            myMap.animateCamera(cameraUpdate);
+            myMap.setMyLocationEnabled(true);
 
-            Location loc2 = new Location("");
-            loc2.setLatitude(arrayPoints.get(x + 1).latitude);
-            loc2.setLongitude(arrayPoints.get(x + 1).longitude);
+            // settin polyline in the map
+            polylineOptions = new PolylineOptions();
+            polylineOptions.color(Color.GREEN);
+            polylineOptions.width(4);
+            arrayPoints.add(newLatLng);
+            polylineOptions.addAll(arrayPoints);
+            myMap.addPolyline(polylineOptions);
 
-            getDistanceInMeters = getDistanceInMeters + loc1.distanceTo(loc2);
+            for (int x = 0; arrayPoints.size() - 1 > x; x++) {
+                arrayPoints.get(x);
+                Location loc1 = new Location("");
+                loc1.setLatitude(arrayPoints.get(x).latitude);
+                loc1.setLongitude(arrayPoints.get(x).longitude);
 
-            float displaySpeed = location.getSpeed();
+                Location loc2 = new Location("");
+                loc2.setLatitude(arrayPoints.get(x + 1).latitude);
+                loc2.setLongitude(arrayPoints.get(x + 1).longitude);
 
+                getDistanceInMeters = getDistanceInMeters + loc1.distanceTo(loc2);
+
+                float displaySpeed = location.getSpeed();
+
+
+            }
             tempSpeed = tempSpeed + location.getSpeed();
-        }
+            duration = duration + location.getTime();
 
-        getSpeed.setText("Speed: " + location.getSpeed());
-        //getDistance.setText("Distance: " + getDistanceInMeters);
-        averageSpeed = tempSpeed / arrayPoints.size() - 1;
-
-        Log.i("distanceTo", "Distance in meters: " + getDistanceInMeters + " Speed: " + location.getSpeed());
+            Log.i("distanceTo", "Distance in meters: " + getDistanceInMeters + " Speed: " + location.getSpeed());
 //        }
 
-        Log.i("distanceTo", "Distance in meters: " + getDistanceInMeters);
-        if (getDistanceInMeters > 200) {
-            int controller = arrayPoints.size() - 1;
-            Log.i("distanceTo", "distance: " + distanceCalculation.CalculationByDistance(arrayPoints.get(0), arrayPoints.get(controller)));
+            Log.i("distanceTo", "Distance in meters: " + getDistanceInMeters);
+            if (getDistanceInMeters > 200) {
+                int controller = arrayPoints.size() - 1;
+                Log.i("distanceTo", "distance: " + distanceCalculation.CalculationByDistance(arrayPoints.get(0), arrayPoints.get(controller)));
 
-            Location loc1 = new Location("");
-            loc1.setLatitude(arrayPoints.get(0).latitude);
-            loc1.setLongitude(arrayPoints.get(0).longitude);
+                Location loc1 = new Location("");
+                loc1.setLatitude(arrayPoints.get(0).latitude);
+                loc1.setLongitude(arrayPoints.get(0).longitude);
 
-            Location loc2 = new Location("");
-            loc2.setLatitude(arrayPoints.get(controller).latitude);
-            loc2.setLongitude(arrayPoints.get(controller).longitude);
+                Location loc2 = new Location("");
+                loc2.setLatitude(arrayPoints.get(controller).latitude);
+                loc2.setLongitude(arrayPoints.get(controller).longitude);
 
-            float distanceCondition = loc1.distanceTo(loc2);
+                float distanceCondition = loc1.distanceTo(loc2);
 
-            if (distanceCondition < 20) {
-                Log.i("location1", "Distance of: " + distanceCalculation.CalculationByDistance(arrayPoints.get(0), arrayPoints.get(controller)));
-                arrayPoints.add(arrayPoints.get(0));
+                if (distanceCondition < 20) {
+                    Log.i("location1", "Distance of: " + distanceCalculation.CalculationByDistance(arrayPoints.get(0), arrayPoints.get(controller)));
 
-                countPolygonPoints();
+                    //speed
+                    speed = tempSpeed / (arrayPoints.size() + 1);
+
+                    //distance
+                    for(int calculate = 0; arrayPoints.size() - 1 > calculate; calculate++){
+                        Location start = new Location("");
+                        loc1.setLatitude(arrayPoints.get(0).latitude);
+                        loc1.setLongitude(arrayPoints.get(0).longitude);
+
+                        Location end = new Location("");
+                        loc2.setLatitude(arrayPoints.get(controller).latitude);
+                        loc2.setLongitude(arrayPoints.get(controller).longitude);
+
+                        distance = distance + start.distanceTo(end);
+                    }
+
+                    arrayPoints.add(arrayPoints.get(0));
+
+                    // long duration, float speed, float distance
+                    countPolygonPoints(duration,speed,distance);
+                }
             }
         }
     }
@@ -304,7 +371,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                 mLocationRequest, this);
     }
 
-    public void countPolygonPoints() {
+    public void countPolygonPoints(long duration, float speed, float distance) {
         float distanceInMeters;
         double tempSpeed = 0;
         double averageSpeed = 0;
@@ -318,19 +385,65 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             polygonOptions.fillColor(Color.BLUE);
             Polygon polygon = myMap.addPolygon(polygonOptions);
 
+            polylineOptions = new PolylineOptions();
+            polylineOptions.color(Color.GREEN);
+            polylineOptions.width(4);
+            arrayPoints.add(newLatLng);
+            polylineOptions.addAll(arrayPoints);
+            myMap.addPolyline(polylineOptions);
+
             //Algo
             for (int controler = 0; receivedMarkerPosition.size() > 0; controler++) {
                 checkMarker = PolyUtil.containsLocation(receivedMarkerPosition.get(controler), arrayPoints, false);
                 if (checkMarker) {
-                    getDistance.setText("true");
+                    SharedPreferences userPref = getActivity().getSharedPreferences(Constants.USER_PREF_ID, Context.MODE_PRIVATE);
+                    String weight = userPref.getString(Constants.PROFILE_WEIGHT, null);
+
+                    Utils.getCaloriesBurned((Integer.parseInt(weight)),duration,speed);
+                    mapController = false;
+
+
+                    new AlertDialog.Builder(getActivity())
+                            .setMessage("congratulations you have completed run")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
                     //send data
-                }
-                else{
-                    getDistance.setText("false");
+                } else {
                     //Marker not in circle
                 }
             }
         }
+    }
+
+    class CapturedAsyntask extends AsyncTask<Void, Void, CapturingModel> {
+        @Override
+        protected CapturingModel doInBackground(Void... params) {
+            capturingSetup();
+
+            return capturingModel;
+        }
+    }
+
+    public void capturingSetup(){
+        RestAdapter.Builder builder = new RestAdapter.Builder()
+                .setEndpoint(CAPTUREDROOT) // address sa data
+                .setClient(new OkClient(new OkHttpClient()))
+                .setLogLevel(RestAdapter.LogLevel.FULL);
+
+        RestAdapter restAdapter = builder.build();
+        capturingService = restAdapter.create(CapturingService.class);
+//        capturingService.passData(receivedMarkerPosition.get(0).,);
+
+
+        SharedPreferences userPref = getActivity().getSharedPreferences(Constants.USER_PREF_ID, Context.MODE_PRIVATE);
+        userPref.getString(Constants.GCM_KEY,null);
+//        userPref.getString(Constants.)
     }
 
     class LoadAsyntask extends AsyncTask<Void, Void, MarkerModel> {
@@ -356,12 +469,28 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
                 for (int x = 0; markerModels.size() > x; x++) {
                     POSITION = new LatLng(markerModels.get(x).lat, markerModels.get(x).lng);
-                    //myMap.addMarker(new MarkerOptions().position(POSITION).title("test "+x));
+//                    myMap.addMarker(new MarkerOptions()
+//                            .position(POSITION)
+//                            .title(markerModels.get(x).name)
+//                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_trees)));
 
-                    myMap.addMarker(new MarkerOptions()
-                            .position(POSITION)
-                            .title(markerModels.get(x).name)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.arrow)));
+                    Log.i("name","hehe:"+markerModels.get(x).cluster_name);
+                    if (markerModels.get(x).cluster_name == null) {
+                        myMap.addMarker(new MarkerOptions()
+                                .position(POSITION)
+                                .title(markerModels.get(x).name)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_trees)));
+                    } else if (markerModels.get(x).cluster_name.equals("impulse")) {
+                        myMap.addMarker(new MarkerOptions()
+                                .position(POSITION)
+                                .title(markerModels.get(x).name)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_impulse)));
+                    } else if (markerModels.get(x).cluster_name.equals("velocity")) {
+                        myMap.addMarker(new MarkerOptions()
+                                .position(POSITION)
+                                .title(markerModels.get(x).name)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_velocity)));
+                    }
                 }
             }
 
@@ -416,7 +545,17 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         public void getData(ArrayList<LatLng> location);
     }
 
+    @OnClick(R.id.fab_run)
+    public void runFab(){
+        filterViewDialog = new FilterViewDialog();
+        filterViewDialog.setTargetFragment(this, REQUEST_CODE2);
+        filterViewDialog.show(getFragmentManager(), "Filter Sample Fragment");
+    }
 
+    @OnClick(R.id.fab_search)
+    public void searchFab(){
+
+    }
 }
 
 

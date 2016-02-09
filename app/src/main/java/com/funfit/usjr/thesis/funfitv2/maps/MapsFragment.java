@@ -96,7 +96,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     FilterViewDialog filterViewDialog;
 
     //Populate marker from database using webservice
-    private static final String ROOT = "http://192.168.1.44:8081/funfit-backend";
+    private static final String ROOT = "http://172.20.10.3:8081/funfit-backend";
     //Send Captured Data
     private static final String CAPTUREDROOT = "http://192.168.1.44:8081";
     private MarkerModel markerModel;

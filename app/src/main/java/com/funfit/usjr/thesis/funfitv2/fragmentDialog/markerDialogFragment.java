@@ -36,7 +36,7 @@ import retrofit.client.Response;
  * Created by ocabafox on 2/7/2016.
  */
 public class markerDialogFragment extends DialogFragment implements MapsFragment.MarkerInterface {
-    private static final String ROOT = "http://192.168.1.44:8081/funfit-backend";
+    private static final String ROOT = "http://172.20.10.3:8081/funfit-backend";
     Button button;
     LatLng location;
     List<LatLng> getLocation = new ArrayList<LatLng>();

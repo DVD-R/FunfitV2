@@ -1,12 +1,15 @@
 package com.funfit.usjr.thesis.funfitv2.leaderBoard;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.IntentCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,10 +21,18 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.funfit.usjr.thesis.funfitv2.FunfitApplication;
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.login.LoginActivity;
 import com.funfit.usjr.thesis.funfitv2.main.MainActivity;
+import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.EventActivity;
+import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,14 +41,27 @@ import butterknife.ButterKnife;
  * Created by ocabafox on 1/20/2016.
  */
 public class LeaderBoardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
     @Bind(R.id.recycler_leaderboard)
     RecyclerView mRecyclerView;
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
     @Bind(R.id.navigation)
-    NavigationView mNavigationView;
+    NavigationView navigationView;
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
+
+    @Bind(R.id.nav_layout)
+    RelativeLayout mNavLayout;
+    @Bind(R.id.txt_username)
+    TextView mTextUsername;
+    @Bind(R.id.txt_level)
+    TextView mTextLevel;
+    @Bind(R.id.img_cluster)
+    ImageView mImageCluster;
+    @Bind(R.id.img_profile)
+    ImageView mImageProfile;
+
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private final Handler mDrawerActionHandler = new Handler();
     private static final long DRAWER_CLOSE_DELAY_MS = 250;
@@ -47,10 +71,14 @@ public class LeaderBoardActivity extends AppCompatActivity implements Navigation
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Utils.getCluster(this).equals("impulse"))
+            setTheme(R.style.ImpulseAppTheme);
+        else
+            setTheme(R.style.VelocityAppTheme);
         setContentView(R.layout.activity_leaderboard);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-        mNavigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(this);
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.open,
                 R.string.close);
@@ -81,6 +109,8 @@ public class LeaderBoardActivity extends AppCompatActivity implements Navigation
         LeaderBoardAdapter mAdapter = new LeaderBoardAdapter(itemsData);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        setNavViews();
     }
 
     @Override
@@ -95,6 +125,24 @@ public class LeaderBoardActivity extends AppCompatActivity implements Navigation
             }
         }, DRAWER_CLOSE_DELAY_MS);
         return true;
+    }
+
+    private void setNavViews() {
+        SharedPreferences userData =
+                getSharedPreferences(Constants.USER_PREF_ID, MODE_PRIVATE);
+        String cluster = userData.getString(Constants.PROFILE_CLUSTER, null);
+
+        if (cluster.equals("impulse")) {
+            mNavLayout.setBackground(getResources().getDrawable(R.drawable.nav_header_impulse));
+            mImageCluster.setImageResource(R.drawable.up_impulse);
+        }
+        else {
+            mNavLayout.setBackground(getResources().getDrawable(R.drawable.nav_header_velocity));
+            mImageCluster.setImageResource(R.drawable.up_velocity);
+        }
+        mTextUsername.setText(userData.getString(Constants.PROFILE_FNAME, null));
+        Glide.with(this).load(userData.getString(Constants.PROFILE_IMG_URL, null))
+                .centerCrop().crossFade().into(mImageProfile);
     }
 
     private void navigate(final int itemId) {
@@ -117,14 +165,14 @@ public class LeaderBoardActivity extends AppCompatActivity implements Navigation
             case R.id.nav_event:
                 startActivity(new Intent(this, EventActivity.class));
                 break;
+            case R.id.nav_logout:
+                ((FunfitApplication) getApplicationContext()).logout();
+                i = new Intent(this, LoginActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                        IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                getSharedPreferences(Constants.USER_PREF_ID, Context.MODE_PRIVATE).edit().clear();
+                startActivity(i);
+                break;
         }
     }
-
-//    class LoadAsyntask extends AsyncTask<Void,Void,Void>{
-//
-//        @Override
-//        protected Void doInBackground(Void... params) {
-//            return null;
-//        }
-//    }
 }

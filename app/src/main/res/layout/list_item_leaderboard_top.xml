@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/touch_selector_white"
-    android:elevation="10dp">
+    android:background="@android:color/white"
+    android:elevation="10dp"
+    android:foreground="?attr/selectableItemBackground">
 
     <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+        android:layout_gravity="right|bottom"
         android:fontFamily="sans-serif-black"
         android:text="#1"
-        android:id="@+id/textView2"
-        android:textColor="#EEEEEE"
-        android:layout_gravity="right|bottom" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+        android:textColor="#EEEEEE" />
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
         <FrameLayout
             android:id="@+id/notif_img_container"
@@ -33,43 +34,45 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgIcon"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@android:color/darker_gray"/>
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:src="@android:color/darker_gray"
+                android:padding="20dp"
+                android:layout_gravity="center" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/img_leader_status"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@android:color/black"
                 android:layout_gravity="right|bottom"
-                app:civ_border_width="2dp"
-                app:civ_border_color="#EEEEEE"/>
+                android:src="@android:color/black"
+                app:civ_border_color="@android:color/white"
+                app:civ_border_width="5dp" />
         </FrameLayout>
 
 
         <LinearLayout
-            android:layout_height="wrap_content"
             android:layout_width="0dp"
-            android:layout_weight="7"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_marginLeft="15dp"
-            android:orientation="vertical"
-            android:layout_gravity="center_vertical">
+            android:layout_weight="7"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/txtName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/primary_dark"
-                android:text="abcd"/>
+                android:text="abcd"
+                android:textColor="@color/primary_dark" />
 
             <TextView
                 android:id="@+id/txtScore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="abcd"
                 android:singleLine="false"
-                android:textColor="@android:color/darker_gray"/>
+                android:text="abcd"
+                android:textColor="@android:color/darker_gray" />
 
         </LinearLayout>
     </LinearLayout>

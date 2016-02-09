@@ -55,7 +55,7 @@
             android:id="@+id/txt_level"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="lv 15"
+            android:text="lv 1"
             android:textColor="@color/white" />
     </LinearLayout>
 

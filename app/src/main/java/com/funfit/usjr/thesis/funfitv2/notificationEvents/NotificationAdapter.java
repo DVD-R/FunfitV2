@@ -101,8 +101,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     private int getStatusIcon(int notificationType) {
         switch (notificationType){
-            case NOTIFICATION_ALLY_FORTIFIED: return R.drawable.status_blue_shield;
-            case NOTIFICATION_ENEMY_ENVADE: return R.drawable.status_red_sword;
+            case NOTIFICATION_ALLY_FORTIFIED: return R.drawable.ic_status_velocity;
+            case NOTIFICATION_ENEMY_ENVADE: return R.drawable.ic_status_impulse;
         }
         return 0;
     }

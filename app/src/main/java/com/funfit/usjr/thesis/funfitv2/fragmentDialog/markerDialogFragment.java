@@ -36,7 +36,7 @@ import retrofit.client.Response;
  * Created by ocabafox on 2/7/2016.
  */
 public class markerDialogFragment extends DialogFragment implements MapsFragment.MarkerInterface {
-    private static final String ROOT = "http://192.168.1.44:8081/funfit-backend/";
+    private static final String ROOT = "http://192.168.1.44:8081/funfit-backend";
     Button button;
     LatLng location;
     List<LatLng> getLocation = new ArrayList<LatLng>();
@@ -61,10 +61,11 @@ public class markerDialogFragment extends DialogFragment implements MapsFragment
             public void onClick(View v) {
                 new LoadAsyntask().execute();
 
-                Log.i("giatay","From MarkerDialogFragment: "+getLocation.get(0));
+                Log.i("giatay", "From MarkerDialogFragment: " + getLocation.get(0));
 
                 Intent intent = new Intent();
                 intent.putExtra("location", (Serializable) getLocation);
+                intent.putExtra("true",true);
 
                 getTargetFragment().onActivityResult(getTargetRequestCode(), MapsFragment.REQUEST_CODE, intent);
                 onStop();
@@ -78,7 +79,6 @@ public class markerDialogFragment extends DialogFragment implements MapsFragment
     @Override
     public void getData(ArrayList<LatLng> location) {
         getLocation = location;
-
     }
 
     class LoadAsyntask extends AsyncTask<Void, Void, MarkerInfoModel> {

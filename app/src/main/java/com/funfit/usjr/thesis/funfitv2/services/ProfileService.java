@@ -1,6 +1,7 @@
 package com.funfit.usjr.thesis.funfitv2.services;
 
 import com.funfit.usjr.thesis.funfitv2.model.ProfileRequestJson;
+import com.funfit.usjr.thesis.funfitv2.model.Rdi;
 import com.funfit.usjr.thesis.funfitv2.model.ResponseJson;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import retrofit.http.POST;
  */
 public interface ProfileService {
     @Headers("Content-Type: application/json")
-    @POST("/t/funfit/webapps/funfit-1.0.0/initiate")
+    @POST("/funfit-backend/initiate")
     void getAppInitialization(@Body ProfileRequestJson profileRequestJson,
-                              Callback<List<ResponseJson>> responseJsonCallback);
+                              Callback<Rdi> responseJsonCallback);
 }

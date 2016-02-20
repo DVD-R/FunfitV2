@@ -132,7 +132,7 @@ public class SignUpActivity extends AppCompatActivity {
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
                 SignUpActivity.this.getSharedPreferences(Constants.USER_PREF_ID,MODE_PRIVATE)
-                        .edit().putString(Constants.PROFILE_CLUSTER, Constants.GCM_KEY).apply();
+                        .edit().putString(Constants.GCM_KEY, o.toString()).commit();
                 Toast.makeText(SignUpActivity.this, o.toString(), Toast.LENGTH_LONG).show();
             }
         }.execute();

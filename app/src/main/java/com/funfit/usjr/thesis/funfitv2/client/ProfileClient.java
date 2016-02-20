@@ -12,7 +12,7 @@ import retrofit.client.OkClient;
  */
 public class ProfileClient {
     public static ProfileService profileService;
-    private static final String ROOT = "https://appserver.dev.cloud.wso2.com";
+    private static final String ROOT = "http://172.17.3.51:8081";
     static {
         setupRestClient();
     }

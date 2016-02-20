@@ -37,6 +37,12 @@ public final class Constants {
     public static final String PROFILE_CLUSTER = "profile_cluster";
     public static final String GCM_KEY = "gcm_key";
 
+
+    //Shared RDI result
+    public static final String RDI_PREF_ID = "rdi_info";
+    public static final String RDI = "recommended_daily_intake";
+    public static final String UID = "userID";
+
     public final static String SENDER_ID = "209690052574";
     public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 }

@@ -1,10 +1,10 @@
 package com.funfit.usjr.thesis.funfitv2.main;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -33,6 +33,7 @@ import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.leaderBoard.LeaderBoardActivity;
 import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanFragment;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
+import com.funfit.usjr.thesis.funfitv2.model.ProfileRequestJson;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.EventActivity;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.NotificationActivity;
 import com.funfit.usjr.thesis.funfitv2.services.CreatePolylineService;
@@ -70,17 +71,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ImageView mImageCluster;
     @Bind(R.id.img_profile)
     ImageView mImageProfile;
-
+    private Activity activity;
+    private SharedPreferences userData, rdi;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private final Handler mDrawerActionHandler = new Handler();
     private static final long DRAWER_CLOSE_DELAY_MS = 250;
     private static final String NAV_ITEM_ID = "navItemId";
     private int mNavItemId;
-    private SharedPreferences mPrefHealthSetup;
     private MainPresenter mainPresenter;
     private List<String> encodePolyline;
     private ProgressDialog mProgressDialog;
-
+    private ProfileRequestJson profileRequestJson;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,14 +111,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle.syncState();
         mainPresenter = new MainPresenter(this);
-        mPrefHealthSetup = getSharedPreferences("USER_HEALTH_DATA_PREF", Context.MODE_PRIVATE);
-
+        userData = getSharedPreferences(Constants.USER_PREF_ID, MODE_PRIVATE);
+        rdi = getSharedPreferences(Constants.RDI_PREF_ID, MODE_PRIVATE);
+        activity = MainActivity.this;
         setNavViews();
     }
 
     private void setNavViews() {
-        SharedPreferences userData =
-                getSharedPreferences(Constants.USER_PREF_ID, MODE_PRIVATE);
+
         String cluster = userData.getString(Constants.PROFILE_CLUSTER, null);
 
         if (cluster.equals("impulse")) {
@@ -157,8 +158,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-//        mainPresenter.onResume();
-//        getSupportFragmentManager().beginTransaction().replace(R.id.container,new MealPlanFragment()).commit();
+        if (rdi.getString(Constants.RDI, null) == null && rdi.getString(Constants.UID, null) == null) {
+            mainPresenter.setProfileRequestJson();
+            mainPresenter.onResume();
+        }
     }
 
     private void navigate(final int itemId) {
@@ -213,17 +216,70 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public String getHeight() {
-        return mPrefHealthSetup.getString("HEIGHT", null);
+        String [] height = userData.getString(Constants.PROFILE_HEIGHT, null).split(" ");
+        return  height[0].toString();
     }
 
     @Override
     public String getWeight() {
-        return mPrefHealthSetup.getString("WEIGHT", null);
+        String [] weight = userData.getString(Constants.PROFILE_WEIGHT, null).split(" ");
+        return weight[0].toString();
     }
 
     @Override
     public String getActivityLevel() {
-        return mPrefHealthSetup.getString("ACTIVITY_LEVEL", null);
+        return userData.getString(Constants.PROFILE_ACTIVITY_LEVEL, null);
+    }
+
+    @Override
+    public String getFirstName() {
+        return userData.getString(Constants.PROFILE_FNAME, null);
+    }
+
+    @Override
+    public String getLastName() {
+        return userData.getString(Constants.PROFILE_LNAME, null);
+    }
+
+    @Override
+    public int getAge() {
+        return mainPresenter.calculateAge(userData.getString(Constants.PROFILE_DOB, null));
+    }
+
+    @Override
+    public String getGender() {
+        return userData.getString(Constants.PROFILE_GENDER, null);
+    }
+
+    @Override
+    public String getEmail() {
+        return userData.getString(Constants.PROFILE_EMAIL, null);
+    }
+
+    @Override
+    public String getfactionDescription() {
+        return userData.getString(Constants.PROFILE_CLUSTER, null);
+    }
+
+    @Override
+    public String getGcmKey() {
+        return userData.getString(Constants.GCM_KEY, null);
+    }
+
+    @Override
+    public Context getContxt() {
+        return activity;
+    }
+
+    @Override
+    public void setProfileRequestJson(ProfileRequestJson profileRequestJson) {
+        Log.i("User ID", profileRequestJson.getUserId()+"");
+        this.profileRequestJson = profileRequestJson;
+    }
+
+    @Override
+    public ProfileRequestJson getProfileRequestJson() {
+        return profileRequestJson;
     }
 
     @Override

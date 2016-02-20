@@ -24,6 +24,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ServerValue;
+import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.distance.DistanceCalculation;
 import com.funfit.usjr.thesis.funfitv2.fragmentDialog.FilterViewDialog;
@@ -31,6 +36,8 @@ import com.funfit.usjr.thesis.funfitv2.fragmentDialog.markerDialogFragment;
 import com.funfit.usjr.thesis.funfitv2.model.CapturingModel;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.MarkerModel;
+import com.funfit.usjr.thesis.funfitv2.model.Territory;
+import com.funfit.usjr.thesis.funfitv2.model.User;
 import com.funfit.usjr.thesis.funfitv2.services.CapturingService;
 import com.funfit.usjr.thesis.funfitv2.services.MarkerService;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
@@ -56,6 +63,7 @@ import com.google.maps.android.PolyUtil;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -73,7 +81,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     private static final String LOG_TAG = MapsFragment.class.getSimpleName();
     public static final int REQUEST_CODE = 1;
     public static final int REQUEST_CODE2 = 30;
-    MapView mMapView;
+    private MapView mMapView;
     private GoogleMap myMap;
     private GoogleApiClient mGoogleApiClient;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
@@ -149,7 +157,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
         connectClient();
 
-
+        queryTerritories();
         return view;
 
     }
@@ -220,11 +228,10 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
                 filter = data.getStringExtra("filter");
                 Log.i("hala", "zzzzaaa " + filter);
-                if(filter.equals("faction")){
+                if (filter.equals("faction")) {
                     //myMap.clear();
                     Toast.makeText(getActivity(), "Faction", Toast.LENGTH_SHORT).show();
-                }
-                else{
+                } else {
                     //myMap.clear();
                     Toast.makeText(getActivity(), "Conquered", Toast.LENGTH_SHORT).show();
                 }
@@ -327,7 +334,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                     speed = tempSpeed / (arrayPoints.size() + 1);
 
                     //distance
-                    for(int calculate = 0; arrayPoints.size() - 1 > calculate; calculate++){
+                    for (int calculate = 0; arrayPoints.size() - 1 > calculate; calculate++) {
                         Location start = new Location("");
                         loc1.setLatitude(arrayPoints.get(0).latitude);
                         loc1.setLongitude(arrayPoints.get(0).longitude);
@@ -342,7 +349,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                     arrayPoints.add(arrayPoints.get(0));
 
                     // long duration, float speed, float distance
-                    countPolygonPoints(duration,speed,distance);
+                    countPolygonPoints(duration, speed, distance);
                 }
             }
         }
@@ -399,7 +406,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                     SharedPreferences userPref = getActivity().getSharedPreferences(Constants.USER_PREF_ID, Context.MODE_PRIVATE);
                     String weight = userPref.getString(Constants.PROFILE_WEIGHT, null);
 
-                    Utils.getCaloriesBurned((Integer.parseInt(weight)),duration,speed);
+                    Utils.getCaloriesBurned((Integer.parseInt(weight)), duration, speed);
                     mapController = false;
 
 
@@ -430,7 +437,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         }
     }
 
-    public void capturingSetup(){
+    public void capturingSetup() {
         RestAdapter.Builder builder = new RestAdapter.Builder()
                 .setEndpoint(CAPTUREDROOT) // address sa data
                 .setClient(new OkClient(new OkHttpClient()))
@@ -442,7 +449,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
 
         SharedPreferences userPref = getActivity().getSharedPreferences(Constants.USER_PREF_ID, Context.MODE_PRIVATE);
-        userPref.getString(Constants.GCM_KEY,null);
+        userPref.getString(Constants.GCM_KEY, null);
 //        userPref.getString(Constants.)
     }
 
@@ -474,7 +481,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 //                            .title(markerModels.get(x).name)
 //                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_trees)));
 
-                    Log.i("name","hehe:"+markerModels.get(x).cluster_name);
+                    Log.i("name", "hehe:" + markerModels.get(x).cluster_name);
                     if (markerModels.get(x).cluster_name == null) {
                         myMap.addMarker(new MarkerOptions()
                                 .position(POSITION)
@@ -546,15 +553,33 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     }
 
     @OnClick(R.id.fab_run)
-    public void runFab(){
+    public void runFab() {
         filterViewDialog = new FilterViewDialog();
         filterViewDialog.setTargetFragment(this, REQUEST_CODE2);
         filterViewDialog.show(getFragmentManager(), "Filter Sample Fragment");
     }
 
     @OnClick(R.id.fab_search)
-    public void searchFab(){
+    public void searchFab() {
 
+    }
+
+    private void queryTerritories() {
+        final Firebase territoryFirebase = new Firebase(Constants.FIREBASE_URL_TERRITORIES);
+
+        territoryFirebase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                    Territory territory = postSnapshot.getValue(Territory.class);
+                    Log.v(LOG_TAG, territory.getName());
+                }
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e(LOG_TAG, firebaseError.toString());
+            }
+        });
     }
 }
 

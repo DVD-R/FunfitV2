@@ -7,6 +7,7 @@ import java.util.HashMap;
  */
 public class Territory {
     private String name;
+    private String main_marker;
     private HashMap<String, Object> coordinates;
     private HashMap<String, Object> timestampConquered;
     private String level;
@@ -14,13 +15,32 @@ public class Territory {
     private String cluster_owner;
     private String locale;
 
-    public Territory(String name, HashMap<String, Object> coordinates, HashMap<String, Object> timestampConquered, String level, String user_owner, String cluster_owner) {
+    public Territory(String name, String main_marker, HashMap<String, Object> coordinates,
+                     HashMap<String, Object> timestampConquered, String level, String user_owner, String cluster_owner, String locale) {
         this.name = name;
+        this.main_marker = main_marker;
         this.coordinates = coordinates;
         this.timestampConquered = timestampConquered;
         this.level = level;
         this.user_owner = user_owner;
         this.cluster_owner = cluster_owner;
+        this.locale = locale;
+    }
+
+    public String getMain_marker() {
+        return main_marker;
+    }
+
+    public void setMain_marker(String main_marker) {
+        this.main_marker = main_marker;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
     public String getCluster_owner() {

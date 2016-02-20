@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         if (rdi.getString(Constants.RDI, null) == null && rdi.getString(Constants.UID, null) == null) {
-            mainPresenter.setProfileRequestJson();
+//            mainPresenter.setProfileRequestJson();
             mainPresenter.onResume();
         }
     }

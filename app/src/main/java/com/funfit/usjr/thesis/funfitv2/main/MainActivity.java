@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.FunfitApplication;
@@ -34,6 +35,7 @@ import com.funfit.usjr.thesis.funfitv2.leaderBoard.LeaderBoardActivity;
 import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanFragment;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.ProfileRequestJson;
+import com.funfit.usjr.thesis.funfitv2.model.Territory;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.EventActivity;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.NotificationActivity;
 import com.funfit.usjr.thesis.funfitv2.services.CreatePolylineService;
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String NAV_ITEM_ID = "navItemId";
     private int mNavItemId;
     private MainPresenter mainPresenter;
-    private List<String> encodePolyline;
+    private List<Territory> listTerritory;
     private ProgressDialog mProgressDialog;
     private ProfileRequestJson profileRequestJson;
     @Override
@@ -158,10 +160,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-        if (rdi.getString(Constants.RDI, null) == null && rdi.getString(Constants.UID, null) == null) {
             mainPresenter.setProfileRequestJson();
             mainPresenter.onResume();
-        }
     }
 
     private void navigate(final int itemId) {
@@ -273,7 +273,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void setProfileRequestJson(ProfileRequestJson profileRequestJson) {
-        Log.i("User ID", profileRequestJson.getUserId()+"");
         this.profileRequestJson = profileRequestJson;
     }
 
@@ -283,15 +282,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void sendEncodePolyline() {
+    public void sendTerritory() {
         Intent i = new Intent(this, CreatePolylineService.class);
-        i.putExtra("ENCODEDPOLYLINE", (Serializable) this.encodePolyline);
+        i.putExtra("RESPONSETERRITORY", (Serializable) this.listTerritory);
         startService(i);
     }
 
     @Override
-    public void setEndcodedPolylineList(List<String> encodePolyline) {
-        this.encodePolyline = encodePolyline;
+    public void setEndcodedPolylineList(List<Territory> listTerritory) {
+        this.listTerritory = listTerritory;
+        Log.i("Testing notification: ", listTerritory.get(0).getEncoded_polyline());
     }
 
     @Override

@@ -24,12 +24,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.distance.DistanceCalculation;
 import com.funfit.usjr.thesis.funfitv2.fragmentDialog.FilterViewDialog;
 import com.funfit.usjr.thesis.funfitv2.fragmentDialog.markerDialogFragment;
 import com.funfit.usjr.thesis.funfitv2.model.CapturingModel;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
+import com.funfit.usjr.thesis.funfitv2.model.FTerritory;
 import com.funfit.usjr.thesis.funfitv2.model.MarkerModel;
 import com.funfit.usjr.thesis.funfitv2.model.Territory;
 import com.funfit.usjr.thesis.funfitv2.services.CapturingService;
@@ -152,8 +157,9 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
         connectClient();
 
-        mapsFragmentPresenter = new MapsFragmentPresenter(this);
+        //mapsFragmentPresenter = new MapsFragmentPresenter(this);
 
+        queryTerritories();
         return view;
 
     }
@@ -513,6 +519,60 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     @OnClick(R.id.fab_search)
     public void searchFab(){
 
+    }
+
+    private void queryTerritories() {
+        final Firebase territoryFirebase = new Firebase(Constants.FIREBASE_URL_TERRITORIES);
+
+        territoryFirebase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                    FTerritory fTerritory = postSnapshot.getValue(FTerritory.class);
+
+                    ArrayList<LatLng> getTerritoryForPolygon = new ArrayList<LatLng>();
+
+                    for(int x = 0; fTerritory.getCoordinates().size() > x; x++){
+                        String[] latlong =  fTerritory.getCoordinates().get(x).trim().split(",");
+                        double latitude = Double.parseDouble(latlong[0]);
+                        double longitude = Double.parseDouble(latlong[1]);
+
+                        LatLng latLng = new LatLng(latitude, longitude);
+
+                        getTerritoryForPolygon.add(latLng);
+                    }
+
+                    if(fTerritory.getLevel() > 0){
+                        PolygonOptions polygonOptions1 = new PolygonOptions();
+                        polygonOptions1.addAll(getTerritoryForPolygon);
+                        polygonOptions1.strokeColor(getResources().getColor(R.color.filter_impulse));
+                        polygonOptions1.strokeWidth(7);
+                        polygonOptions1.fillColor(getResources().getColor(R.color.filter_impulse));
+                        myMap.addPolygon(polygonOptions1);
+                    }
+                    else if(fTerritory.getLevel() < 0){
+                        PolygonOptions polygonOptions1 = new PolygonOptions();
+                        polygonOptions1.addAll(getTerritoryForPolygon);
+                        polygonOptions1.strokeColor(getResources().getColor(R.color.filter_velocity));
+                        polygonOptions1.strokeWidth(7);
+                        polygonOptions1.fillColor(getResources().getColor(R.color.filter_velocity));
+                        myMap.addPolygon(polygonOptions1);
+                    }
+                    else{
+                        PolygonOptions polygonOptions1 = new PolygonOptions();
+                        polygonOptions1.addAll(getTerritoryForPolygon);
+                        polygonOptions1.strokeColor(getResources().getColor(R.color.grey));
+                        polygonOptions1.strokeWidth(7);
+                        polygonOptions1.fillColor(getResources().getColor(R.color.grey));
+                        myMap.addPolygon(polygonOptions1);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e(LOG_TAG, firebaseError.toString());
+            }
+        });
     }
 }
 

@@ -1,5 +1,6 @@
 package com.funfit.usjr.thesis.funfitv2.distance;
 
+import android.location.Location;
 import android.util.Log;
 
 //import com.google.android.gms.maps.model.LatLng;
@@ -37,5 +38,21 @@ public class DistanceCalculation {
                 + " Meter   " + meterInDec);
 
         return Radius * c;
+    }
+
+    public float distanceLocation(LatLng start, LatLng end){
+        float getDistanceInMeters;
+
+        Location loc1 = new Location("");
+        loc1.setLatitude(start.latitude);
+        loc1.setLongitude(start.longitude);
+
+        Location loc2 = new Location("");
+        loc2.setLatitude(end.latitude);
+        loc2.setLongitude(end.longitude);
+
+        getDistanceInMeters =  loc1.distanceTo(loc2);
+
+        return  getDistanceInMeters;
     }
 }

@@ -531,40 +531,51 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                     FTerritory fTerritory = postSnapshot.getValue(FTerritory.class);
 
                     ArrayList<LatLng> getTerritoryForPolygon = new ArrayList<LatLng>();
+                    LatLng start = new LatLng(location.getLatitude(), location.getLongitude());
 
-                    for(int x = 0; fTerritory.getCoordinates().size() > x; x++){
-                        String[] latlong =  fTerritory.getCoordinates().get(x).trim().split(",");
-                        double latitude = Double.parseDouble(latlong[0]);
-                        double longitude = Double.parseDouble(latlong[1]);
+                    String[] getEndLocation =  fTerritory.getMain_marker().trim().split(",");
+                    double latitude = Double.parseDouble(getEndLocation[0]);
+                    double longitude = Double.parseDouble(getEndLocation[1]);
 
-                        LatLng latLng = new LatLng(latitude, longitude);
+                    LatLng end = new LatLng(latitude, longitude);
 
-                        getTerritoryForPolygon.add(latLng);
-                    }
+                    //Note: 5KM is 5000m
+                    if(distanceCalculation.distanceLocation(start,end) < 50000){
+                        Log.i("distance","aa "+distanceCalculation.distanceLocation(start,end));
+                        for(int x = 0; fTerritory.getCoordinates().size() > x; x++){
+                            String[] latlong =  fTerritory.getCoordinates().get(x).trim().split(",");
+                            double distanceLatitude = Double.parseDouble(latlong[0]);
+                            double distanceLongitude = Double.parseDouble(latlong[1]);
 
-                    if(fTerritory.getLevel() > 0){
-                        PolygonOptions polygonOptions1 = new PolygonOptions();
-                        polygonOptions1.addAll(getTerritoryForPolygon);
-                        polygonOptions1.strokeColor(getResources().getColor(R.color.filter_impulse));
-                        polygonOptions1.strokeWidth(7);
-                        polygonOptions1.fillColor(getResources().getColor(R.color.filter_impulse));
-                        myMap.addPolygon(polygonOptions1);
-                    }
-                    else if(fTerritory.getLevel() < 0){
-                        PolygonOptions polygonOptions1 = new PolygonOptions();
-                        polygonOptions1.addAll(getTerritoryForPolygon);
-                        polygonOptions1.strokeColor(getResources().getColor(R.color.filter_velocity));
-                        polygonOptions1.strokeWidth(7);
-                        polygonOptions1.fillColor(getResources().getColor(R.color.filter_velocity));
-                        myMap.addPolygon(polygonOptions1);
-                    }
-                    else{
-                        PolygonOptions polygonOptions1 = new PolygonOptions();
-                        polygonOptions1.addAll(getTerritoryForPolygon);
-                        polygonOptions1.strokeColor(getResources().getColor(R.color.grey));
-                        polygonOptions1.strokeWidth(7);
-                        polygonOptions1.fillColor(getResources().getColor(R.color.grey));
-                        myMap.addPolygon(polygonOptions1);
+                            LatLng distanceLatLng = new LatLng(distanceLatitude, distanceLongitude);
+
+                            getTerritoryForPolygon.add(distanceLatLng);
+                        }
+
+                        if(fTerritory.getLevel() > 0){
+                            PolygonOptions polygonOptions1 = new PolygonOptions();
+                            polygonOptions1.addAll(getTerritoryForPolygon);
+                            polygonOptions1.strokeColor(getResources().getColor(R.color.filter_impulse));
+                            polygonOptions1.strokeWidth(7);
+                            polygonOptions1.fillColor(getResources().getColor(R.color.filter_impulse));
+                            myMap.addPolygon(polygonOptions1);
+                        }
+                        else if(fTerritory.getLevel() < 0){
+                            PolygonOptions polygonOptions1 = new PolygonOptions();
+                            polygonOptions1.addAll(getTerritoryForPolygon);
+                            polygonOptions1.strokeColor(getResources().getColor(R.color.filter_velocity));
+                            polygonOptions1.strokeWidth(7);
+                            polygonOptions1.fillColor(getResources().getColor(R.color.filter_velocity));
+                            myMap.addPolygon(polygonOptions1);
+                        }
+                        else{
+                            PolygonOptions polygonOptions1 = new PolygonOptions();
+                            polygonOptions1.addAll(getTerritoryForPolygon);
+                            polygonOptions1.strokeColor(getResources().getColor(R.color.grey));
+                            polygonOptions1.strokeWidth(7);
+                            polygonOptions1.fillColor(getResources().getColor(R.color.grey));
+                            myMap.addPolygon(polygonOptions1);
+                        }
                     }
                 }
             }

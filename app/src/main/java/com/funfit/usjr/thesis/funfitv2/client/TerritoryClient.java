@@ -1,24 +1,24 @@
 package com.funfit.usjr.thesis.funfitv2.client;
 
 import com.funfit.usjr.thesis.funfitv2.services.ProfileService;
+import com.funfit.usjr.thesis.funfitv2.services.TerritoryService;
 import com.squareup.okhttp.OkHttpClient;
 
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
-
 /**
- * Created by victor on 1/22/2016.
+ * Created by victor on 2/21/2016.
  */
-public class ProfileClient {
-    public static ProfileService profileService;
+public class TerritoryClient {
+    public static TerritoryService territoryService;
     private static final String ROOT = "http://192.168.254.101:8081";
     static {
         setupRestClient();
     }
 
-    private ProfileClient(){}
-    public static ProfileService get(){return profileService;}
+    private TerritoryClient(){}
+    public static TerritoryService get(){return territoryService;}
 
     private static void setupRestClient(){
 
@@ -28,6 +28,6 @@ public class ProfileClient {
                 .setLogLevel(RestAdapter.LogLevel.FULL);
 
         RestAdapter restAdapter = builder.build();
-        profileService = restAdapter.create(ProfileService.class);
+        territoryService = restAdapter.create(TerritoryService.class);
     }
 }

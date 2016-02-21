@@ -3,6 +3,7 @@ package com.funfit.usjr.thesis.funfitv2.views;
 import android.content.Context;
 
 import com.funfit.usjr.thesis.funfitv2.model.ProfileRequestJson;
+import com.funfit.usjr.thesis.funfitv2.model.Territory;
 
 import java.util.List;
 
@@ -23,8 +24,8 @@ public interface IMainView {
     public Context getContxt();
     public void setProfileRequestJson(ProfileRequestJson profileRequestJson);
     public ProfileRequestJson getProfileRequestJson();
-    public void sendEncodePolyline();
-    public void setEndcodedPolylineList(List<String> encodePolyline);
+    public void sendTerritory();
+    public void setEndcodedPolylineList(List<Territory> listTerritory);
     public void initProgressDialog();
     public void hideProgressDialog();
 }

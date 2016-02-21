@@ -24,11 +24,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ServerValue;
-import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.distance.DistanceCalculation;
 import com.funfit.usjr.thesis.funfitv2.fragmentDialog.FilterViewDialog;
@@ -37,10 +32,10 @@ import com.funfit.usjr.thesis.funfitv2.model.CapturingModel;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.MarkerModel;
 import com.funfit.usjr.thesis.funfitv2.model.Territory;
-import com.funfit.usjr.thesis.funfitv2.model.User;
 import com.funfit.usjr.thesis.funfitv2.services.CapturingService;
 import com.funfit.usjr.thesis.funfitv2.services.MarkerService;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
+import com.funfit.usjr.thesis.funfitv2.views.IMapFragmentView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -53,6 +48,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -63,7 +59,6 @@ import com.google.maps.android.PolyUtil;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -77,11 +72,11 @@ import retrofit.client.Response;
 
 public class MapsFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, GoogleMap.OnMarkerClickListener {
+        LocationListener, GoogleMap.OnMarkerClickListener, IMapFragmentView {
     private static final String LOG_TAG = MapsFragment.class.getSimpleName();
     public static final int REQUEST_CODE = 1;
     public static final int REQUEST_CODE2 = 30;
-    private MapView mMapView;
+    MapView mMapView;
     private GoogleMap myMap;
     private GoogleApiClient mGoogleApiClient;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
@@ -99,10 +94,10 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     Location location;
     private String OVAL_POLYGON;
     private boolean mBroadcastInfoRegistered;
-    private List<String> polylineList;
+    private List<Territory> listTerritories;
     markerDialogFragment dialogFragment;
     FilterViewDialog filterViewDialog;
-
+    private boolean flag;
     //Populate marker from database using webservice
     private static final String ROOT = "http://172.20.10.3:8081/funfit-backend";
     //Send Captured Data
@@ -157,7 +152,8 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
         connectClient();
 
-        queryTerritories();
+        mapsFragmentPresenter = new MapsFragmentPresenter(this);
+
         return view;
 
     }
@@ -171,16 +167,70 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onResume() {
         super.onResume();
+        if (!mBroadcastInfoRegistered){
+            getActivity().registerReceiver(encodedPolylineBroadcast, new IntentFilter(getString(R.string.broadcast_encodedpolyline)));
+            mBroadcastInfoRegistered = true;
+            myMap = mMapView.getMap();
 
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
         mGoogleApiClient.disconnect();
-
+        if (!mBroadcastInfoRegistered){
+            getActivity().unregisterReceiver(encodedPolylineBroadcast);
+            mBroadcastInfoRegistered = false;
+        }
     }
 
+
+    private BroadcastReceiver encodedPolylineBroadcast = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            List<Territory> listTerritory = (List<Territory>) intent.getSerializableExtra("encodedPolyLine");
+            listTerritories = listTerritory;
+            if (flag) {
+                if (listTerritories.size() != 0)
+                    mapsFragmentPresenter.populateTerritory();
+            }
+        }
+    };
+
+    @Override
+    public void populateTerritory() {
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(location.getLatitude(), location.getLongitude()
+                )).zoom(16).build();
+        myMap.animateCamera(CameraUpdateFactory
+                .newCameraPosition(cameraPosition));
+
+
+        for (Territory territory: listTerritories) {
+            List<LatLng> oval = PolyUtil.decode(territory.getEncoded_polyline());
+
+            if (territory.getStatus().equals("uncharted") && territory.getFaction_description() == null) {
+                myMap.addPolygon(new PolygonOptions()
+                        .addAll(oval)
+                        .fillColor(Color.LTGRAY - ALPHA_ADJUSTMENT)
+                        .strokeColor(Color.GRAY)
+                        .strokeWidth(5));
+            }else if(territory.getStatus().equals("owned") && territory.getFaction_description().equals("velocity")){
+                myMap.addPolygon(new PolygonOptions()
+                        .addAll(oval)
+                        .fillColor(Color.BLUE - ALPHA_ADJUSTMENT)
+                        .strokeColor(Color.BLUE)
+                        .strokeWidth(5));
+            }else if(territory.getStatus().equals("owned") && territory.getFaction_description().equals("impulse")){
+                myMap.addPolygon(new PolygonOptions()
+                        .addAll(oval)
+                        .fillColor(Color.RED - ALPHA_ADJUSTMENT)
+                        .strokeColor(Color.RED)
+                        .strokeWidth(5));
+            }
+        }
+    }
 
     private void connectClient() {
         // Connect the client.
@@ -208,33 +258,11 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                 mapController = data.getExtras().containsKey("true");
                 receivedMarkerPosition = (ArrayList<LatLng>) data.getExtras().getSerializable("location");
 
-
-//                filter = data.getStringExtra("filter");
-//                Log.i("hala", "zzzzaaa " + filter);
-//                if(filter.equals("faction")){
-//                    //myMap.clear();
-//                    Toast.makeText(getActivity(), "Faction", Toast.LENGTH_SHORT).show();
-//                }
-//                else{
-//                    //myMap.clear();
-//                    Toast.makeText(getActivity(), "Conquered", Toast.LENGTH_SHORT).show();
-//                }
                 break;
 
             case REQUEST_CODE2:
 //                mapController = data.getExtras().containsKey("true");
 //                receivedMarkerPosition = (ArrayList<LatLng>) data.getExtras().getSerializable("location");
-
-
-                filter = data.getStringExtra("filter");
-                Log.i("hala", "zzzzaaa " + filter);
-                if (filter.equals("faction")) {
-                    //myMap.clear();
-                    Toast.makeText(getActivity(), "Faction", Toast.LENGTH_SHORT).show();
-                } else {
-                    //myMap.clear();
-                    Toast.makeText(getActivity(), "Conquered", Toast.LENGTH_SHORT).show();
-                }
                 break;
         }
     }
@@ -242,19 +270,21 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onConnected(Bundle bundle) {
         location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
         if (location != null) {
-//            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-//            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-//            myMap.animateCamera(cameraUpdate);
-//            myMap.setMyLocationEnabled(true);
+            try {
+                if (listTerritories.size() != 0)
+                    mapsFragmentPresenter.populateTerritory();
+                    flag = true;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
             polylineOptions = new PolylineOptions();
             //arrayPoints.add(latLng);
             myMap.setOnMarkerClickListener(this);
             //CustomMarker();
             startLocationUpdates();
-            new LoadAsyntask().execute();
-
-
             //dialogFragment.setTargetFragment(this, REQUEST_CODE);
         } else {
             Log.e("Location Service: ", "GPS not connected!");
@@ -334,7 +364,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                     speed = tempSpeed / (arrayPoints.size() + 1);
 
                     //distance
-                    for (int calculate = 0; arrayPoints.size() - 1 > calculate; calculate++) {
+                    for(int calculate = 0; arrayPoints.size() - 1 > calculate; calculate++){
                         Location start = new Location("");
                         loc1.setLatitude(arrayPoints.get(0).latitude);
                         loc1.setLongitude(arrayPoints.get(0).longitude);
@@ -349,7 +379,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                     arrayPoints.add(arrayPoints.get(0));
 
                     // long duration, float speed, float distance
-                    countPolygonPoints(duration, speed, distance);
+                    countPolygonPoints(duration,speed,distance);
                 }
             }
         }
@@ -406,7 +436,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                     SharedPreferences userPref = getActivity().getSharedPreferences(Constants.USER_PREF_ID, Context.MODE_PRIVATE);
                     String weight = userPref.getString(Constants.PROFILE_WEIGHT, null);
 
-                    Utils.getCaloriesBurned((Integer.parseInt(weight)), duration, speed);
+                    Utils.getCaloriesBurned((Integer.parseInt(weight)),duration,speed);
                     mapController = false;
 
 
@@ -428,85 +458,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         }
     }
 
-    class CapturedAsyntask extends AsyncTask<Void, Void, CapturingModel> {
-        @Override
-        protected CapturingModel doInBackground(Void... params) {
-            capturingSetup();
-
-            return capturingModel;
-        }
-    }
-
-    public void capturingSetup() {
-        RestAdapter.Builder builder = new RestAdapter.Builder()
-                .setEndpoint(CAPTUREDROOT) // address sa data
-                .setClient(new OkClient(new OkHttpClient()))
-                .setLogLevel(RestAdapter.LogLevel.FULL);
-
-        RestAdapter restAdapter = builder.build();
-        capturingService = restAdapter.create(CapturingService.class);
-//        capturingService.passData(receivedMarkerPosition.get(0).,);
-
-
-        SharedPreferences userPref = getActivity().getSharedPreferences(Constants.USER_PREF_ID, Context.MODE_PRIVATE);
-        userPref.getString(Constants.GCM_KEY, null);
-//        userPref.getString(Constants.)
-    }
-
-    class LoadAsyntask extends AsyncTask<Void, Void, MarkerModel> {
-        @Override
-        protected MarkerModel doInBackground(Void... params) {
-            setup();
-            return markerModel;
-        }
-    }
-
-    public void setup() {
-        RestAdapter.Builder builder = new RestAdapter.Builder()
-                .setEndpoint(ROOT) // address sa data
-                .setClient(new OkClient(new OkHttpClient()))
-                .setLogLevel(RestAdapter.LogLevel.FULL);
-
-        RestAdapter restAdapter = builder.build();
-        markerService = restAdapter.create(MarkerService.class);
-
-        markerService.getMarker(new Callback<List<MarkerModel>>() {
-            @Override
-            public void success(List<MarkerModel> markerModels, Response response) {
-
-                for (int x = 0; markerModels.size() > x; x++) {
-                    POSITION = new LatLng(markerModels.get(x).lat, markerModels.get(x).lng);
-//                    myMap.addMarker(new MarkerOptions()
-//                            .position(POSITION)
-//                            .title(markerModels.get(x).name)
-//                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_trees)));
-
-                    Log.i("name", "hehe:" + markerModels.get(x).cluster_name);
-                    if (markerModels.get(x).cluster_name == null) {
-                        myMap.addMarker(new MarkerOptions()
-                                .position(POSITION)
-                                .title(markerModels.get(x).name)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_trees)));
-                    } else if (markerModels.get(x).cluster_name.equals("impulse")) {
-                        myMap.addMarker(new MarkerOptions()
-                                .position(POSITION)
-                                .title(markerModels.get(x).name)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_impulse)));
-                    } else if (markerModels.get(x).cluster_name.equals("velocity")) {
-                        myMap.addMarker(new MarkerOptions()
-                                .position(POSITION)
-                                .title(markerModels.get(x).name)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_velocity)));
-                    }
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-    }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
@@ -553,33 +504,15 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     }
 
     @OnClick(R.id.fab_run)
-    public void runFab() {
+    public void runFab(){
         filterViewDialog = new FilterViewDialog();
         filterViewDialog.setTargetFragment(this, REQUEST_CODE2);
         filterViewDialog.show(getFragmentManager(), "Filter Sample Fragment");
     }
 
     @OnClick(R.id.fab_search)
-    public void searchFab() {
+    public void searchFab(){
 
-    }
-
-    private void queryTerritories() {
-        final Firebase territoryFirebase = new Firebase(Constants.FIREBASE_URL_TERRITORIES);
-
-        territoryFirebase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
-                    Territory territory = postSnapshot.getValue(Territory.class);
-                    Log.v(LOG_TAG, territory.getName());
-                }
-            }
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Log.e(LOG_TAG, firebaseError.toString());
-            }
-        });
     }
 }
 

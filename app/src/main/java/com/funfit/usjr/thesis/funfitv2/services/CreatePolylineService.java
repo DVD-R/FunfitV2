@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.model.Territory;
 
 import java.io.Serializable;
 import java.util.List;
@@ -23,9 +24,9 @@ public class CreatePolylineService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        List<String> encodedPolyLine = (List<String>) intent.getSerializableExtra("ENCODEDPOLYLINE");
+        List<Territory> listTerritory = (List<Territory>) intent.getSerializableExtra("RESPONSETERRITORY");
         Intent i = new Intent(getString(R.string.broadcast_encodedpolyline));
-        i.putExtra("encodedPolyLine", (Serializable) encodedPolyLine);
+        i.putExtra("encodedPolyLine", (Serializable) listTerritory);
         sendBroadcast(i);
         return START_NOT_STICKY;
     }

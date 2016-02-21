@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.funfit.usjr.funfitv2wear">
+    package="com.funfit.usjr.thesis.funfitv2">
 
     <!-- Mark this app as an Android Wear app. -->
     <uses-feature android:name="android.hardware.type.watch" />
 
     <!-- Permission required for ambient mode to keep the application running. -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"

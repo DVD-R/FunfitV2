@@ -252,7 +252,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             myMap.setOnMarkerClickListener(this);
             //CustomMarker();
             startLocationUpdates();
-            new LoadAsyntask().execute();
+            //new LoadAsyntask().execute();
 
 
             //dialogFragment.setTargetFragment(this, REQUEST_CODE);
@@ -572,7 +572,46 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot postSnapshot: snapshot.getChildren()) {
                     Territory territory = postSnapshot.getValue(Territory.class);
-                    Log.v(LOG_TAG, territory.getName());
+
+                    ArrayList<LatLng> getData = new ArrayList<LatLng>();
+                    Log.v(LOG_TAG, territory.getCoordinates().toString());
+
+                    for(int x = 0; territory.getCoordinates().size() > x; x++){
+                        String[] latlong =  territory.getCoordinates().get(x).trim().split(",");
+                        double latitude = Double.parseDouble(latlong[0]);
+                        double longitude = Double.parseDouble(latlong[1]);
+
+                        LatLng getLocationFromString = new LatLng(latitude, longitude);
+
+                        getData.add(getLocationFromString);
+                    }
+
+                    if(territory.getLevel() < 0){
+                        PolygonOptions polygonOptions1 = new PolygonOptions();
+                        polygonOptions1.addAll(getData);
+                        polygonOptions1.strokeColor(getResources().getColor(R.color.filter_velocity));
+                        polygonOptions1.strokeWidth(7);
+                        polygonOptions1.fillColor(getResources().getColor(R.color.filter_velocity));
+                        myMap.addPolygon(polygonOptions1);
+                    }
+                    else if(territory.getLevel() > 0){
+                        PolygonOptions polygonOptions1 = new PolygonOptions();
+                        polygonOptions1.addAll(getData);
+                        polygonOptions1.strokeColor(getResources().getColor(R.color.filter_impulse));
+                        polygonOptions1.strokeWidth(7);
+                        polygonOptions1.fillColor(getResources().getColor(R.color.filter_impulse));
+                        myMap.addPolygon(polygonOptions1);
+                    }
+                    else{
+                        PolygonOptions polygonOptions1 = new PolygonOptions();
+                        polygonOptions1.addAll(getData);
+                        polygonOptions1.strokeColor(getResources().getColor(R.color.grey));
+                        polygonOptions1.strokeWidth(7);
+                        polygonOptions1.fillColor(getResources().getColor(R.color.grey));
+                        myMap.addPolygon(polygonOptions1);
+                    }
+
+
                 }
             }
             @Override

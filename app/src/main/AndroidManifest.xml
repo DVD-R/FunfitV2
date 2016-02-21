@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.funfit.usjr.thesis.funfitv2">
+    package="com.funfit.usjr.thesis.funfitv2"
+    android:sharedUserId="com.funfit.usjr.thesis.funfitv2">
 
     <permission
         android:name="com.example.mapdemo.permission.MAPS_RECEIVE"

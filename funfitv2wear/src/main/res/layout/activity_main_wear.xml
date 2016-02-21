@@ -3,6 +3,7 @@
     xmlns:map="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_container"
     android:layout_height="match_parent"
+    android:keepScreenOn="true"
     android:layout_width="match_parent">
 
     <FrameLayout
@@ -14,7 +15,7 @@
             android:id="@+id/map"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:name="com.google.android.gms.maps.MapFragment"/>
+            android:name="com.google.android.gms.maps.MapFragment"/>/>
 
     </FrameLayout>
 

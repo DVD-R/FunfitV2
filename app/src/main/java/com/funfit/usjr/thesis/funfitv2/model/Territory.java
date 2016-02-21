@@ -1,64 +1,63 @@
 package com.funfit.usjr.thesis.funfitv2.model;
 
-import java.util.HashMap;
-import java.util.List;
+import java.io.Serializable;
 
-/**
- * Created by Dj on 2/20/2016.
- */
-public class Territory {
-    private String name;
-    private String main_marker;
-    private List<String> coordinates;
-    private HashMap<String, Object> timestampConquered;
-    private int level;
-    private String user_owner;
-    private String cluster_owner;
-    private String locale;
+public class Territory implements Serializable{
 
-    public Territory(){}
+	private int id;
+	private String encoded_polyline;
+	private String status;
+	private int level;
+	private String faction_description;
 
-    public Territory(String name, String main_marker, List<String> coordinates,
-                     HashMap<String, Object> timestampConquered, int level, String user_owner, String cluster_owner, String locale) {
-        this.name = name;
-        this.main_marker = main_marker;
-        this.coordinates = coordinates;
-        this.timestampConquered = timestampConquered;
-        this.level = level;
-        this.user_owner = user_owner;
-        this.cluster_owner = cluster_owner;
-        this.locale = locale;
-    }
+	public Territory(){}
 
-    public String getMain_marker() {
-        return main_marker;
-    }
+	public Territory(int id, String encoded_polyline, String status, int level, String faction_description) {
+		super();
+		this.id = id;
+		this.encoded_polyline = encoded_polyline;
+		this.status = status;
+		this.level = level;
+		this.faction_description = faction_description;
+	}
 
-    public String getLocale() {
-        return locale;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public String getCluster_owner() {
-        return cluster_owner;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getEncoded_polyline() {
+		return encoded_polyline;
+	}
 
-    public List<String> getCoordinates() {
-        return coordinates;
-    }
+	public void setEncoded_polyline(String encoded_polyline) {
+		this.encoded_polyline = encoded_polyline;
+	}
 
-    public HashMap<String, Object> getTimestampConquered() {
-        return timestampConquered;
-    }
+	public String getStatus() {
+		return status;
+	}
 
-    public int getLevel() {
-        return level;
-    }
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
-    public String getUser_owner() {
-        return user_owner;
-    }
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
+	public String getFaction_description() {
+		return faction_description;
+	}
+
+	public void setFaction_description(String faction_description) {
+		this.faction_description = faction_description;
+	}
 }

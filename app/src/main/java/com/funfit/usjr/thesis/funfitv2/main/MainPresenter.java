@@ -6,10 +6,12 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.funfit.usjr.thesis.funfitv2.client.ProfileClient;
+import com.funfit.usjr.thesis.funfitv2.client.TerritoryClient;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.ProfileRequestJson;
 import com.funfit.usjr.thesis.funfitv2.model.Rdi;
 import com.funfit.usjr.thesis.funfitv2.model.ResponseJson;
+import com.funfit.usjr.thesis.funfitv2.model.Territory;
 import com.funfit.usjr.thesis.funfitv2.views.IMainView;
 
 import java.util.ArrayList;
@@ -38,10 +40,13 @@ public class MainPresenter {
     {
 //            iMainView.initProgressDialog();
         sharedPreferences = iMainView.getContxt().getSharedPreferences(Constants.RDI_PREF_ID, Context.MODE_PRIVATE);
-        DoInBackground();
+        if (sharedPreferences.getString(Constants.RDI, null) == null && sharedPreferences.getString(Constants.UID, null) == null) {
+            DoInBackgroundProfileService();
+        }
+            DoInBackgroundTerritoryService();
     }
 
-    private void DoInBackground(){
+    private void DoInBackgroundProfileService(){
         AsyncTask<Void,Void,ResponseJson> asyncTask = new AsyncTask<Void, Void, ResponseJson>() {
             @Override
             protected ResponseJson doInBackground(Void... params) {
@@ -63,6 +68,34 @@ public class MainPresenter {
             @Override
             public void failure(RetrofitError error) {
                 Log.e("Main presenter: ", String.valueOf(error));
+            }
+        });
+    }
+
+    private void DoInBackgroundTerritoryService(){
+        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                queryTerritory();
+                return null;
+            }
+        };
+        asyncTask.execute();
+    }
+
+    private void queryTerritory(){
+        TerritoryClient.get().getAppInitialization(new Callback<List<Territory>>() {
+            @Override
+            public void success(List<Territory> listTerritory, Response response) {
+                if (listTerritory.size() != 0){
+                    iMainView.setEndcodedPolylineList(listTerritory);
+                    iMainView.sendTerritory();
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                    Log.i("Query Territory", String.valueOf(error));
             }
         });
     }

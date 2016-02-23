@@ -2,6 +2,7 @@ package com.funfit.usjr.thesis.funfitv2.maps;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,6 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -132,6 +134,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     private ArrayList<LatLng> getAllLocation;
     private ArrayList<LatLng> saveLocation = null;
     float getDistanceInMeters = 0;
+    private ProgressDialog pd;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_maps, container, false);
@@ -156,6 +159,12 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
         myMap = mMapView.getMap();
 
+        pd = new ProgressDialog(getContext());
+        pd.setTitle("Checking location...");
+        pd.setMessage("Please wait.");
+        pd.setCancelable(false);
+        pd.setIndeterminate(true);
+        pd.show();
 
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addApi(LocationServices.API)
@@ -301,6 +310,9 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             //CustomMarker();
             startLocationUpdates();
             //dialogFragment.setTargetFragment(this, REQUEST_CODE);
+            if (pd!=null) {
+                pd.dismiss();
+            }
         } else {
             Log.e("Location Service: ", "GPS not connected!");
         }

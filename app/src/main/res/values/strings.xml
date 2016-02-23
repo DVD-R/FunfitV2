@@ -121,4 +121,9 @@
     <string name="label_signup">Sign Up</string>
     <string name="impulse">impulse</string>
     <string name="velocity">velocity</string>
+    <string name="world">Over All</string>
+    <string name="Impulse">Impulse</string>
+    <string name="Velocity">Velocity</string>
+
+
 </resources>

@@ -21,9 +21,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by ocabafox on 1/22/2016.
+ * Created by ocabafox on 2/24/2016.
  */
-public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.ViewHolder> {
+public class FilterLeaderBoardAdapter extends RecyclerView.Adapter<FilterLeaderBoardAdapter.ViewHolder> {
     private static final String TAG = "LeaderBoardAdapter";
     private static final int VIEW_TYPE_GOD_TIER = 0; // god tier is for the first big layout
     private static final int VIEW_TYPE_TOP_TIER = 1; // top tier is for the small layout
@@ -35,7 +35,7 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
     private static ColorStateList ally;
     private static ColorStateList enemy;
 
-    ItemData[] mList; // list of item from json object
+    FilterData[] mList; // list of item from json object
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @Bind(R.id.txtName)
@@ -71,7 +71,7 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
         } // get ID from clicked view
     }
 
-    public LeaderBoardAdapter(ItemData[] list) {
+    public FilterLeaderBoardAdapter(FilterData[] list) {
         mList = list; // get object from GamesTabFragment
     }
 

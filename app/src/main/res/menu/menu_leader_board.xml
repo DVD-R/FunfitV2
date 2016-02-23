@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:compat="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/a_More"
+        compat:showAsAction="always"
+        android:icon="@drawable/ic_action_overflow"
+        android:title="More">
+    <menu>
+
+            <item
+                android:id="@+id/world"
+                android:icon="@drawable/world"
+                android:title="@string/world"
+                compat:showAsAction="never" />
+
+            <item
+                android:id="@+id/impulse"
+                android:icon="@drawable/ic_status_impulse"
+                android:title="@string/Impulse"
+                compat:showAsAction="never" />
+
+            <item
+                android:id="@+id/velocity"
+                android:icon="@drawable/ic_status_velocity"
+                android:title="@string/Velocity"
+                compat:showAsAction="never" />
+        </menu>
+    </item>
+</menu>

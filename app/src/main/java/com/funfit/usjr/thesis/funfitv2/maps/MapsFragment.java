@@ -32,7 +32,6 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.distance.DistanceCalculation;
-import com.funfit.usjr.thesis.funfitv2.fragmentDialog.FilterViewDialog;
 import com.funfit.usjr.thesis.funfitv2.fragmentDialog.markerDialogFragment;
 import com.funfit.usjr.thesis.funfitv2.model.CapturingModel;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
@@ -104,7 +103,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     private boolean mBroadcastInfoRegistered;
     private List<Territory> listTerritories;
     markerDialogFragment dialogFragment;
-    FilterViewDialog filterViewDialog;
     private boolean flag;
     //Populate marker from database using webservice
     private static final String ROOT = "http://172.20.10.3:8081/funfit-backend";
@@ -134,7 +132,8 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     private ArrayList<LatLng> getAllLocation;
     private ArrayList<LatLng> saveLocation = null;
     float getDistanceInMeters = 0;
-    private ProgressDialog pd;
+
+    ProgressDialog pd;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_maps, container, false);
@@ -159,13 +158,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
         myMap = mMapView.getMap();
 
-        pd = new ProgressDialog(getContext());
-        pd.setTitle("Checking location...");
-        pd.setMessage("Please wait.");
-        pd.setCancelable(false);
-        pd.setIndeterminate(true);
-        pd.show();
-
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -173,10 +165,14 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         myMap.setMyLocationEnabled(true);
 
         connectClient();
-
+        pd = new ProgressDialog(getContext());
+        pd.setTitle("Checking location...");
+        pd.setMessage("Please wait.");
+        pd.setCancelable(false);
+        pd.setIndeterminate(true);
+        pd.show();
         //mapsFragmentPresenter = new MapsFragmentPresenter(this);
 
-        queryTerritories();
         return view;
 
     }
@@ -194,8 +190,9 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             getActivity().registerReceiver(encodedPolylineBroadcast, new IntentFilter(getString(R.string.broadcast_encodedpolyline)));
             mBroadcastInfoRegistered = true;
             myMap = mMapView.getMap();
-
         }
+
+        queryTerritories();
     }
 
     @Override
@@ -310,7 +307,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             //CustomMarker();
             startLocationUpdates();
             //dialogFragment.setTargetFragment(this, REQUEST_CODE);
-            if (pd!=null) {
+            if (pd != null) {
                 pd.dismiss();
             }
         } else {
@@ -530,17 +527,31 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         public void getData(ArrayList<LatLng> location);
     }
 
-    @OnClick(R.id.fab_run)
-    public void runFab() {
-        filterViewDialog = new FilterViewDialog();
-        filterViewDialog.setTargetFragment(this, REQUEST_CODE2);
-        filterViewDialog.show(getFragmentManager(), "Filter Sample Fragment");
+    @OnClick(R.id.fab_uncaptured)
+    public void uncaptured(){
+        myMap.clear();
+        queryUncapturedTerritories();
     }
 
-    @OnClick(R.id.fab_search)
-    public void searchFab() {
-
+    @OnClick(R.id.fab_velocity)
+    public void runvelocity() {
+        myMap.clear();
+        queryVelocityTerritories();
     }
+
+    @OnClick(R.id.fab_impulse)
+    public void searchimpulse() {
+        myMap.clear();
+        queryImpulseTerritories();
+    }
+
+    @OnClick(R.id.fab_world_view)
+    public void searchworld() {
+        Toast.makeText(getActivity(), "World View", Toast.LENGTH_SHORT).show();
+        myMap.clear();
+        queryTerritories();
+    }
+
 
     private void queryTerritories() {
         final Firebase territoryFirebase = new Firebase(Constants.FIREBASE_URL_TERRITORIES);
@@ -581,6 +592,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                             polygonOptions1.strokeWidth(7);
                             polygonOptions1.fillColor(getResources().getColor(R.color.filter_impulse));
                             myMap.addPolygon(polygonOptions1);
+                            getTerritoryForPolygon.clear();
                         } else if (fTerritory.getLevel() < 0) {
                             PolygonOptions polygonOptions1 = new PolygonOptions();
                             polygonOptions1.addAll(getTerritoryForPolygon);
@@ -588,6 +600,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                             polygonOptions1.strokeWidth(7);
                             polygonOptions1.fillColor(getResources().getColor(R.color.filter_velocity));
                             myMap.addPolygon(polygonOptions1);
+                            getTerritoryForPolygon.clear();
                         } else {
                             PolygonOptions polygonOptions1 = new PolygonOptions();
                             polygonOptions1.addAll(getTerritoryForPolygon);
@@ -595,6 +608,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                             polygonOptions1.strokeWidth(7);
                             polygonOptions1.fillColor(getResources().getColor(R.color.grey));
                             myMap.addPolygon(polygonOptions1);
+                            getTerritoryForPolygon.clear();
                         }
                     }
                 }
@@ -650,7 +664,133 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             }
         }
     }
+
+    private void queryImpulseTerritories() {
+        final Firebase territoryFirebase = new Firebase(Constants.FIREBASE_URL_TERRITORIES);
+
+        territoryFirebase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    FTerritory fTerritory = postSnapshot.getValue(FTerritory.class);
+
+                    ArrayList<LatLng> getTerritoryForPolygon = new ArrayList<LatLng>();
+                    LatLng start = new LatLng(location.getLatitude(), location.getLongitude());
+
+                    String[] getEndLocation = fTerritory.getMain_marker().trim().split(",");
+                    double latitude = Double.parseDouble(getEndLocation[0]);
+                    double longitude = Double.parseDouble(getEndLocation[1]);
+
+                    LatLng end = new LatLng(latitude, longitude);
+
+                    //Note: 5KM is 5000m
+
+                    Log.i("distance", "aa " + distanceCalculation.distanceLocation(start, end));
+                    if (fTerritory.getLevel() > 0) {
+                        for (int x = 0; fTerritory.getCoordinates().size() > x; x++) {
+                            String[] latlong = fTerritory.getCoordinates().get(x).trim().split(",");
+                            double distanceLatitude = Double.parseDouble(latlong[0]);
+                            double distanceLongitude = Double.parseDouble(latlong[1]);
+
+                            LatLng distanceLatLng = new LatLng(distanceLatitude, distanceLongitude);
+
+                            getTerritoryForPolygon.add(distanceLatLng);
+                        }
+
+                        PolygonOptions polygonOptions1 = new PolygonOptions();
+                        polygonOptions1.addAll(getTerritoryForPolygon);
+                        polygonOptions1.strokeColor(getResources().getColor(R.color.filter_impulse));
+                        polygonOptions1.strokeWidth(7);
+                        polygonOptions1.fillColor(getResources().getColor(R.color.filter_impulse));
+                        myMap.addPolygon(polygonOptions1);
+                        getTerritoryForPolygon.clear();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e(LOG_TAG, firebaseError.toString());
+            }
+        });
+    }
+
+    private void queryVelocityTerritories() {
+        final Firebase territoryFirebase = new Firebase(Constants.FIREBASE_URL_TERRITORIES);
+
+        territoryFirebase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    FTerritory fTerritory = postSnapshot.getValue(FTerritory.class);
+
+                    ArrayList<LatLng> getTerritoryForPolygon = new ArrayList<LatLng>();
+                    if (fTerritory.getLevel() < 0) {
+                        for (int x = 0; fTerritory.getCoordinates().size() > x; x++) {
+                            String[] latlong = fTerritory.getCoordinates().get(x).trim().split(",");
+                            double distanceLatitude = Double.parseDouble(latlong[0]);
+                            double distanceLongitude = Double.parseDouble(latlong[1]);
+
+                            LatLng distanceLatLng = new LatLng(distanceLatitude, distanceLongitude);
+
+                            getTerritoryForPolygon.add(distanceLatLng);
+                        }
+
+                        PolygonOptions polygonOptions1 = new PolygonOptions();
+                        polygonOptions1.addAll(getTerritoryForPolygon);
+                        polygonOptions1.strokeColor(getResources().getColor(R.color.filter_velocity));
+                        polygonOptions1.strokeWidth(7);
+                        polygonOptions1.fillColor(getResources().getColor(R.color.filter_velocity));
+                        myMap.addPolygon(polygonOptions1);
+                        getTerritoryForPolygon.clear();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e(LOG_TAG, firebaseError.toString());
+            }
+        });
+    }
+
+    private void queryUncapturedTerritories() {
+        final Firebase territoryFirebase = new Firebase(Constants.FIREBASE_URL_TERRITORIES);
+
+        territoryFirebase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    FTerritory fTerritory = postSnapshot.getValue(FTerritory.class);
+
+                    ArrayList<LatLng> getTerritoryForPolygon = new ArrayList<LatLng>();
+
+                    if (fTerritory.getLevel() == 0) {
+                        for (int x = 0; fTerritory.getCoordinates().size() > x; x++) {
+                            String[] latlong = fTerritory.getCoordinates().get(x).trim().split(",");
+                            double distanceLatitude = Double.parseDouble(latlong[0]);
+                            double distanceLongitude = Double.parseDouble(latlong[1]);
+
+                            LatLng distanceLatLng = new LatLng(distanceLatitude, distanceLongitude);
+
+                            getTerritoryForPolygon.add(distanceLatLng);
+                        }
+
+                        PolygonOptions polygonOptions1 = new PolygonOptions();
+                        polygonOptions1.addAll(getTerritoryForPolygon);
+                        polygonOptions1.strokeColor(getResources().getColor(R.color.grey));
+                        polygonOptions1.strokeWidth(7);
+                        polygonOptions1.fillColor(getResources().getColor(R.color.grey));
+                        myMap.addPolygon(polygonOptions1);
+                        getTerritoryForPolygon.clear();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e(LOG_TAG, firebaseError.toString());
+            }
+        });
+    }
 }
-
-
-

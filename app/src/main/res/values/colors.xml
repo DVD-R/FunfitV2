@@ -26,4 +26,26 @@
     <color name="filter_velocity">#772980b9</color>
     <color name="filter_passive">#77222222</color>
 
+    <color name="impulse_1">#77ef9a9a</color>
+    <color name="impulse_2">#77e57373</color>
+    <color name="impulse_3">#77ef5350</color>
+    <color name="impulse_4">#77ff5252</color>
+    <color name="impulse_5">#77f44336</color>
+    <color name="impulse_6">#77e53935</color>
+    <color name="impulse_7">#77d32f2f</color>
+    <color name="impulse_8">#77c62828</color>
+    <color name="impulse_9">#77b71c1c</color>
+    <color name="impulse_10">#99b71c1c</color>
+
+
+    <color name="velocity_1">#7790CAF9</color>
+    <color name="velocity_2">#7764B5F6</color>
+    <color name="velocity_3">#7742A5F5</color>
+    <color name="velocity_4">#77448AFF</color>
+    <color name="velocity_5">#772196F3</color>
+    <color name="velocity_6">#771E88E5</color>
+    <color name="velocity_7">#771976D2</color>
+    <color name="velocity_8">#771565C0</color>
+    <color name="velocity_9">#770D47A1</color>
+    <color name="velocity_10">#990D47A1</color>
 </resources>

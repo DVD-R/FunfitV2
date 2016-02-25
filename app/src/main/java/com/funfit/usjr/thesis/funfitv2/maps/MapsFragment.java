@@ -537,6 +537,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    myMap.clear();
                     FTerritory fTerritory = postSnapshot.getValue(FTerritory.class);
 
                     ArrayList<LatLng> getTerritoryForPolygon = new ArrayList<LatLng>();
@@ -595,6 +596,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         });
     }
 
+
     @Override
     public void onMapClick(LatLng latLng) {
         polylineOptions = new PolylineOptions();
@@ -621,9 +623,9 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                     if (saveLocation.size() > 4) {
                         Log.i("testCapture", "first index " + saveLocation.get(0));
                         Log.i("testCapture", "last index " + getAllLocation.get(look));
-//                        Log.i("testCapture", " size: "+saveLocation.get(saveLocation.size()));
                         if (saveLocation.get(0).equals(getAllLocation.get(look))) {
                             Log.i("testCapture", "YES!! Captured");
+                            capturedTerritory(saveLocation);
                         }
                     }
                 } else {
@@ -638,7 +640,102 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             }
         }
     }
+
+    private List<String> conCoordinates;
+
+    private void capturedTerritory(ArrayList<LatLng> coordinates) {
+        final Firebase territoryFirebase = new Firebase(Constants.FIREBASE_URL_TERRITORIES);
+        conCoordinates = new ArrayList<>();
+
+        for (int x = 0; x < coordinates.size(); x++) {
+            conCoordinates.add(String.format("%.6f",coordinates.get(x).latitude) + ", " + String.format("%.6f",coordinates.get(x).longitude));
+        }
+        Log.v(LOG_TAG,conCoordinates.size()+"");
+
+//        while (!conCoordinates.isEmpty()) {
+            territoryFirebase.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    DataSnapshot postSnapshot = findTerritory(snapshot, conCoordinates);
+                    if (checkCoordinates(postSnapshot.getValue(FTerritory.class).getCoordinates())) {
+                        new Firebase(Constants.FIREBASE_URL_TERRITORIES + "/" + postSnapshot.getKey())
+                                .setValue(updateTerritoryModel(postSnapshot.getValue(FTerritory.class)));
+                    } else
+                        Log.v(LOG_TAG, "UNFINISHED RUN!");
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Log.e(LOG_TAG, firebaseError.toString());
+                }
+            });
+//        }
+    }
+
+    private FTerritory updateTerritoryModel(FTerritory territory) {
+        SharedPreferences userPref = getActivity().getSharedPreferences(Constants.USER_PREF_ID, Context.MODE_PRIVATE);
+        String email = userPref.getString(Constants.PROFILE_EMAIL, null);
+        String cluster = userPref.getString(Constants.PROFILE_CLUSTER, null);
+
+        //uncaptured territory
+        if (territory.getLevel() == 0) {
+            Log.v(LOG_TAG,"Scout");
+            territory.setUser_owner(email);
+            territory.setCluster_owner(cluster);
+            if (cluster.equals("velocity"))
+                territory.setLevel(territory.getLevel() + 1);
+            else
+                territory.setLevel(territory.getLevel() - 1);
+        }
+        //fortify
+        else if (cluster.equals(territory.getCluster_owner())) {
+            Log.v(LOG_TAG,"Fortify");
+            territory.setUser_owner(email);
+            if (territory.getLevel() < 10)
+                territory.setLevel(territory.getLevel() + 1);
+        }
+        //envade
+        else if (!cluster.equals(territory.getCluster_owner())) {
+            Log.v(LOG_TAG,"Envade");
+            if(territory.getLevel()==1){
+                territory.setUser_owner(email);
+                territory.setCluster_owner(cluster);
+            }else{
+                if (territory.getLevel() <= 10)
+                    territory.setLevel(territory.getLevel() - 1);
+            }
+        }
+        return territory;
+    }
+
+    private DataSnapshot findTerritory(DataSnapshot snapshot, List<String> conCoordinates) {
+        for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+            FTerritory territory = postSnapshot.getValue(FTerritory.class);
+            for (int x = 0; x < territory.getCoordinates().size(); x++) {
+                if (territory.getCoordinates().get(x).equals(conCoordinates.get(0)))
+                    return postSnapshot;
+            }
+        }
+        return null;
+    }
+
+    private boolean checkCoordinates(List<String> fCoordinates) {
+        int cnt = 0;
+        for (int x = 0; x < fCoordinates.size(); x++) {
+            for (int y = 0; y < conCoordinates.size(); y++) {
+                if (fCoordinates.get(x).equals(conCoordinates.get(y))) {
+//                    conCoordinates.remove(y);
+                    cnt++;
+                    break;
+                }
+            }
+        }
+
+        Log.v(LOG_TAG,conCoordinates.toString()+", "+fCoordinates.toString());
+        Log.v(LOG_TAG,cnt+", "+fCoordinates.size());
+        if (cnt == fCoordinates.size())
+            return true;
+        else
+            return false;
+    }
 }
-
-
-

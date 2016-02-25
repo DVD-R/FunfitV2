@@ -61,4 +61,36 @@ public class FTerritory {
     public String getUser_owner() {
         return user_owner;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setMain_marker(String main_marker) {
+        this.main_marker = main_marker;
+    }
+
+    public void setCoordinates(List<String> coordinates) {
+        this.coordinates = coordinates;
+    }
+
+    public void setTimestampConquered(HashMap<String, Object> timestampConquered) {
+        this.timestampConquered = timestampConquered;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void setUser_owner(String user_owner) {
+        this.user_owner = user_owner;
+    }
+
+    public void setCluster_owner(String cluster_owner) {
+        this.cluster_owner = cluster_owner;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
 }

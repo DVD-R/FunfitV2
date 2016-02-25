@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-            mainPresenter.setProfileRequestJson();
+//            mainPresenter.setProfileRequestJson();
             mainPresenter.onResume();
     }
 

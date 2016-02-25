@@ -115,7 +115,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     ArrayList<Marker> markers = new ArrayList<>();
 
     boolean mBroadcastIsRegistered;
-
+    private List<Territory> listTerritory;
     //Polygon checker
     ArrayList<LatLng> clickedMarker;
 
@@ -150,6 +150,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         mMapView.onResume();// needed to get the map to display immediately
         clickedMarker = new ArrayList<LatLng>();
         arrayPoints = new ArrayList<LatLng>();
+        mBroadcastInfoRegistered = false;
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
         } catch (Exception e) {
@@ -171,7 +172,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         pd.setCancelable(false);
         pd.setIndeterminate(true);
         pd.show();
-        //mapsFragmentPresenter = new MapsFragmentPresenter(this);
+        mapsFragmentPresenter = new MapsFragmentPresenter(this);
 
         return view;
 
@@ -186,70 +187,68 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onResume() {
         super.onResume();
-        if (!mBroadcastInfoRegistered) {
-            getActivity().registerReceiver(encodedPolylineBroadcast, new IntentFilter(getString(R.string.broadcast_encodedpolyline)));
-            mBroadcastInfoRegistered = true;
-            myMap = mMapView.getMap();
-        }
-
-        queryTerritories();
+//        mapsFragmentPresenter.populateTerritory();
+//        queryTerritories();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         mGoogleApiClient.disconnect();
-        if (!mBroadcastInfoRegistered) {
-            getActivity().unregisterReceiver(encodedPolylineBroadcast);
-            mBroadcastInfoRegistered = false;
-        }
     }
-
-
-    private BroadcastReceiver encodedPolylineBroadcast = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            List<Territory> listTerritory = (List<Territory>) intent.getSerializableExtra("encodedPolyLine");
-            listTerritories = listTerritory;
-            if (flag) {
-                if (listTerritories.size() != 0)
-                    mapsFragmentPresenter.populateTerritory();
-            }
-        }
-    };
 
     @Override
     public void populateTerritory() {
+        myMap.clear();
+
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(location.getLatitude(), location.getLongitude()
                 )).zoom(16).build();
         myMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
-
+        LatLng start = new LatLng(location.getLatitude(), location.getLongitude());
 
         for (Territory territory : listTerritories) {
+
             List<LatLng> oval = PolyUtil.decode(territory.getEncoded_polyline());
 
-            if (territory.getStatus().equals("uncharted") && territory.getFaction_description() == null) {
-                myMap.addPolygon(new PolygonOptions()
-                        .addAll(oval)
-                        .fillColor(Color.LTGRAY - ALPHA_ADJUSTMENT)
-                        .strokeColor(Color.GRAY)
-                        .strokeWidth(5));
-            } else if (territory.getStatus().equals("owned") && territory.getFaction_description().equals("velocity")) {
-                myMap.addPolygon(new PolygonOptions()
-                        .addAll(oval)
-                        .fillColor(Color.BLUE - ALPHA_ADJUSTMENT)
-                        .strokeColor(Color.BLUE)
-                        .strokeWidth(5));
-            } else if (territory.getStatus().equals("owned") && territory.getFaction_description().equals("impulse")) {
-                myMap.addPolygon(new PolygonOptions()
-                        .addAll(oval)
-                        .fillColor(Color.RED - ALPHA_ADJUSTMENT)
-                        .strokeColor(Color.RED)
-                        .strokeWidth(5));
+            LatLng end = null;
+
+            for (LatLng lng: oval){
+                end = new LatLng(lng.latitude,lng.longitude);
+
+                if (territory.getStatus().equals("uncharted") && territory.getFaction_description() == null) {
+                    if (distanceCalculation.distanceLocation(start, end) < 1000) {
+                        myMap.addPolygon(new PolygonOptions()
+                                .addAll(oval)
+                                .fillColor(Color.LTGRAY - ALPHA_ADJUSTMENT)
+                                .strokeColor(Color.GRAY)
+                                .strokeWidth(5));
+                    }
+                } else if (territory.getStatus().equals("owned") && territory.getFaction_description().equals("velocity")) {
+                    if (distanceCalculation.distanceLocation(start, end) < 5000) {
+                        myMap.addPolygon(new PolygonOptions()
+                                .addAll(oval)
+                                .fillColor(Color.BLUE - ALPHA_ADJUSTMENT)
+                                .strokeColor(Color.BLUE)
+                                .strokeWidth(5));
+                    }
+                } else if (territory.getStatus().equals("owned") && territory.getFaction_description().equals("impulse")) {
+                    if (distanceCalculation.distanceLocation(start, end) < 5000) {
+                        myMap.addPolygon(new PolygonOptions()
+                                .addAll(oval)
+                                .fillColor(Color.RED - ALPHA_ADJUSTMENT)
+                                .strokeColor(Color.RED)
+                                .strokeWidth(5));
+                    }
+                }
             }
         }
+    }
+
+    @Override
+    public void setEndcodedPolylineList(List<Territory> listTerritories) {
+        this.listTerritories = listTerritories;
     }
 
     private void connectClient() {
@@ -293,8 +292,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
         if (location != null) {
             try {
-                if (listTerritories.size() != 0)
-                    mapsFragmentPresenter.populateTerritory();
+                mapsFragmentPresenter.populateTerritory();
                 flag = true;
             } catch (Exception e) {
                 e.printStackTrace();

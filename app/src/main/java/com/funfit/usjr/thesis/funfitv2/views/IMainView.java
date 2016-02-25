@@ -24,8 +24,6 @@ public interface IMainView {
     public Context getContxt();
     public void setProfileRequestJson(ProfileRequestJson profileRequestJson);
     public ProfileRequestJson getProfileRequestJson();
-    public void sendTerritory();
-    public void setEndcodedPolylineList(List<Territory> listTerritory);
     public void initProgressDialog();
     public void hideProgressDialog();
 }

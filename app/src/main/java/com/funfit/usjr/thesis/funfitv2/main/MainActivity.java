@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String NAV_ITEM_ID = "navItemId";
     private int mNavItemId;
     private MainPresenter mainPresenter;
-    private List<Territory> listTerritory;
     private ProgressDialog mProgressDialog;
     private ProfileRequestJson profileRequestJson;
     @Override
@@ -281,18 +280,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return profileRequestJson;
     }
 
-    @Override
-    public void sendTerritory() {
-        Intent i = new Intent(this, CreatePolylineService.class);
-        i.putExtra("RESPONSETERRITORY", (Serializable) this.listTerritory);
-        startService(i);
-    }
 
-    @Override
-    public void setEndcodedPolylineList(List<Territory> listTerritory) {
-        this.listTerritory = listTerritory;
-        Log.i("Testing notification: ", listTerritory.get(0).getEncoded_polyline());
-    }
 
     @Override
     public void initProgressDialog() {

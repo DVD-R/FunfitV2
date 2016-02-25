@@ -43,7 +43,6 @@ public class MainPresenter {
         if (sharedPreferences.getString(Constants.RDI, null) == null && sharedPreferences.getString(Constants.UID, null) == null) {
             DoInBackgroundProfileService();
         }
-            DoInBackgroundTerritoryService();
     }
 
     private void DoInBackgroundProfileService(){
@@ -72,33 +71,6 @@ public class MainPresenter {
         });
     }
 
-    private void DoInBackgroundTerritoryService(){
-        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                queryTerritory();
-                return null;
-            }
-        };
-        asyncTask.execute();
-    }
-
-    private void queryTerritory(){
-        TerritoryClient.get().getAppInitialization(new Callback<List<Territory>>() {
-            @Override
-            public void success(List<Territory> listTerritory, Response response) {
-                if (listTerritory.size() != 0){
-                    iMainView.setEndcodedPolylineList(listTerritory);
-                    iMainView.sendTerritory();
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                    Log.i("Query Territory", String.valueOf(error));
-            }
-        });
-    }
 
     public int calculateAge(String DOB) {
         String[] dOBSplit = DOB.split("/");

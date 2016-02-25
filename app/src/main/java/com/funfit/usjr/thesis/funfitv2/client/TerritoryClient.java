@@ -12,7 +12,7 @@ import retrofit.client.OkClient;
  */
 public class TerritoryClient {
     public static TerritoryService territoryService;
-    private static final String ROOT = "http://192.168.254.101:8081";
+    private static final String ROOT = "https://funfitv2-backend.herokuapp.com";
     static {
         setupRestClient();
     }

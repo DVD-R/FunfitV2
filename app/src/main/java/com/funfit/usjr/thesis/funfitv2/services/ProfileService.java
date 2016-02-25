@@ -16,7 +16,7 @@ import retrofit.http.POST;
  */
 public interface ProfileService {
     @Headers("Content-Type: application/json")
-    @POST("/funfit-backend/initiate")
+    @POST("/initiate")
     void getAppInitialization(@Body ProfileRequestJson profileRequestJson,
                               Callback<Rdi> responseJsonCallback);
 }

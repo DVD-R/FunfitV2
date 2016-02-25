@@ -15,7 +15,7 @@ import retrofit.http.POST;
  */
 public interface TerritoryService {
     @Headers("Content-Type: application/json")
-    @GET("/funfit-backend/getTerritory")
+    @GET("/getTerritory")
     void getAppInitialization(Callback<List<Territory>> responseJsonCallback);
 }
 

@@ -572,7 +572,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot postSnapshot: snapshot.getChildren()) {
                     Territory territory = postSnapshot.getValue(Territory.class);
-                    Log.v(LOG_TAG, territory.getName());
+                    List<String> coordinates = territory.getCoordinates();
                 }
             }
             @Override

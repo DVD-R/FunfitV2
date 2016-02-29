@@ -10,5 +10,7 @@ import java.util.List;
 public interface IMapFragmentView {
     public void populateTerritory();
     public void setEndcodedPolylineList(List<Territory> listTerritory);
-
+    public String getFactionDescription();
+    public int getUserId();
+    public int getTerritoryId();
 }

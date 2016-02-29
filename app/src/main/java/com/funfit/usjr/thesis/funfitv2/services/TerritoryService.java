@@ -18,4 +18,3 @@ public interface TerritoryService {
     @GET("/getTerritory")
     void getAppInitialization(Callback<List<Territory>> responseJsonCallback);
 }
-

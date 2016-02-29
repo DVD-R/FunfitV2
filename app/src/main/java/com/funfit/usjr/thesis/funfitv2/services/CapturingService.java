@@ -4,6 +4,7 @@ import android.app.DownloadManager;
 
 import com.funfit.usjr.thesis.funfitv2.model.CapturingModel;
 import com.funfit.usjr.thesis.funfitv2.model.ProfileRequestJson;
+import com.funfit.usjr.thesis.funfitv2.model.Territory;
 
 import java.util.List;
 
@@ -18,8 +19,7 @@ import retrofit.http.POST;
  */
 public interface CapturingService {
 
-    @Headers("Content-Type: applocation/json")
-    @POST("/funfit-backend")
-    void passData(@Body ProfileRequestJson profileRequestJson, Callback<List<CapturingModel>> captured);
-
+    @Headers("Content-Type: application/json")
+    @POST("/captureTerritory")
+    void captureTerritory(@Body CapturingModel capturingModel, Callback<List<Territory>> territoryList);
 }

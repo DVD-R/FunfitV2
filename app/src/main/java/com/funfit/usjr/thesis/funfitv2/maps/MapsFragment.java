@@ -123,7 +123,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     private boolean mapController = false;
 
     private String filter;
-
+    private int territoryId;
     //Capturing
     CapturingModel capturingModel;
     CapturingService capturingService;
@@ -132,6 +132,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     private ArrayList<LatLng> getAllLocation;
     private ArrayList<LatLng> saveLocation = null;
     float getDistanceInMeters = 0;
+    private SharedPreferences userData, rdi;
 
     ProgressDialog pd;
 
@@ -140,6 +141,8 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         ButterKnife.bind(this, view);
         //instantiate DistanceCalculation
         distanceCalculation = new DistanceCalculation();
+        userData = getActivity().getSharedPreferences(Constants.USER_PREF_ID, getActivity().MODE_PRIVATE);
+        rdi = getActivity().getSharedPreferences(Constants.RDI_PREF_ID, getActivity().MODE_PRIVATE);
 
         mMapView = (MapView) view.findViewById(R.id.mapView);
         receivedMarkerPosition = new ArrayList<LatLng>();
@@ -213,7 +216,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             List<LatLng> oval = PolyUtil.decode(territory.getEncoded_polyline());
 
             LatLng end = null;
-
+            https://funfitv2-backend.herokuapp.com/captureTerritory
             for (LatLng lng: oval){
                 end = new LatLng(lng.latitude,lng.longitude);
 
@@ -225,7 +228,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                                 .strokeColor(Color.GRAY)
                                 .strokeWidth(5));
                     }
-                } else if (territory.getStatus().equals("owned") && territory.getFaction_description().equals("velocity")) {
+                } else if (territory.getStatus().equals("captured") && territory.getFaction_description().equals("velocity")) {
                     if (distanceCalculation.distanceLocation(start, end) < 5000) {
                         myMap.addPolygon(new PolygonOptions()
                                 .addAll(oval)
@@ -233,7 +236,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                                 .strokeColor(Color.BLUE)
                                 .strokeWidth(5));
                     }
-                } else if (territory.getStatus().equals("owned") && territory.getFaction_description().equals("impulse")) {
+                } else if (territory.getStatus().equals("captured") && territory.getFaction_description().equals("impulse")) {
                     if (distanceCalculation.distanceLocation(start, end) < 5000) {
                         myMap.addPolygon(new PolygonOptions()
                                 .addAll(oval)
@@ -249,6 +252,21 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     @Override
     public void setEndcodedPolylineList(List<Territory> listTerritories) {
         this.listTerritories = listTerritories;
+    }
+
+    @Override
+    public String getFactionDescription() {
+        return userData.getString(Constants.PROFILE_CLUSTER, null);
+    }
+
+    @Override
+    public int getUserId() {
+        return Integer.parseInt(rdi.getString(Constants.UID, null));
+    }
+
+    @Override
+    public int getTerritoryId() {
+        return territoryId;
     }
 
     private void connectClient() {
@@ -537,13 +555,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
     @Override
     public void onMapClick(LatLng latLng) {
-        polylineOptions = new PolylineOptions();
-        polylineOptions.color(Color.GREEN);
-        polylineOptions.width(4);
-        arrayPoints.add(latLng);
-        polylineOptions.addAll(arrayPoints);
-        myMap.addPolyline(polylineOptions);
-
         List<LatLng> oval = null;
 
         for (Territory territory : listTerritories) {
@@ -552,13 +563,20 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             LatLng end = null;
 
             for (LatLng lng : oval) {
-                Log.i("id", territory.getId()+"");
                 end = new LatLng(lng.latitude, lng.longitude);
 
                 getDistanceInMeters = distanceCalculation.distanceLocation(latLng, end);
                 Log.i("ilhanan", "distance: " + getDistanceInMeters);
 
-                if (getDistanceInMeters < 50) {
+                if (getDistanceInMeters < 15) {
+
+
+                    polylineOptions = new PolylineOptions();
+                    polylineOptions.color(Color.GREEN);
+                    polylineOptions.width(4);
+                    arrayPoints.add(latLng);
+                    polylineOptions.addAll(arrayPoints);
+                    myMap.addPolyline(polylineOptions);
 
                     double containLat = lng.latitude;
                     double containLong = lng.longitude;
@@ -571,6 +589,9 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                             Log.i("testCapture", "last index " + end);
 //                        Log.i("testCapture", " size: "+saveLocation.get(saveLocation.size()));
                             if (saveLocation.get(0).equals(end)) {
+                                Log.i("id", territory.getId()+"");
+                                territoryId = territory.getId();
+                                mapsFragmentPresenter.captureTerritory();
                                 Log.i("testCapture", "YES!! Captured");
                             }
                         }

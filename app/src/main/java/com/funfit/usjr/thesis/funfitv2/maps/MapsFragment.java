@@ -320,91 +320,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
     @Override
     public void onLocationChanged(Location location) {
-//        float getDistanceInMeters = 0;
-//        float tempSpeed = 0;
-//        float speed = 0;
-//        float distance = 0;
-//        long tempDuration = 0;
-//        long duration = 0;
-//
-//        if (mapController) {
-//
-//            newLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-//            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(newLatLng, 16);
-//            myMap.animateCamera(cameraUpdate);
-//            myMap.setMyLocationEnabled(true);
-//
-//            // settin polyline in the map
-//            polylineOptions = new PolylineOptions();
-//            polylineOptions.color(Color.GREEN);
-//            polylineOptions.width(4);
-//            arrayPoints.add(newLatLng);
-//            polylineOptions.addAll(arrayPoints);
-//            myMap.addPolyline(polylineOptions);
-//
-//            for (int x = 0; arrayPoints.size() - 1 > x; x++) {
-//                arrayPoints.get(x);
-//                Location loc1 = new Location("");
-//                loc1.setLatitude(arrayPoints.get(x).latitude);
-//                loc1.setLongitude(arrayPoints.get(x).longitude);
-//
-//                Location loc2 = new Location("");
-//                loc2.setLatitude(arrayPoints.get(x + 1).latitude);
-//                loc2.setLongitude(arrayPoints.get(x + 1).longitude);
-//
-//                getDistanceInMeters = getDistanceInMeters + loc1.distanceTo(loc2);
-//
-//                float displaySpeed = location.getSpeed();
-//
-//
-//            }
-//            tempSpeed = tempSpeed + location.getSpeed();
-//            duration = duration + location.getTime();
-//
-//            Log.i("distanceTo", "Distance in meters: " + getDistanceInMeters + " Speed: " + location.getSpeed());
-////        }
-//
-//            Log.i("distanceTo", "Distance in meters: " + getDistanceInMeters);
-//            if (getDistanceInMeters > 200) {
-//                int controller = arrayPoints.size() - 1;
-//                Log.i("distanceTo", "distance: " + distanceCalculation.CalculationByDistance(arrayPoints.get(0), arrayPoints.get(controller)));
-//
-//                Location loc1 = new Location("");
-//                loc1.setLatitude(arrayPoints.get(0).latitude);
-//                loc1.setLongitude(arrayPoints.get(0).longitude);
-//
-//                Location loc2 = new Location("");
-//                loc2.setLatitude(arrayPoints.get(controller).latitude);
-//                loc2.setLongitude(arrayPoints.get(controller).longitude);
-//
-//                float distanceCondition = loc1.distanceTo(loc2);
-//
-//                if (distanceCondition < 20) {
-//                    Log.i("location1", "Distance of: " + distanceCalculation.CalculationByDistance(arrayPoints.get(0), arrayPoints.get(controller)));
-//
-//                    //speed
-//                    speed = tempSpeed / (arrayPoints.size() + 1);
-//
-//                    //distance
-//                    for (int calculate = 0; arrayPoints.size() - 1 > calculate; calculate++) {
-//                        Location start = new Location("");
-//                        loc1.setLatitude(arrayPoints.get(0).latitude);
-//                        loc1.setLongitude(arrayPoints.get(0).longitude);
-//
-//                        Location end = new Location("");
-//                        loc2.setLatitude(arrayPoints.get(controller).latitude);
-//                        loc2.setLongitude(arrayPoints.get(controller).longitude);
-//
-//                        distance = distance + start.distanceTo(end);
-//                    }
-//
-//                    arrayPoints.add(arrayPoints.get(0));
-//
-//                    // long duration, float speed, float distance
-//                    countPolygonPoints(duration, speed, distance);
-//                }
-//            }
-//        }
+
     }
 
     private boolean isGooglePlayServicesAvailable() {
@@ -628,36 +544,45 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         polylineOptions.addAll(arrayPoints);
         myMap.addPolyline(polylineOptions);
 
-        Log.i("ilhanan", "length: " + getAllLocation);
-        for (int look = 0; getAllLocation.size() > look; look++) {
+        List<LatLng> oval = null;
 
-            getDistanceInMeters = distanceCalculation.distanceLocation(latLng, getAllLocation.get(look));
-            Log.i("ilhanan", "distance: " + getDistanceInMeters);
+        for (Territory territory : listTerritories) {
+            oval = PolyUtil.decode(territory.getEncoded_polyline());
 
-            if (getDistanceInMeters < 50) {
+            LatLng end = null;
 
-                double containLat = getAllLocation.get(look).latitude;
-                double containLong = getAllLocation.get(look).longitude;
+            for (LatLng lng : oval) {
+                Log.i("id", territory.getId()+"");
+                end = new LatLng(lng.latitude, lng.longitude);
 
-                LatLng containLocation = new LatLng(containLat, containLong);
+                getDistanceInMeters = distanceCalculation.distanceLocation(latLng, end);
+                Log.i("ilhanan", "distance: " + getDistanceInMeters);
 
-                if (saveLocation.contains(containLocation)) {
-                    if (saveLocation.size() > 4) {
-                        Log.i("testCapture", "first index " + saveLocation.get(0));
-                        Log.i("testCapture", "last index " + getAllLocation.get(look));
+                if (getDistanceInMeters < 50) {
+
+                    double containLat = lng.latitude;
+                    double containLong = lng.longitude;
+
+                    LatLng containLocation = new LatLng(containLat, containLong);
+
+                    if (saveLocation.contains(containLocation)) {
+                        if (saveLocation.size() > 4) {
+                            Log.i("testCapture", "first index " + saveLocation.get(0));
+                            Log.i("testCapture", "last index " + end);
 //                        Log.i("testCapture", " size: "+saveLocation.get(saveLocation.size()));
-                        if (saveLocation.get(0).equals(getAllLocation.get(look))) {
-                            Log.i("testCapture", "YES!! Captured");
+                            if (saveLocation.get(0).equals(end)) {
+                                Log.i("testCapture", "YES!! Captured");
+                            }
                         }
+                    } else {
+                        double getLat = lng.latitude;
+                        double getLong = lng.longitude;
+
+                        LatLng convertSaveLocation = new LatLng(getLat, getLong);
+
+                        saveLocation.add(convertSaveLocation);
+                        Log.i("testCapture", "inner " + lng);
                     }
-                } else {
-                    double getLat = getAllLocation.get(look).latitude;
-                    double getLong = getAllLocation.get(look).longitude;
-
-                    LatLng convertSaveLocation = new LatLng(getLat, getLong);
-
-                    saveLocation.add(convertSaveLocation);
-                    Log.i("testCapture", "inner " + getAllLocation.get(look));
                 }
             }
         }

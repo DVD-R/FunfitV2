@@ -216,7 +216,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             List<LatLng> oval = PolyUtil.decode(territory.getEncoded_polyline());
 
             LatLng end = null;
-            https://funfitv2-backend.herokuapp.com/captureTerritory
             for (LatLng lng: oval){
                 end = new LatLng(lng.latitude,lng.longitude);
 
@@ -555,12 +554,24 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
     @Override
     public void onMapClick(LatLng latLng) {
+
+        polylineOptions = new PolylineOptions();
+        polylineOptions.color(Color.GREEN);
+        polylineOptions.width(4);
+        arrayPoints.add(latLng);
+        polylineOptions.addAll(arrayPoints);
+        myMap.addPolyline(polylineOptions);
+
+
         List<LatLng> oval = null;
 
         for (Territory territory : listTerritories) {
             oval = PolyUtil.decode(territory.getEncoded_polyline());
+        }
 
-            LatLng end = null;
+            for (Territory territory : listTerritories) {
+
+                LatLng end = null;
 
             for (LatLng lng : oval) {
                 end = new LatLng(lng.latitude, lng.longitude);
@@ -568,15 +579,9 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                 getDistanceInMeters = distanceCalculation.distanceLocation(latLng, end);
                 Log.i("ilhanan", "distance: " + getDistanceInMeters);
 
-                if (getDistanceInMeters < 15) {
+                Log.i("Check:", latLng + ":" +end);
 
-
-                    polylineOptions = new PolylineOptions();
-                    polylineOptions.color(Color.GREEN);
-                    polylineOptions.width(4);
-                    arrayPoints.add(latLng);
-                    polylineOptions.addAll(arrayPoints);
-                    myMap.addPolyline(polylineOptions);
+                if (getDistanceInMeters < 35) {
 
                     double containLat = lng.latitude;
                     double containLong = lng.longitude;

@@ -3,6 +3,7 @@ package com.funfit.usjr.thesis.funfitv2.mealPlan;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.Nullable;
@@ -21,12 +22,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.adapter.BreakFastRecyclerAdapter;
 import com.funfit.usjr.thesis.funfitv2.adapter.DinnerRecyclerAdapter;
 import com.funfit.usjr.thesis.funfitv2.adapter.LunchRecyclerAdapter;
+import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.Meal;
 import com.funfit.usjr.thesis.funfitv2.search.SearchActivity;
 import com.funfit.usjr.thesis.funfitv2.views.IMealPlanFragmentView;
@@ -128,6 +131,10 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
     TextView mSnackTotalkCal;
     @Bind(R.id.txt_summary)
     TextView mTextSummary;
+    @Bind(R.id.txt_cal_consumed)
+    TextView mTextCalConsumed;
+    @Bind(R.id.txt_cal_remaining)
+    TextView mTextCalRemaining;
     //Snack/Others Resources Binding
 
     protected boolean mBreakFastFlag;
@@ -144,6 +151,8 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
     private RecyclerView.LayoutManager mDinnerLayoutManager;
     private RecyclerView.LayoutManager mSnackLayoutManager;
     private List<Meal> mealList;
+    private SharedPreferences rdi;
+    double bkf = 0, lnch =0, dnr = 0,snk = 0;
 
     @Nullable
     @Override
@@ -152,6 +161,8 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         ButterKnife.bind(this, view);
         setLayoutEnhancements();
 
+        rdi = getActivity().getSharedPreferences(Constants.RDI_PREF_ID, getActivity().MODE_PRIVATE);
+        float remCal = Float.parseFloat(rdi.getString(Constants.RDI,"0"));
         mealPlanPresenter = new MealPlanPresenter(this);
         mBreakFastFlag = false;
         mLunchFlag = false;
@@ -436,6 +447,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
                 meals = new Meal();
                 meals = getMeal(i, mealList);
                 breakfastlist.add(meals);
+                bkf += meals.getCalories();
             }
         }
         mBreakfastMealCount.setText(String.valueOf(breakfastlist.size()) + " items");
@@ -443,6 +455,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         breakfastRecyclerView.setAdapter(breakFastRecyclerAdapter);
         mLayoutManager = new LinearLayoutManager(getActivity());
         breakfastRecyclerView.setLayoutManager(mLayoutManager);
+        updateRdi();
     }
 
     @Override
@@ -454,6 +467,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
                 meals = new Meal();
                 meals = getMeal(i, mealList);
                 lunchList.add(meals);
+                lnch += meals.getCalories();
             }
         }
         mLunchMealCount.setText(String.valueOf(lunchList.size()) + " items");
@@ -461,6 +475,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         mLunchRecyclerView.setAdapter(lunchRecyclerAdapter);
         mLunchLayoutManager = new LinearLayoutManager(getActivity());
         mLunchRecyclerView.setLayoutManager(mLunchLayoutManager);
+        updateRdi();
     }
 
     @Override
@@ -472,6 +487,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
                 meals = new Meal();
                 meals = getMeal(i, mealList);
                 dinnerList.add(meals);
+                dnr += meals.getCalories();
             }
         }
         mDinnerMealCount.setText(String.valueOf(dinnerList.size()) + " items");
@@ -479,6 +495,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         mDinnerRecyclerView.setAdapter(dinnerRecyclerAdapter);
         mDinnerLayoutManager = new LinearLayoutManager(getActivity());
         mDinnerRecyclerView.setLayoutManager(mDinnerLayoutManager);
+        updateRdi();
     }
 
     @Override
@@ -490,6 +507,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
                 meals = new Meal();
                 meals = getMeal(i, mealList);
                 snackList.add(meals);
+                snk += meals.getCalories();
             }
         }
         mSnackMealCount.setText(String.valueOf(snackList.size()) + " items");
@@ -497,6 +515,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         mSnackRecyclerView.setAdapter(dinnerRecyclerAdapter);
         mSnackLayoutManager = new LinearLayoutManager(getActivity());
         mSnackRecyclerView.setLayoutManager(mSnackLayoutManager);
+        updateRdi();
     }
 
     public Meal getMeal(int i, List<Meal> mealList) {
@@ -511,5 +530,10 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         meal.setCalories(mealList.get(i).getCalories());
         meal.setmTime(mealList.get(i).getmTime());
         return meal;
+    }
+
+    private void updateRdi(){
+        mTextCalRemaining.setText(""+(Double.parseDouble(rdi.getString(Constants.RDI,"0")) - (bkf + lnch + dnr + snk)));
+        mTextCalConsumed.setText("" + String.format("%.2f",bkf + lnch + dnr + snk));
     }
 }

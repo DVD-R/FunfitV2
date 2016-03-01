@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mainPresenter = new MainPresenter(this);
         userData = getSharedPreferences(Constants.USER_PREF_ID, MODE_PRIVATE);
         rdi = getSharedPreferences(Constants.RDI_PREF_ID, MODE_PRIVATE);
+        Log.i("check",""+rdi.getString(Constants.UID,null));
         activity = MainActivity.this;
         setNavViews();
     }

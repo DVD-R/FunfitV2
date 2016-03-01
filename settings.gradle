@@ -1,1 +1,1 @@
-include ':app', ':library', ':funfitv2wear'
+include ':app', ':library', ':funfitv2wear', ':funfitwear'

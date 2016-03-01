@@ -6,19 +6,17 @@ import java.io.Serializable;
  * Created by victor on 1/12/2016.
  */
 public class Food implements Serializable {
-    private String food_description;
     private String food_id;
     private String food_name;
-    private String food_type;
-    private String food_url;
     private boolean isSelected;
 
-    public String getFood_description() {
-        return food_description;
+    public Food(){
+
     }
 
-    public void setFood_description(String food_description) {
-        this.food_description = food_description;
+    public Food(String food_id, String food_name) {
+        this.food_id = food_id;
+        this.food_name = food_name;
     }
 
     public String getFood_id() {
@@ -35,22 +33,6 @@ public class Food implements Serializable {
 
     public void setFood_name(String food_name) {
         this.food_name = food_name;
-    }
-
-    public String getFood_type() {
-        return food_type;
-    }
-
-    public void setFood_type(String food_type) {
-        this.food_type = food_type;
-    }
-
-    public String getFood_url() {
-        return food_url;
-    }
-
-    public void setFood_url(String food_url) {
-        this.food_url = food_url;
     }
 
     public boolean isSelected() {

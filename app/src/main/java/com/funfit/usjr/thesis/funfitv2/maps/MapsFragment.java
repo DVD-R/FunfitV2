@@ -570,8 +570,9 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         }
 
             for (Territory territory : listTerritories) {
+            oval = PolyUtil.decode(territory.getEncoded_polyline());
 
-                LatLng end = null;
+            LatLng end = null;
 
             for (LatLng lng : oval) {
                 end = new LatLng(lng.latitude, lng.longitude);

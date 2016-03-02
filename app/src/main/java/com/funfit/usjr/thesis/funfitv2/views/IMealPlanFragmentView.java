@@ -19,6 +19,6 @@ public interface IMealPlanFragmentView {
     public void unhideLunch();
     public void unhideDinner();
     public void unhideSnack();
-    public void displaDinner();
+    public void displayDinner();
     public void displaySnack();
 }

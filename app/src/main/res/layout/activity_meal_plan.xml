@@ -107,7 +107,6 @@
                             android:layout_gravity="left"
                             android:layout_marginBottom="10dp"
                             android:fontFamily="sans-sarif-light"
-                            android:text="Total kCal: 450"
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                             android:textColor="@android:color/primary_text_light" />
 
@@ -221,7 +220,6 @@
                         android:layout_gravity="left"
                         android:layout_marginBottom="10dp"
                         android:fontFamily="sans-sarif-light"
-                        android:text="Total kCal: 450"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                         android:textColor="@android:color/primary_text_light" />
 
@@ -334,7 +332,6 @@
                         android:layout_gravity="left"
                         android:layout_marginBottom="10dp"
                         android:fontFamily="sans-sarif-light"
-                        android:text="Total kCal: 450"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                         android:textColor="@android:color/primary_text_light" />
 
@@ -447,7 +444,6 @@
                         android:layout_gravity="left"
                         android:layout_marginBottom="10dp"
                         android:fontFamily="sans-sarif-light"
-                        android:text="Total kCal: 450"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                         android:textColor="@android:color/primary_text_light" />
 
@@ -516,7 +512,6 @@
                         android:layout_weight="1"
                         android:fontFamily="sans-sarif-light"
                         android:gravity="right"
-                        android:text="2863"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                         android:textColor="@android:color/primary_text_light"
                         android:id="@+id/txt_cal_remaining" />
@@ -578,9 +573,9 @@
                         android:layout_weight="1"
                         android:fontFamily="sans-sarif-light"
                         android:gravity="right"
-                        android:text="2863"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                        android:textColor="@android:color/primary_text_light" />
+                        android:textColor="@android:color/primary_text_light"
+                        android:id="@+id/txt_cal_rdi" />
                 </LinearLayout>
 
                 <LinearLayout

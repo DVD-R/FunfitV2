@@ -30,7 +30,7 @@ public class MealPlanPresenter {
 
     public void displayLunch(){ iMealPlanFragmentView.displayLunch();}
 
-    public void displayDinner(){iMealPlanFragmentView.displaDinner();}
+    public void displayDinner(){iMealPlanFragmentView.displayDinner();}
 
     public void displaySnack(){iMealPlanFragmentView.displaySnack();}
     //Collapse/Expand commands<-----------------

@@ -51,9 +51,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MealPlanFragment extends Fragment implements IMealPlanFragmentView {
+    private static final String TOTAL_CAL = "Total Calories: ";
+    private static final String LOG_TAG = MealPlanFragment.class.getSimpleName();
 
     @Bind(R.id.container)
     FrameLayout piechartLayout;
+    @Bind(R.id.txt_cal_rdi)
+    TextView mTextCalRdi;
 
     //Breakfast Resources Binding
     @Bind(R.id.img_breakfast)
@@ -151,8 +155,8 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
     private RecyclerView.LayoutManager mDinnerLayoutManager;
     private RecyclerView.LayoutManager mSnackLayoutManager;
     private List<Meal> mealList;
-    private SharedPreferences rdi;
-    double bkf = 0, lnch =0, dnr = 0,snk = 0;
+    private SharedPreferences sharedRdi;
+    double bkf, lch, dnr, snk;
 
     @Nullable
     @Override
@@ -161,13 +165,15 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         ButterKnife.bind(this, view);
         setLayoutEnhancements();
 
-        rdi = getActivity().getSharedPreferences(Constants.RDI_PREF_ID, getActivity().MODE_PRIVATE);
-        float remCal = Float.parseFloat(rdi.getString(Constants.RDI,"0"));
+        sharedRdi = getActivity().getSharedPreferences(Constants.RDI_PREF_ID, getActivity().MODE_PRIVATE);
+        float remCal = Float.parseFloat(sharedRdi.getString(Constants.RDI, "0"));
         mealPlanPresenter = new MealPlanPresenter(this);
         mBreakFastFlag = false;
         mLunchFlag = false;
         mDinnerFlag = false;
         mSnackFlag = false;
+
+        displayCalorieViews();
         return view;
     }
 
@@ -440,6 +446,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
 
     @Override
     public void displayBreakfast() {
+        bkf = 0;
         Meal meals = null;
         List<Meal> breakfastlist = new ArrayList<>();
         for (int i = 0; i < mealList.size(); i++) {
@@ -455,11 +462,14 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         breakfastRecyclerView.setAdapter(breakFastRecyclerAdapter);
         mLayoutManager = new LinearLayoutManager(getActivity());
         breakfastRecyclerView.setLayoutManager(mLayoutManager);
-        updateRdi();
+
+        mBreakFastTotalkCal.setText(TOTAL_CAL + bkf);
+        displayCalorieViews();
     }
 
     @Override
     public void displayLunch() {
+        lch = 0;
         Meal meals = null;
         List<Meal> lunchList = new ArrayList<>();
         for (int i = 0; i < mealList.size(); i++) {
@@ -467,7 +477,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
                 meals = new Meal();
                 meals = getMeal(i, mealList);
                 lunchList.add(meals);
-                lnch += meals.getCalories();
+                lch += meals.getCalories();
             }
         }
         mLunchMealCount.setText(String.valueOf(lunchList.size()) + " items");
@@ -475,11 +485,14 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         mLunchRecyclerView.setAdapter(lunchRecyclerAdapter);
         mLunchLayoutManager = new LinearLayoutManager(getActivity());
         mLunchRecyclerView.setLayoutManager(mLunchLayoutManager);
-        updateRdi();
+
+        mLunchTotalkCal.setText(TOTAL_CAL + lch);
+        displayCalorieViews();
     }
 
     @Override
-    public void displaDinner() {
+    public void displayDinner() {
+        dnr = 0;
         Meal meals = null;
         List<Meal> dinnerList = new ArrayList<>();
         for (int i = 0; i < mealList.size(); i++) {
@@ -495,11 +508,14 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         mDinnerRecyclerView.setAdapter(dinnerRecyclerAdapter);
         mDinnerLayoutManager = new LinearLayoutManager(getActivity());
         mDinnerRecyclerView.setLayoutManager(mDinnerLayoutManager);
-        updateRdi();
+
+        mDinnerTotalkCal.setText(TOTAL_CAL + dnr);
+        displayCalorieViews();
     }
 
     @Override
     public void displaySnack() {
+        snk = 0;
         Meal meals = null;
         List<Meal> snackList = new ArrayList<>();
         for (int i = 0; i < mealList.size(); i++) {
@@ -515,7 +531,9 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         mSnackRecyclerView.setAdapter(dinnerRecyclerAdapter);
         mSnackLayoutManager = new LinearLayoutManager(getActivity());
         mSnackRecyclerView.setLayoutManager(mSnackLayoutManager);
-        updateRdi();
+
+        mSnackTotalkCal.setText(TOTAL_CAL + snk);
+        displayCalorieViews();
     }
 
     public Meal getMeal(int i, List<Meal> mealList) {
@@ -532,8 +550,18 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         return meal;
     }
 
-    private void updateRdi(){
-        mTextCalRemaining.setText(""+(Double.parseDouble(rdi.getString(Constants.RDI,"0")) - (bkf + lnch + dnr + snk)));
-        mTextCalConsumed.setText("" + String.format("%.2f",bkf + lnch + dnr + snk));
+    private void displayCalorieViews() {
+        double rdi = Double.parseDouble(sharedRdi.getString(Constants.RDI, "0"));
+        double calConsumed = bkf + lch + dnr + snk ;
+        double calRemaining = rdi - calConsumed;
+        //Update Calorie Views in Summary
+        mTextCalRdi.setText(String.format("%.2f", rdi));
+        mTextCalRemaining.setText(String.format("%.2f", calRemaining));
+        mTextCalConsumed.setText(String.format("%.2f", calConsumed));
+
+        if(calConsumed > rdi)
+            mTextCalConsumed.setTextColor(getResources().getColor(R.color.error_red));
+        if(calRemaining < 0)
+            mTextCalRemaining.setTextColor(getResources().getColor(R.color.error_red));
     }
 }

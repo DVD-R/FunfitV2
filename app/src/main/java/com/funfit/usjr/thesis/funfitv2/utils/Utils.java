@@ -7,6 +7,8 @@ import android.util.Log;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,5 +44,19 @@ public class Utils {
     public static String getCurrentDate(){
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         return sdf.format(new Date());
+    }
+
+    public static String getDay(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        Date sd = sdf.parse(date);
+
+        return (String) android.text.format.DateFormat.format("dd", sd);
+    }
+
+    public static String getMonth(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        Date sd = sdf.parse(date);
+
+        return (String) android.text.format.DateFormat.format("MMM", sd);
     }
 }

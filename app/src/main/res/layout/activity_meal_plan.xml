@@ -1,80 +1,198 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!--Breakfast-->
-        <FrameLayout
-            android:id="@+id/breakfastCardView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/white"
-            android:elevation="3dp">
+            android:orientation="vertical">
 
-            <LinearLayout
+            <!--Breakfast-->
+            <FrameLayout
+                android:id="@+id/breakfastCardView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:id="@+id/breakfastClk"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clickable="true"
-                    android:fitsSystemWindows="true"
-                    android:background="?attr/selectableItemBackground">
-
-                    <ImageView
-                        android:id="@+id/img_breakfast"
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:fitsSystemWindows="true"
-                        android:src="@android:color/darker_gray" />
-
-                    <TextView
-                        android:id="@+id/txt_breakfast_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:fitsSystemWindows="true"
-                        android:text="BREAKFAST"
-                        android:textColor="@android:color/white"
-                        android:textSize="36sp" />
-
-                    <TextView
-                        android:id="@+id/breakfastMealCountTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:fontFamily="sans-serif-light"
-                        android:paddingTop="50dp"
-                        android:text="no items"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                        android:textColor="@android:color/white" />
-
-                </RelativeLayout>
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:elevation="3dp">
 
                 <LinearLayout
-                    android:id="@+id/collapseLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:id="@+id/breakfastClk"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:fitsSystemWindows="true">
+
+                        <ImageView
+                            android:id="@+id/img_breakfast"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:fitsSystemWindows="true"
+                            android:src="@android:color/darker_gray" />
+
+                        <TextView
+                            android:id="@+id/txt_breakfast_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:fitsSystemWindows="true"
+                            android:text="BREAKFAST"
+                            android:textColor="@android:color/white"
+                            android:textSize="36sp" />
+
+                        <TextView
+                            android:id="@+id/breakfastMealCountTxt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="sans-serif-light"
+                            android:paddingTop="50dp"
+                            android:text="no items"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                            android:textColor="@android:color/white" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:id="@+id/collapseLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <FrameLayout
+                            android:id="@+id/breakfastLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginTop="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-sarif-light"
+                                android:text="No Breakfast foods have yet been added"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                                android:textColor="@android:color/primary_text_light" />
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:id="@+id/breakfastRecyclerLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginTop="10dp"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:id="@+id/breafastTotalkCalTxt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="left"
+                                android:layout_marginBottom="10dp"
+                                android:fontFamily="sans-sarif-light"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                                android:textColor="@android:color/primary_text_light" />
+
+                            <ImageButton
+                                android:id="@+id/collapseImgBtn"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:layout_gravity="right"
+                                android:layout_marginBottom="10dp"
+                                android:background="@drawable/arrow_right" />
+
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/breakfast_recycler_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="145dp"
+                                android:layout_marginBottom="10dp"
+                                android:layout_marginTop="20dp"
+                                android:visibility="gone"
+                                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                        </FrameLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </FrameLayout>
+
+            <!--Lunch-->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:elevation="3dp">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:id="@+id/lunchClk"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:fitsSystemWindows="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/img_lunch"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:fitsSystemWindows="true"
+                            android:src="@android:color/darker_gray" />
+
+                        <TextView
+                            android:id="@+id/txt_lunch_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:fitsSystemWindows="true"
+                            android:text="LUNCH"
+                            android:textColor="@android:color/white"
+                            android:textSize="36sp" />
+
+                        <TextView
+                            android:id="@+id/lunchMealCountTxt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="sans-serif-light"
+                            android:paddingTop="50dp"
+                            android:text="no items"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                            android:textColor="@android:color/white" />
+
+                    </RelativeLayout>
 
                     <FrameLayout
-                        android:id="@+id/breakfastLayout"
+                        android:id="@+id/lunchLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
@@ -86,13 +204,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-sarif-light"
-                            android:text="No Breakfast foods have yet been added"
+                            android:text="No Lunch foods have yet been added"
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                             android:textColor="@android:color/primary_text_light" />
                     </FrameLayout>
 
                     <FrameLayout
-                        android:id="@+id/breakfastRecyclerLayout"
+                        android:id="@+id/lunchRecyclerLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -101,7 +219,7 @@
                         android:visibility="gone">
 
                         <TextView
-                            android:id="@+id/breafastTotalkCalTxt"
+                            android:id="@+id/lunchTotalkCalTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="left"
@@ -111,7 +229,7 @@
                             android:textColor="@android:color/primary_text_light" />
 
                         <ImageButton
-                            android:id="@+id/collapseImgBtn"
+                            android:id="@+id/lunchCollapseImgBtn"
                             android:layout_width="15dp"
                             android:layout_height="15dp"
                             android:layout_gravity="right"
@@ -119,7 +237,7 @@
                             android:background="@drawable/arrow_right" />
 
                         <android.support.v7.widget.RecyclerView
-                            android:id="@+id/breakfast_recycler_view"
+                            android:id="@+id/lunch_recycler_view"
                             android:layout_width="match_parent"
                             android:layout_height="145dp"
                             android:layout_marginBottom="10dp"
@@ -128,550 +246,446 @@
                             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
                     </FrameLayout>
                 </LinearLayout>
-            </LinearLayout>
-        </FrameLayout>
+            </FrameLayout>
 
-        <!--Lunch-->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/white"
-            android:elevation="3dp">
-
-            <LinearLayout
+            <!--Dinner-->
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:id="@+id/lunchClk"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clickable="true"
-                    android:fitsSystemWindows="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <ImageView
-                        android:id="@+id/img_lunch"
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:fitsSystemWindows="true"
-                        android:src="@android:color/darker_gray" />
-
-                    <TextView
-                        android:id="@+id/txt_lunch_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:fitsSystemWindows="true"
-                        android:text="LUNCH"
-                        android:textColor="@android:color/white"
-                        android:textSize="36sp" />
-
-                    <TextView
-                        android:id="@+id/lunchMealCountTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:fontFamily="sans-serif-light"
-                        android:paddingTop="50dp"
-                        android:text="no items"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                        android:textColor="@android:color/white" />
-
-                </RelativeLayout>
-
-                <FrameLayout
-                    android:id="@+id/lunchLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-sarif-light"
-                        android:text="No Lunch foods have yet been added"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                        android:textColor="@android:color/primary_text_light" />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/lunchRecyclerLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/lunchTotalkCalTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:layout_marginBottom="10dp"
-                        android:fontFamily="sans-sarif-light"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                        android:textColor="@android:color/primary_text_light" />
-
-                    <ImageButton
-                        android:id="@+id/lunchCollapseImgBtn"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_gravity="right"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/arrow_right" />
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/lunch_recycler_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="145dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="20dp"
-                        android:visibility="gone"
-                        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-                </FrameLayout>
-            </LinearLayout>
-        </FrameLayout>
-
-        <!--Dinner-->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/white"
-            android:elevation="3dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:id="@+id/dinnerClk"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clickable="true"
-                    android:fitsSystemWindows="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <ImageView
-                        android:id="@+id/img_dinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:fitsSystemWindows="true"
-                        android:src="@android:color/darker_gray" />
-
-                    <TextView
-                        android:id="@+id/txt_dinner_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:fitsSystemWindows="true"
-                        android:text="DINNER"
-                        android:textColor="@android:color/white"
-                        android:textSize="36sp" />
-
-                    <TextView
-                        android:id="@+id/dinnerMealCountTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:fontFamily="sans-serif-light"
-                        android:paddingTop="50dp"
-                        android:text="no items"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                        android:textColor="@android:color/white" />
-
-                </RelativeLayout>
-
-                <FrameLayout
-                    android:id="@+id/dinnerLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-sarif-light"
-                        android:text="No Dinner foods have yet been added"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                        android:textColor="@android:color/primary_text_light" />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/dinnerRecyclerLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/dinnerTotalkCalTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:layout_marginBottom="10dp"
-                        android:fontFamily="sans-sarif-light"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                        android:textColor="@android:color/primary_text_light" />
-
-                    <ImageButton
-                        android:id="@+id/dinnerCollapseImgBtn"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_gravity="right"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/arrow_right" />
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/dinner_recycler_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="145dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="20dp"
-                        android:visibility="gone"
-                        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-                </FrameLayout>
-            </LinearLayout>
-        </FrameLayout>
-
-        <!--Snacks-->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/white"
-            android:elevation="3dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:id="@+id/snackClk"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clickable="true"
-                    android:fitsSystemWindows="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <ImageView
-                        android:id="@+id/img_snack"
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:fitsSystemWindows="true"
-                        android:src="@android:color/darker_gray" />
-
-                    <TextView
-                        android:id="@+id/txt_snack_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:fitsSystemWindows="true"
-                        android:text="SNACKS"
-                        android:textColor="@android:color/white"
-                        android:textSize="36sp" />
-
-                    <TextView
-                        android:id="@+id/snackMealCountTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:fontFamily="sans-serif-light"
-                        android:paddingTop="50dp"
-                        android:text="no items"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                        android:textColor="@android:color/white" />
-
-                </RelativeLayout>
-
-                <FrameLayout
-                    android:id="@+id/snackLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-sarif-light"
-                        android:text="No Snack/Others foods have yet been added"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                        android:textColor="@android:color/primary_text_light" />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/snackRecyclerLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/snackTotalkCalTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:layout_marginBottom="10dp"
-                        android:fontFamily="sans-sarif-light"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                        android:textColor="@android:color/primary_text_light" />
-
-                    <ImageButton
-                        android:id="@+id/snackCollapseImgBtn"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_gravity="right"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/arrow_right" />
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/snack_recycler_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="145dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="20dp"
-                        android:visibility="gone"
-                        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-                </FrameLayout>
-
-            </LinearLayout>
-        </FrameLayout>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="350dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="SUMMARY"
-                    android:id="@+id/txt_summary"
-                    android:textSize="36sp"
-                    android:layout_marginTop="5dp"
-                    android:textColor="@android:color/primary_text_light" />
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:elevation="3dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <TextView
+                    <RelativeLayout
+                        android:id="@+id/dinnerClk"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:fitsSystemWindows="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/img_dinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:fitsSystemWindows="true"
+                            android:src="@android:color/darker_gray" />
+
+                        <TextView
+                            android:id="@+id/txt_dinner_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:fitsSystemWindows="true"
+                            android:text="DINNER"
+                            android:textColor="@android:color/white"
+                            android:textSize="36sp" />
+
+                        <TextView
+                            android:id="@+id/dinnerMealCountTxt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="sans-serif-light"
+                            android:paddingTop="50dp"
+                            android:text="no items"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                            android:textColor="@android:color/white" />
+
+                    </RelativeLayout>
+
+                    <FrameLayout
+                        android:id="@+id/dinnerLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-sarif-light"
-                        android:text="Calories Remaining"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                        android:textColor="@android:color/primary_text_light" />
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="10dp">
 
-                    <TextView
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-sarif-light"
+                            android:text="No Dinner foods have yet been added"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                            android:textColor="@android:color/primary_text_light" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/dinnerRecyclerLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-sarif-light"
-                        android:gravity="right"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                        android:textColor="@android:color/primary_text_light"
-                        android:id="@+id/txt_cal_remaining" />
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="5dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/dinnerTotalkCalTxt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:layout_marginBottom="10dp"
+                            android:fontFamily="sans-sarif-light"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                            android:textColor="@android:color/primary_text_light" />
+
+                        <ImageButton
+                            android:id="@+id/dinnerCollapseImgBtn"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="right"
+                            android:layout_marginBottom="10dp"
+                            android:background="@drawable/arrow_right" />
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/dinner_recycler_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="145dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="20dp"
+                            android:visibility="gone"
+                            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                    </FrameLayout>
                 </LinearLayout>
+            </FrameLayout>
+
+            <!--Snacks-->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:elevation="3dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <TextView
+                    <RelativeLayout
+                        android:id="@+id/snackClk"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:fitsSystemWindows="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/img_snack"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:fitsSystemWindows="true"
+                            android:src="@android:color/darker_gray" />
+
+                        <TextView
+                            android:id="@+id/txt_snack_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:fitsSystemWindows="true"
+                            android:text="SNACKS"
+                            android:textColor="@android:color/white"
+                            android:textSize="36sp" />
+
+                        <TextView
+                            android:id="@+id/snackMealCountTxt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="sans-serif-light"
+                            android:paddingTop="50dp"
+                            android:text="no items"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                            android:textColor="@android:color/white" />
+
+                    </RelativeLayout>
+
+                    <FrameLayout
+                        android:id="@+id/snackLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-sarif-light"
-                        android:text="Calories Consumed"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                        android:textColor="@android:color/primary_text_light" />
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="10dp">
 
-                    <TextView
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-sarif-light"
+                            android:text="No Snack/Others foods have yet been added"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                            android:textColor="@android:color/primary_text_light" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/snackRecyclerLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-sarif-light"
-                        android:gravity="right"
-                        android:text="0"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                        android:textColor="@android:color/primary_text_light"
-                        android:id="@+id/txt_cal_consumed" />
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="5dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/snackTotalkCalTxt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:layout_marginBottom="10dp"
+                            android:fontFamily="sans-sarif-light"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                            android:textColor="@android:color/primary_text_light" />
+
+                        <ImageButton
+                            android:id="@+id/snackCollapseImgBtn"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="right"
+                            android:layout_marginBottom="10dp"
+                            android:background="@drawable/arrow_right" />
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/snack_recycler_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="145dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="20dp"
+                            android:visibility="gone"
+                            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                    </FrameLayout>
+
                 </LinearLayout>
+            </FrameLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/divider">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-sarif-light"
-                        android:text="11% of RDI"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                        android:textColor="@android:color/primary_text_light" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-sarif-light"
-                        android:gravity="right"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                        android:textColor="@android:color/primary_text_light"
-                        android:id="@+id/txt_cal_rdi" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/divider_line">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txt_summary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="SUMMARY"
+                        android:textColor="@android:color/primary_text_light"
+                        android:textSize="36sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-sarif-light"
+                            android:text="Calories Remaining"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@android:color/primary_text_light" />
+
+                        <TextView
+                            android:id="@+id/txt_cal_remaining"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-sarif-light"
+                            android:gravity="right"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@android:color/primary_text_light" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-sarif-light"
+                            android:text="Calories Consumed"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@android:color/primary_text_light" />
+
+                        <TextView
+                            android:id="@+id/txt_cal_consumed"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-sarif-light"
+                            android:gravity="right"
+                            android:text="0"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@android:color/primary_text_light" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/divider">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-sarif-light"
+                            android:text="11% of RDI"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@android:color/primary_text_light" />
+
+                        <TextView
+                            android:id="@+id/txt_cal_rdi"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-sarif-light"
+                            android:gravity="right"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@android:color/primary_text_light" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/divider_line">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="10dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-sarif-light"
-                            android:text="Total Fat"
-                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-                            android:textColor="@android:color/primary_text_light" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-sarif-light"
-                            android:text="Cholesterol"
-                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-                            android:textColor="@android:color/primary_text_light" />
-
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-sarif-light"
-                            android:text="Sodium 0mg"
-                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-                            android:textColor="@android:color/primary_text_light" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-sarif-light"
-                            android:text="Total Carbohydrate 0g"
-                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-                            android:textColor="@android:color/primary_text_light" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_marginLeft="10dp"
-                            android:fontFamily="sans-sarif-light"
-                            android:text="Dietary Fiber 0g"
-                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                            android:textColor="@android:color/primary_text_light" />
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:fontFamily="sans-sarif-light"
-                            android:text="Sugar 0g"
-                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                            android:textColor="@android:color/primary_text_light" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-sarif-light"
+                                android:text="Total Fat"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                                android:textColor="@android:color/primary_text_light" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-sarif-light"
+                                android:text="Cholesterol"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                                android:textColor="@android:color/primary_text_light" />
 
 
-                        <TextView
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-sarif-light"
+                                android:text="Sodium 0mg"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                                android:textColor="@android:color/primary_text_light" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-sarif-light"
+                                android:text="Total Carbohydrate 0g"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                                android:textColor="@android:color/primary_text_light" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:fontFamily="sans-sarif-light"
+                                android:text="Dietary Fiber 0g"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                                android:textColor="@android:color/primary_text_light" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:fontFamily="sans-sarif-light"
+                                android:text="Sugar 0g"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                                android:textColor="@android:color/primary_text_light" />
+
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-sarif-light"
+                                android:text="Protein 0g"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                                android:textColor="@android:color/primary_text_light" />
+
+                        </LinearLayout>
+
+                        <FrameLayout
+                            android:id="@+id/container"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-sarif-light"
-                            android:text="Protein 0g"
-                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-                            android:textColor="@android:color/primary_text_light" />
-
+                            android:layout_height="match_parent"
+                            android:layout_weight="2" />
                     </LinearLayout>
-
-                    <FrameLayout
-                        android:id="@+id/container"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2" />
                 </LinearLayout>
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+            </android.support.v7.widget.CardView>
 
-    </LinearLayout>
+        </LinearLayout>
 
-</android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_today"/>
+</android.support.design.widget.CoordinatorLayout>

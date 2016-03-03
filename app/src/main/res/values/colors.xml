@@ -13,6 +13,7 @@
     <color name="velocity">#2980b9</color>
     <color name="impulse">#c0392b</color>
     <color name="activity_bg">#e4e5e5</color>
+    <color name="dark_grey">#E0E0E0</color>
 
     <color name="activated">#E0E0E0</color>
     <color name="primary_light">#B3E5FC</color>

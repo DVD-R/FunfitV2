@@ -40,11 +40,9 @@ public class MealPlanPresenter {
 
     public void checkCourseValidity(){
         for(int i = 0; i < iMealPlanFragmentView.getMealList().size(); i++) {
-            Log.v(LOG_TAG, iMealPlanFragmentView.getMealList().get(i).getCourse());
             switch (iMealPlanFragmentView.getMealList().get(i).getCourse()) {
                 case "Breakfast":
                     iMealPlanFragmentView.unhideBreakfast();
-                    Log.v(LOG_TAG, "breakfast");
                     break;
                 case "Lunch":
                     iMealPlanFragmentView.unhideLunch();

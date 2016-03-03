@@ -11,11 +11,14 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.adapter.ViewPagerAdapter;
+import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.Bind;
@@ -24,7 +27,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Dj on 3/3/2016.
  */
-public class ShackFragment extends Fragment{
+public class WeeklyShackFragment extends Fragment{
     @Bind(R.id.shackPager)
     ViewPager mShackPager;
     @Bind(R.id.tabLayout)
@@ -41,17 +44,33 @@ public class ShackFragment extends Fragment{
         setupViewPager(mShackPager);
         mTabLayout.setupWithViewPager(mShackPager);
 
+        tabToday();
+
         return v;
+    }
+
+    private void tabToday() {
+        switch (Utils.getCurrentDayOfWeek()) {
+            case Calendar.SUNDAY: mShackPager.setCurrentItem(0);break;
+            case Calendar.MONDAY: mShackPager.setCurrentItem(1);break;
+            case Calendar.TUESDAY: mShackPager.setCurrentItem(2);break;
+            case Calendar.WEDNESDAY: mShackPager.setCurrentItem(3);break;
+            case Calendar.THURSDAY: mShackPager.setCurrentItem(4);break;
+            case Calendar.FRIDAY: mShackPager.setCurrentItem(5);break;
+            case Calendar.SATURDAY: mShackPager.setCurrentItem(6);break;
+        }
     }
 
 
     public void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
+        adapter.addFragment(new MealPlanFragment(), "S");
         adapter.addFragment(new MealPlanFragment(), "M");
         adapter.addFragment(new MealPlanFragment(), "T");
         adapter.addFragment(new MealPlanFragment(), "W");
         adapter.addFragment(new MealPlanFragment(), "T");
         adapter.addFragment(new MealPlanFragment(), "F");
+        adapter.addFragment(new MealPlanFragment(), "S");
         viewPager.setAdapter(adapter);
     }
 

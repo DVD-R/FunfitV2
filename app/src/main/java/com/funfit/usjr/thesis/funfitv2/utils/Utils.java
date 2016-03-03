@@ -7,6 +7,8 @@ import android.util.Log;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 
+import java.util.Calendar;
+
 /**
  * Created by Dj on 2/4/2016.
  */
@@ -27,5 +29,10 @@ public class Utils {
         //millisecond to hour
         time = (int) ((time / (1000*60*60)) % 24);
         return (int)((0.0215 * (speed*3) - 0.1765 * (speed*2) + 0.8710 * (speed) + 1.4577) * weight * time);
+    }
+
+    public static int getCurrentDayOfWeek(){
+        Calendar calendar = Calendar.getInstance();
+        return calendar.get(Calendar.DAY_OF_WEEK);
     }
 }

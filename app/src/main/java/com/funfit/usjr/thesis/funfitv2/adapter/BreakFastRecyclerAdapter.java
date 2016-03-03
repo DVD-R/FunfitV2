@@ -61,8 +61,8 @@ public class BreakFastRecyclerAdapter extends RecyclerView.Adapter<BreakFastRecy
             holder.mServingLayout.setBackgroundColor(context.getResources().getColor(R.color.filter_impulse));
         else
             holder.mServingLayout.setBackgroundColor(context.getResources().getColor(R.color.filter_velocity));
-        if (mealList.get(position).getmTime().equals("Breakfast")) {
-            holder.mFoodName.setText(mealList.get(position).getmName());
+        if (mealList.get(position).getCourse().equals("Breakfast")) {
+            holder.mFoodName.setText(mealList.get(position).getName());
             holder.mKCal.setText(String.valueOf(mealList.get(position).getCalories()) + " kcal");
         }
     }

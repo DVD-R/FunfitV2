@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,6 +27,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.adapter.BreakFastRecyclerAdapter;
 import com.funfit.usjr.thesis.funfitv2.adapter.DinnerRecyclerAdapter;
@@ -148,15 +154,14 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
     private PieChart mPieChart;
     private float[] yData = {50, 46, 4};
     private String[] xData = {"Carbs", "Fat", "Protein"};
-    private int descriptionViewFullHeight;
     private MealPlanPresenter mealPlanPresenter;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.LayoutManager mLunchLayoutManager;
     private RecyclerView.LayoutManager mDinnerLayoutManager;
     private RecyclerView.LayoutManager mSnackLayoutManager;
-    private List<Meal> mealList;
     private SharedPreferences sharedRdi;
     double bkf, lch, dnr, snk;
+    private static List<Meal> mealList;
 
     @Nullable
     @Override
@@ -260,9 +265,6 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
     public void onResume() {
         super.onResume();
 
-        //OPEN LOCAL DATABASE CONNECTION
-        mealPlanPresenter.openDb();
-
         mPieChart = new PieChart(getActivity());
         //add pie chart to pie chart layout
         piechartLayout.addView(mPieChart);
@@ -308,14 +310,6 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
 
         //QUERY FROM LOCAL DATABASE FOR MOST RECENT FOOD LIST
         mealPlanPresenter.queryMealList();
-
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //CLOSE LOCAL DATABASE CONNECTION
-        mealPlanPresenter.closeDb();
     }
 
     private void addData() {
@@ -399,16 +393,47 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
     }
 
     @Override
-    public Context getContxt() {
+    public Context getContext() {
         return getActivity();
     }
 
     @Override
-    public void setMealList(List<Meal> mealList) {
-        this.mealList = mealList;
-        if (mealList.size() != 0) {
-            mealPlanPresenter.checkTimeValidity();
-        }
+    public void setMealList(Firebase firebaseMeal) {
+        firebaseMeal.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                List<Meal> mealList = new ArrayList<Meal>();
+                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                    for(DataSnapshot finSnapshot: postSnapshot.getChildren()) {
+                        Meal meal =
+                                new Meal(
+                                Long.parseLong(finSnapshot.child("meal_id").getValue() + ""),
+                                finSnapshot.child("name").getValue() + "",
+                                Double.parseDouble(finSnapshot.child("fat").getValue() + ""),
+                                Double.parseDouble(finSnapshot.child("sodium").getValue() + ""),
+                                Double.parseDouble(finSnapshot.child("calories").getValue() + ""),
+                                Double.parseDouble(finSnapshot.child("cholesterol").getValue() + ""),
+                                Double.parseDouble(finSnapshot.child("carbohydrate").getValue() + ""),
+                                Double.parseDouble(finSnapshot.child("protein").getValue() + ""),
+                                finSnapshot.child("course").getValue() + ""
+                        );
+                        mealList.add(meal);
+
+                        Log.v(LOG_TAG, postSnapshot.toString());
+                    }
+                }
+
+                MealPlanFragment.mealList = mealList;
+
+                if (mealList.size() != 0) {
+                    mealPlanPresenter.checkCourseValidity();
+                }
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -450,7 +475,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         Meal meals = null;
         List<Meal> breakfastlist = new ArrayList<>();
         for (int i = 0; i < mealList.size(); i++) {
-            if (mealList.get(i).getmTime().equals("Breakfast")) {
+            if (mealList.get(i).getCourse().equals("Breakfast")) {
                 meals = new Meal();
                 meals = getMeal(i, mealList);
                 breakfastlist.add(meals);
@@ -473,7 +498,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         Meal meals = null;
         List<Meal> lunchList = new ArrayList<>();
         for (int i = 0; i < mealList.size(); i++) {
-            if (mealList.get(i).getmTime().equals("Lunch")) {
+            if (mealList.get(i).getCourse().equals("Lunch")) {
                 meals = new Meal();
                 meals = getMeal(i, mealList);
                 lunchList.add(meals);
@@ -496,7 +521,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         Meal meals = null;
         List<Meal> dinnerList = new ArrayList<>();
         for (int i = 0; i < mealList.size(); i++) {
-            if (mealList.get(i).getmTime().equals("Dinner")) {
+            if (mealList.get(i).getCourse().equals("Dinner")) {
                 meals = new Meal();
                 meals = getMeal(i, mealList);
                 dinnerList.add(meals);
@@ -519,7 +544,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         Meal meals = null;
         List<Meal> snackList = new ArrayList<>();
         for (int i = 0; i < mealList.size(); i++) {
-            if (mealList.get(i).getmTime().equals("Snack")) {
+            if (mealList.get(i).getCourse().equals("Snack")) {
                 meals = new Meal();
                 meals = getMeal(i, mealList);
                 snackList.add(meals);
@@ -539,14 +564,14 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
     public Meal getMeal(int i, List<Meal> mealList) {
         Meal meal = new Meal();
         meal.setMeal_id(mealList.get(i).getMeal_id());
-        meal.setmName(mealList.get(i).getmName());
+        meal.setName(mealList.get(i).getName());
         meal.setFat(mealList.get(i).getFat());
         meal.setCholesterol(mealList.get(i).getCholesterol());
         meal.setSodium(mealList.get(i).getSodium());
         meal.setCarbohydrate(mealList.get(i).getCarbohydrate());
         meal.setProtein(mealList.get(i).getProtein());
         meal.setCalories(mealList.get(i).getCalories());
-        meal.setmTime(mealList.get(i).getmTime());
+        meal.setCourse(mealList.get(i).getCourse());
         return meal;
     }
 

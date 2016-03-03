@@ -2,27 +2,26 @@ package com.funfit.usjr.thesis.funfitv2.mealPlan;
 
 import android.util.Log;
 
-import com.funfit.usjr.thesis.funfitv2.dataManager.MealDbAdapter;
 import com.funfit.usjr.thesis.funfitv2.model.Meal;
 import com.funfit.usjr.thesis.funfitv2.views.IMealPlanFragmentView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by victor on 1/15/2016.
  */
 public class MealPlanPresenter {
+    private static final String LOG_TAG = MealPlanPresenter.class.getSimpleName();
     private IMealPlanFragmentView iMealPlanFragmentView;
     private double breakfastTotalkCal;
     private double lunchTotalkCal;
     private double dinnerTotalkCal;
     private double snackTotalkCal;
-    private MealDbAdapter mealDbAdapter;
+    private MealFirebaseHelper mealDbAdapter;
 
     public MealPlanPresenter(IMealPlanFragmentView iMealPlanFragmentView){
         this.iMealPlanFragmentView = iMealPlanFragmentView;
-        this.mealDbAdapter = new MealDbAdapter(iMealPlanFragmentView.getContxt());
+        this.mealDbAdapter = new MealFirebaseHelper(iMealPlanFragmentView.getContext());
     }
 
     //Collapse/Expand commands<-----------------
@@ -36,15 +35,16 @@ public class MealPlanPresenter {
     //Collapse/Expand commands<-----------------
 
     public void queryMealList(){
-        List<Meal> mealList= mealDbAdapter.getMeals();
-        iMealPlanFragmentView.setMealList(mealList);
+        iMealPlanFragmentView.setMealList(mealDbAdapter.getFirebaseMeals());
     }
 
-    public void checkTimeValidity(){
+    public void checkCourseValidity(){
         for(int i = 0; i < iMealPlanFragmentView.getMealList().size(); i++) {
-            switch (iMealPlanFragmentView.getMealList().get(i).getmTime()) {
+            Log.v(LOG_TAG, iMealPlanFragmentView.getMealList().get(i).getCourse());
+            switch (iMealPlanFragmentView.getMealList().get(i).getCourse()) {
                 case "Breakfast":
                     iMealPlanFragmentView.unhideBreakfast();
+                    Log.v(LOG_TAG, "breakfast");
                     break;
                 case "Lunch":
                     iMealPlanFragmentView.unhideLunch();
@@ -58,17 +58,5 @@ public class MealPlanPresenter {
             }
         }
     }
-
-    //OPEN DATABASE CONNECTION FOR LOCAL PERSISTENCE<----------
-    public void openDb(){
-        mealDbAdapter.openDb();
-    }
-    //OPEN DATABASE CONNECTION FOR LOCAL PERSISTENCE<----------
-
-    //CLOSE DATABASE CONNECTION FOR LOCAL PERSISTENCE<---------
-    public void closeDb(){
-        mealDbAdapter.closeDb();
-    }
-    //CLOSE DATABASE CONNECTION FOR LOCAL PERSISTENCE<---------
 
 }

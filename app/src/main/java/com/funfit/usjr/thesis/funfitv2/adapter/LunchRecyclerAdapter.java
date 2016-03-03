@@ -59,7 +59,7 @@ public class LunchRecyclerAdapter extends RecyclerView.Adapter<LunchRecyclerAdap
             holder.mServingLayout.setBackgroundColor(context.getResources().getColor(R.color.filter_impulse));
         else
             holder.mServingLayout.setBackgroundColor(context.getResources().getColor(R.color.filter_velocity));
-        holder.mFoodName.setText(mealList.get(position).getmName());
+        holder.mFoodName.setText(mealList.get(position).getName());
         holder.mKCal.setText(String.valueOf(mealList.get(position).getCalories()) + " kcal");
     }
 

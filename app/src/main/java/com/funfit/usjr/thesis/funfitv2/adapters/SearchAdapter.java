@@ -52,12 +52,12 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
     }
 
     @Override
-    public Long getFoodId() {
-        return Long.parseLong(food_id);
+    public int getFoodId() {
+        return Integer.parseInt(food_id);
     }
 
     @Override
-    public Context getContxt() {
+    public Context getContext() {
         return activityContext;
     }
 
@@ -116,7 +116,6 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
         this.activityContext = activityContext;
         this.mealTime = mealTime;
         fatSecretGetPresenter = new FatSecretGetPresenter(this);
-        fatSecretGetPresenter.openDb();
     }
 
     @Override
@@ -161,9 +160,5 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
 
     public List<Food> getFoodList(){
         return foodList;
-    }
-
-    public void onDestroy(){
-        fatSecretGetPresenter.closeDb();
     }
 }

@@ -30,7 +30,7 @@ public class FatSecretGet {
     final static private String APP_URL = "http://platform.fatsecret.com/rest/server.api";
     private static final String HMAC_SHA1_ALGORITHM = "HMAC-SHA1";
 
-    public JSONObject getFood(Long ab) {
+    public JSONObject getFood(int ab) {
         List<String> params = new ArrayList<>(Arrays.asList(generateOauthParams()));
         String[] template = new String[1];
         params.add("method=food.get");

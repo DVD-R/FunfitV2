@@ -24,7 +24,6 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.FunfitApplication;
@@ -32,18 +31,14 @@ import com.funfit.usjr.thesis.funfitv2.login.LoginActivity;
 import com.funfit.usjr.thesis.funfitv2.maps.MapsFragment;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.leaderBoard.LeaderBoardActivity;
-import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanFragment;
-import com.funfit.usjr.thesis.funfitv2.mealPlan.ShackFragment;
+import com.funfit.usjr.thesis.funfitv2.mealPlan.WeeklyShackFragment;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.ProfileRequestJson;
-import com.funfit.usjr.thesis.funfitv2.model.Territory;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.EventActivity;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.NotificationActivity;
-import com.funfit.usjr.thesis.funfitv2.services.CreatePolylineService;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.views.IMainView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -211,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new MapsFragment(), "Arena");
-        adapter.addFragment(new ShackFragment(), "Shack");
+        adapter.addFragment(new WeeklyShackFragment(), "Shack");
         viewPager.setAdapter(adapter);
     }
 

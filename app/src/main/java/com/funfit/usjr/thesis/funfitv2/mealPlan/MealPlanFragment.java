@@ -9,8 +9,10 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Typeface;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -588,5 +590,15 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
             mTextCalConsumed.setTextColor(getResources().getColor(R.color.error_red));
         if(calRemaining < 0)
             mTextCalRemaining.setTextColor(getResources().getColor(R.color.error_red));
+    }
+
+    @OnClick(R.id.fab_switch)
+    public void onFabSwitchClick(){
+            FragmentTransaction trans = getFragmentManager()
+                    .beginTransaction();
+            trans.replace(R.id.root_frame, new WeeklyShackFragment());
+            trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            trans.addToBackStack(null);
+            trans.commit();
     }
 }

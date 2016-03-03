@@ -7,7 +7,10 @@ import android.util.Log;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Dj on 2/4/2016.
@@ -34,5 +37,10 @@ public class Utils {
     public static int getCurrentDayOfWeek(){
         Calendar calendar = Calendar.getInstance();
         return calendar.get(Calendar.DAY_OF_WEEK);
+    }
+
+    public static String getCurrentDate(){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        return sdf.format(new Date());
     }
 }

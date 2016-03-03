@@ -13,9 +13,9 @@ public final class Constants {
     public static final String FIREBASE_PROPERTY_TIMESTAMP = "timestamp";
 
     public static final String FIREBASE_LOCATION_USERS = "users";
-    public static final String FIREBASE_LOCATION_TERRITORIES = "territories";
+    public static final String FIREBASE_LOCATION_MEALS = "meals";
     public static final String FIREBASE_URL_USERS = FIREBASE_URL + "/" + FIREBASE_LOCATION_USERS;
-    public static final String FIREBASE_URL_TERRITORIES = FIREBASE_URL + "/" + FIREBASE_LOCATION_TERRITORIES;
+    public static final String FIREBASE_URL_MEALS = FIREBASE_URL + "/" + FIREBASE_LOCATION_MEALS;
 
     public static final String GOOGLE_PROVIDER = "google";
     public static final String KEY_GOOGLE_EMAIL = "GOOGLE_EMAIL";
@@ -39,6 +39,10 @@ public final class Constants {
     public static final String PROFILE_CLUSTER = "profile_cluster";
     public static final String GCM_KEY = "gcm_key";
 
+    //Shared Pref Date
+    public static final String DATE_PREF_ID = "date_info";
+    public static final String WEEK_MONTH = "week_month";
+    public static final String DAY_DATE = "day_date";
 
     //Shared RDI result
     public static final String RDI_PREF_ID = "rdi_info";

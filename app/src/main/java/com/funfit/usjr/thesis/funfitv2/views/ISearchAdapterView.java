@@ -11,8 +11,8 @@ import java.util.List;
  */
 public interface ISearchAdapterView {
     public void sendList(List<FoodServing> items);
-    public Long getFoodId();
-    public Context getContxt();
+    public int getFoodId();
+    public Context getContext();
     public void setList(List<FoodServing> items);
     public List<FoodServing> getList();
     public String getMealName();

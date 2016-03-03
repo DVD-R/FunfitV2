@@ -3,7 +3,7 @@ package com.funfit.usjr.thesis.funfitv2.fatSecretImplementation;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.funfit.usjr.thesis.funfitv2.dataManager.MealDbAdapter;
+import com.funfit.usjr.thesis.funfitv2.mealPlan.MealFirebaseHelper;
 import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
 import com.funfit.usjr.thesis.funfitv2.model.Meal;
 import com.funfit.usjr.thesis.funfitv2.views.ISearchAdapterView;
@@ -21,12 +21,12 @@ public class FatSecretGetPresenter {
     private ISearchAdapterView iSearchAdapterView;
     private FatSecretGet fatSecretGet;
     private FoodServing foodServing;
-    private MealDbAdapter mealDbAdapter;
+    private MealFirebaseHelper mealFirebaseHelper;
     private boolean flag;
     public FatSecretGetPresenter(ISearchAdapterView iSearchAdapterView){
             this.iSearchAdapterView = iSearchAdapterView;
             fatSecretGet = new FatSecretGet();
-            mealDbAdapter = new MealDbAdapter(iSearchAdapterView.getContxt());
+            mealFirebaseHelper = new MealFirebaseHelper(iSearchAdapterView.getContext());
     }
 
     public void searchFoodWithServings(boolean flag){
@@ -95,25 +95,16 @@ public class FatSecretGetPresenter {
         for (FoodServing foodServing1: foodServings){
             meal = new Meal();
             meal.setMeal_id(iSearchAdapterView.getFoodId());
-            meal.setmName(iSearchAdapterView.getMealName());
+            meal.setName(iSearchAdapterView.getMealName());
             meal.setFat(Double.parseDouble(foodServing1.getFat()));
             meal.setCholesterol(Double.parseDouble(foodServing1.getCholesterol()));
             meal.setSodium(Double.parseDouble(foodServing1.getSodium()));
             meal.setCarbohydrate(Double.parseDouble(foodServing1.getCarbohydrate()));
             meal.setProtein(Double.parseDouble(foodServing1.getProtein()));
             meal.setCalories(Double.parseDouble(foodServing1.getCalories()));
-            meal.setmTime(iSearchAdapterView.getMealTime());
+            meal.setCourse(iSearchAdapterView.getMealTime());
         }
             mealArrayList.add(meal);
-            long count = mealDbAdapter.saveMeal(mealArrayList);
-            Log.i("Save to Db", String.valueOf(count));
-    }
-
-    public void openDb(){
-        mealDbAdapter.openDb();
-    }
-
-    public void closeDb(){
-        mealDbAdapter.closeDb();
+            mealFirebaseHelper.saveMeal(mealArrayList);
     }
 }

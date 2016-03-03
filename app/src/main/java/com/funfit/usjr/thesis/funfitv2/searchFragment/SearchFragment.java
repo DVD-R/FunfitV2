@@ -69,7 +69,6 @@ public class SearchFragment extends Fragment implements SearchActivity.DisplayLi
     public void onDestroy() {
         super.onDestroy();
         searchAdapter  = new SearchAdapter(item, context, melTime);
-        searchAdapter.onDestroy();
     }
 
     public void click(){

@@ -2,6 +2,7 @@ package com.funfit.usjr.thesis.funfitv2.views;
 
 import android.content.Context;
 
+import com.firebase.client.Firebase;
 import com.funfit.usjr.thesis.funfitv2.model.Meal;
 
 import java.util.List;
@@ -12,8 +13,8 @@ import java.util.List;
 public interface IMealPlanFragmentView {
     public void displayBreakfast();
     public void displayLunch();
-    public Context getContxt();
-    public void setMealList(List<Meal> mealList);
+    public Context getContext();
+    public void setMealList(Firebase firebaseMeals);
     public List<Meal> getMealList();
     public void unhideBreakfast();
     public void unhideLunch();

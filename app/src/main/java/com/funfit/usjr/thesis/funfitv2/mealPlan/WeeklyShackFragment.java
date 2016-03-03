@@ -1,5 +1,6 @@
 package com.funfit.usjr.thesis.funfitv2.mealPlan;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -15,10 +16,13 @@ import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.adapter.ViewPagerAdapter;
+import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -35,16 +39,20 @@ public class WeeklyShackFragment extends Fragment{
     @Bind(R.id.fab_switch)
     FloatingActionButton mFabSwitch;
 
+    private SharedPreferences datePref;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_shack, container, false);
         ButterKnife.bind(this, v);
+        datePref = getActivity().getSharedPreferences(Constants.DATE_PREF_ID, getActivity().MODE_PRIVATE);
 
         setupViewPager(mShackPager);
         mTabLayout.setupWithViewPager(mShackPager);
 
         tabToday();
+        setWeeklyPref();
 
         return v;
     }
@@ -61,8 +69,7 @@ public class WeeklyShackFragment extends Fragment{
         }
     }
 
-
-    public void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(new MealPlanFragment(), "S");
         adapter.addFragment(new MealPlanFragment(), "M");
@@ -72,6 +79,23 @@ public class WeeklyShackFragment extends Fragment{
         adapter.addFragment(new MealPlanFragment(), "F");
         adapter.addFragment(new MealPlanFragment(), "S");
         viewPager.setAdapter(adapter);
+    }
+
+    public void setWeeklyPref(){
+        String dayDate="";
+
+        switch (mShackPager.getCurrentItem()) {
+            case Calendar.SUNDAY+1: dayDate = "Sunday"; break;
+            case Calendar.MONDAY+1: dayDate = "Monday"; break;
+            case Calendar.TUESDAY+1: dayDate = "Tuesday"; break;
+            case Calendar.WEDNESDAY+1: dayDate = "Wednesday"; break;
+            case Calendar.THURSDAY+1: dayDate = "Thursday"; break;
+            case Calendar.FRIDAY+1: dayDate = "Friday"; break;
+            case Calendar.SATURDAY+1: dayDate = "Saturday"; break;
+        }
+
+        datePref.edit().putString(Constants.DAY_DATE, dayDate).commit();
+        datePref.edit().putString(Constants.WEEK_MONTH, "Weekly").commit();
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

@@ -93,12 +93,13 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
                     viewHolder.mLayoutWeekly.setBackgroundColor(Color.parseColor("#c0392b"));
             }
             viewHolder.mTextStart.setText(Utils.getDay(mList.get(position).getStartDate()));
-            viewHolder.mTextEnd.setText(Utils.getDay(mList.get(position).getStartDate()));
+            viewHolder.mTextEnd.setText(Utils.getDay(mList.get(position).getEndDate()));
             viewHolder.mTextMonth.setText(Utils.getMonth(mList.get(position).getEndDate()));
-            viewHolder.mTextCalConsumed.setText(mList.get(position).getConsumedCalories());
-            viewHolder.mTextCalBurned.setText(mList.get(position).getBurnedCalories());
+            viewHolder.mTextCalConsumed.setText("Calories Consumed this week: " +
+                    mList.get(position).getConsumedCalories()+"");
+            viewHolder.mTextCalBurned.setText("Calories Burned this week: " +
+                    mList.get(position).getBurnedCalories()+"");
 
-            Log.v(LOG_TAG,Utils.getDay(mList.get(position).getStartDate()));
         } catch (ParseException e) {
             Log.e(LOG_TAG, "Parse Exception");
         }

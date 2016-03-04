@@ -4,39 +4,28 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
-import com.funfit.usjr.thesis.funfitv2.adapter.ViewPagerAdapter;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
-import com.funfit.usjr.thesis.funfitv2.model.Meal;
+import com.funfit.usjr.thesis.funfitv2.model.Monthly;
 import com.funfit.usjr.thesis.funfitv2.model.Weekly;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.viewmods.DarkDividerItemDecoration;
-import com.funfit.usjr.thesis.funfitv2.viewmods.DividerItemDecoration;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -46,13 +35,15 @@ import butterknife.OnClick;
 /**
  * Created by Dj on 3/3/2016.
  */
-public class WeeklyShackFragment extends Fragment {
-    private static final String LOG_TAG = WeeklyShackFragment.class.getSimpleName();
+public class MonthlyShackFragment extends Fragment {
+    private static final String LOG_TAG = MonthlyShackFragment.class.getSimpleName();
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
+    @Bind(R.id.fab_switch)
+    FloatingActionButton mFabSwitch;
     private RecyclerView.LayoutManager mLayoutManager;
     private LayoutManagerType mCurrentLayoutManagerType;
-    private WeeklyAdapter mAdapter;
+    private MonthlyAdapter mAdapter;
     private SharedPreferences mUserPref;
 
     private enum LayoutManagerType {
@@ -80,7 +71,7 @@ public class WeeklyShackFragment extends Fragment {
 
 
     boolean isMealReady, isRunReady;
-    List<Weekly> weeklyMeal, weeklyRun;
+    List<Monthly> monthlyMeal, monthlyRun;
 
     public void fetchRunAndMeals() {
         isMealReady = false;
@@ -92,8 +83,8 @@ public class WeeklyShackFragment extends Fragment {
 
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                weeklyMeal = new ArrayList<Weekly>();
-                int lastWoy = 0;
+                monthlyMeal = new ArrayList<Monthly>();
+                int lastMonth = 0;
                 int lastYear = 0;
                 double calories = 0;
                 for (DataSnapshot daySnapshot : snapshot.getChildren()) {
@@ -103,26 +94,24 @@ public class WeeklyShackFragment extends Fragment {
                         }
                     }
                     try {
-                        int latestWoy = Utils.getWeekOfYear(daySnapshot.getKey());
+                        int latestMonth = Utils.getMonthOfYear(daySnapshot.getKey());
                         int latestYear = Utils.getYear(daySnapshot.getKey());
-                        if (latestWoy != lastWoy) {
-                            weeklyMeal.add(new Weekly(
-                                    Utils.getFirstDay(daySnapshot.getKey()),
-                                    Utils.getLastDay(daySnapshot.getKey()),
+                        if (latestMonth != lastMonth) {
+                            monthlyMeal.add(new Monthly(Utils.getMonth(daySnapshot.getKey()),
+                                    Utils.getYear(daySnapshot.getKey()),
                                     calories,
                                     0));
 
                             calories = 0;
-                        } else if (latestWoy == lastWoy && lastYear != latestYear) {
-                            weeklyMeal.add(new Weekly(
-                                    Utils.getFirstDay(daySnapshot.getKey()),
-                                    Utils.getLastDay(daySnapshot.getKey()),
+                        } else if (latestMonth == lastMonth && lastYear != latestYear) {
+                            monthlyMeal.add(new Monthly(Utils.getMonth(daySnapshot.getKey()),
+                                    Utils.getYear(daySnapshot.getKey()),
                                     calories,
                                     0));
 
                             calories = 0;
                         }
-                        lastWoy = latestWoy;
+                        lastMonth = latestMonth;
                         lastYear = latestYear;
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -131,10 +120,9 @@ public class WeeklyShackFragment extends Fragment {
 
                 isMealReady = true;
 
-                if (weeklyMeal.size() != 0 && (isMealReady == true && isRunReady == true)) {
-                    displayList(weeklyMeal, weeklyRun);
+                if (monthlyMeal.size() != 0 && (isMealReady == true && isRunReady == true)) {
+                    displayList(monthlyMeal, monthlyRun);
                 }
-
             }
 
             @Override
@@ -143,6 +131,7 @@ public class WeeklyShackFragment extends Fragment {
             }
         });
 
+
         Firebase mFirebaseRuns = new Firebase(Constants.FIREBASE_URL_RUNS)
                 .child(mUserPref.getString(Constants.PROFILE_EMAIL, ""));
 
@@ -150,8 +139,8 @@ public class WeeklyShackFragment extends Fragment {
 
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                weeklyRun = new ArrayList<Weekly>();
-                int lastWoy = 0;
+                monthlyRun = new ArrayList<Monthly>();
+                int lastMonth = 0;
                 int lastYear = 0;
                 double calories = 0;
                 for (DataSnapshot daySnapshot : snapshot.getChildren()) {
@@ -161,26 +150,25 @@ public class WeeklyShackFragment extends Fragment {
                             Double.parseDouble(daySnapshot.child("distance").getValue() + ""));
 
                     try {
-                        int latestWoy = Utils.getWeekOfYear(daySnapshot.getKey());
+                        int latestMonth = Utils.getMonthOfYear(daySnapshot.getKey());
                         int latestYear = Utils.getYear(daySnapshot.getKey());
-                        if (latestWoy != lastWoy) {
-                            weeklyRun.add(new Weekly(
-                                    Utils.getFirstDay(daySnapshot.getKey()),
-                                    Utils.getLastDay(daySnapshot.getKey()),
+                        if (latestMonth != lastMonth) {
+                            monthlyRun.add(new Monthly(
+                                    Utils.getMonth(daySnapshot.getKey()),
+                                    Utils.getYear(daySnapshot.getKey()),
                                     0,
                                     calories));
 
                             calories = 0;
-                        } else if (latestWoy == lastWoy && lastYear != latestYear) {
-                            weeklyRun.add(new Weekly(
-                                    Utils.getFirstDay(daySnapshot.getKey()),
-                                    Utils.getLastDay(daySnapshot.getKey()),
-                                    0,
-                                    calories));
+                        } else if (latestMonth == lastMonth && lastYear != latestYear) {
+                            monthlyMeal.add(new Monthly(Utils.getMonth(daySnapshot.getKey()),
+                                    Utils.getYear(daySnapshot.getKey()),
+                                    calories,
+                                    0));
 
                             calories = 0;
                         }
-                        lastWoy = latestWoy;
+                        lastMonth = latestMonth;
                         lastYear = latestYear;
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -189,8 +177,8 @@ public class WeeklyShackFragment extends Fragment {
 
                 isRunReady = true;
 
-                if (weeklyRun.size() != 0 && (isMealReady == true && isRunReady == true)) {
-                    displayList(weeklyMeal, weeklyRun);
+                if (monthlyRun.size() != 0 && (isMealReady == true && isRunReady == true)) {
+                    displayList(monthlyMeal, monthlyRun);
                 }
 
             }
@@ -202,21 +190,22 @@ public class WeeklyShackFragment extends Fragment {
         });
     }
 
-    private void displayList(List<Weekly> weeklyMeal, List<Weekly> weeklyRun) {
-        for (int x = 0; x < weeklyMeal.size(); x++) {
-            for (int y = 0; y < weeklyRun.size(); y++) {
-                if (weeklyMeal.get(x).getStartDate().equals(weeklyRun.get(y).getStartDate())) {
-                    weeklyMeal.get(x).setBurnedCalories(weeklyRun.get(y).getBurnedCalories());
-                    weeklyRun.remove(y);
+    private void displayList(List<Monthly> monthlyMeal, List<Monthly> monthlyRun) {
+        for (int x = 0; x < monthlyMeal.size(); x++) {
+            for (int y = 0; y < monthlyRun.size(); y++) {
+                if (monthlyMeal.get(x).getMonth().equals(monthlyRun.get(y).getMonth())
+                        && (monthlyMeal.get(x).getYear() == monthlyRun.get(y).getYear())) {
+                    monthlyMeal.get(x).setBurnedCalories(monthlyRun.get(y).getBurnedCalories());
+                    monthlyRun.remove(y);
                     --y;
                     Log.v(LOG_TAG, "removed");
                 }
             }
         }
-        for (int y = 0; y < weeklyRun.size(); y++) {
-            weeklyMeal.add(weeklyRun.get(y));
+        for (int y = 0; y < monthlyRun.size(); y++) {
+            monthlyMeal.add(monthlyRun.get(y));
         }
-        mAdapter = new WeeklyAdapter(weeklyMeal);
+        mAdapter = new MonthlyAdapter(monthlyMeal);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -239,7 +228,7 @@ public class WeeklyShackFragment extends Fragment {
     public void onFabSwitchClick() {
         FragmentTransaction trans = getFragmentManager()
                 .beginTransaction();
-        trans.replace(R.id.root_frame, new MonthlyShackFragment());
+        trans.replace(R.id.root_frame, new MealPlanFragment());
         trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         trans.addToBackStack(null);
         trans.commit();

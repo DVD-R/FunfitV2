@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="124dp"
+    android:background="?selectableItemBackground"
+    android:id="@+id/layout_monthly"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp">
+
+
+    <FrameLayout
+        android:id="@+id/notif_img_container"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_month"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Mar"
+                android:textAllCaps="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/text_year"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="2016"
+                android:textAllCaps="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textColor="@android:color/black" />
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@+id/notif_img_container"
+        android:layout_toRightOf="@+id/notif_img_container"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_cal_consumed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2432 Calories consumed."
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/text_cal_burned"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2432 Calories burned."
+            android:textColor="@android:color/black" />
+
+    </LinearLayout>
+</RelativeLayout>

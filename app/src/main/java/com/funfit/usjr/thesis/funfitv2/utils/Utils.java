@@ -8,6 +8,7 @@ import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -29,11 +30,14 @@ public class Utils {
         return userEmail.replace(".", ",");
     }
 
-    //weight(kg), time(hour), speed(km/h)
-    public static int getCaloriesBurned(int weight, long time, float speed){
+    //weight(kg), time(millisecond), distance(cm)
+    public static double getCaloriesBurned(double weight, long time, double distance){
         //millisecond to hour
         time = (int) ((time / (1000*60*60)) % 24);
-        return (int)((0.0215 * (speed*3) - 0.1765 * (speed*2) + 0.8710 * (speed) + 1.4577) * weight * time);
+        //cm to km
+        distance = distance / 100000;
+        double speed = distance / time;
+        return ((0.0215 * (speed*3) - 0.1765 * (speed*2) + 0.8710 * (speed) + 1.4577) * weight * time);
     }
 
     public static int getCurrentDayOfWeek(){
@@ -67,6 +71,13 @@ public class Utils {
         return (String) android.text.format.DateFormat.format("MMM", sd);
     }
 
+    public static int getYear(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        Date sd = sdf.parse(date);
+
+        return Integer.parseInt((String)android.text.format.DateFormat.format("yyyy", sd));
+    }
+
     public static String getFirstDay(String date) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         Date sd = sdf.parse(date);
@@ -74,8 +85,6 @@ public class Utils {
         Calendar cal = Calendar.getInstance();
         cal.setTime(sd);
         cal.set(Calendar.DAY_OF_WEEK, 1);
-
-        Log.v(LOG_TAG, (String) android.text.format.DateFormat.format("dd-MM-yyyy", cal));
 
         return (String) android.text.format.DateFormat.format("dd-MM-yyyy", cal);
     }
@@ -88,10 +97,28 @@ public class Utils {
         cal.setTime(sd);
         cal.set(Calendar.DAY_OF_WEEK, 7);
 
-        Log.v(LOG_TAG, (String) android.text.format.DateFormat.format("dd-MM-yyyy", cal));
-
         return (String) android.text.format.DateFormat.format("dd-MM-yyyy", cal);
     }
 
 
+    public static int getMonthOfYear(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        Date sd = sdf.parse(date);
+
+        return Integer.parseInt((String) android.text.format.DateFormat.format("MM", sd));
+    }
+
+    public static double checkWeight(String weight) {
+        String[] data = weight.split(" ");
+        if(data[1].equals("kg")){
+            return Double.parseDouble(data[0]);
+        }else { //lbs
+            return Double.parseDouble(data[0]) / 2.2;
+        }
+    }
+
+    public static double roundOneDecimal(double d){
+        DecimalFormat twoDForm = new DecimalFormat("#.#");
+        return Double.valueOf(twoDForm.format(d));
+    }
 }

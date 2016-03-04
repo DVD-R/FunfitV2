@@ -46,6 +46,13 @@ public class Utils {
         return sdf.format(new Date());
     }
 
+    public static int getWeekOfYear(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        SimpleDateFormat w = new SimpleDateFormat("w", Locale.US);
+        Date sd = sdf.parse(date);
+        return Integer.parseInt((String) w.format(sd));
+    }
+
     public static String getDay(String date) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         Date sd = sdf.parse(date);
@@ -59,4 +66,32 @@ public class Utils {
 
         return (String) android.text.format.DateFormat.format("MMM", sd);
     }
+
+    public static String getFirstDay(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        Date sd = sdf.parse(date);
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(sd);
+        cal.set(Calendar.DAY_OF_WEEK, 1);
+
+        Log.v(LOG_TAG, (String) android.text.format.DateFormat.format("dd-MM-yyyy", cal));
+
+        return (String) android.text.format.DateFormat.format("dd-MM-yyyy", cal);
+    }
+
+    public static String getLastDay(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        Date sd = sdf.parse(date);
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(sd);
+        cal.set(Calendar.DAY_OF_WEEK, 7);
+
+        Log.v(LOG_TAG, (String) android.text.format.DateFormat.format("dd-MM-yyyy", cal));
+
+        return (String) android.text.format.DateFormat.format("dd-MM-yyyy", cal);
+    }
+
+
 }

@@ -6,10 +6,10 @@ package com.funfit.usjr.thesis.funfitv2.model;
 public class Weekly {
     private String startDate;
     private String endDate;
-    private String consumedCalories;
-    private String burnedCalories;
+    private double consumedCalories;
+    private double burnedCalories;
 
-    public Weekly(String startDate, String endDate, String consumedCalories, String burnedCalories) {
+    public Weekly(String startDate, String endDate, double consumedCalories, double burnedCalories) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.consumedCalories = consumedCalories;
@@ -32,19 +32,19 @@ public class Weekly {
         this.endDate = endDate;
     }
 
-    public String getConsumedCalories() {
+    public double getConsumedCalories() {
         return consumedCalories;
     }
 
-    public void setConsumedCalories(String consumedCalories) {
+    public void setConsumedCalories(double consumedCalories) {
         this.consumedCalories = consumedCalories;
     }
 
-    public String getBurnedCalories() {
+    public double getBurnedCalories() {
         return burnedCalories;
     }
 
-    public void setBurnedCalories(String burnedCalories) {
+    public void setBurnedCalories(double burnedCalories) {
         this.burnedCalories = burnedCalories;
     }
 }

@@ -81,13 +81,13 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         try {
-            if(position == 0){
+            if (position == 0) {
                 viewHolder.mTextStart.setTextColor(Color.parseColor("#FFFFFF"));
                 viewHolder.mTextEnd.setTextColor(Color.parseColor("#FFFFFF"));
                 viewHolder.mTextMonth.setTextColor(Color.parseColor("#FFFFFF"));
                 viewHolder.mTextCalConsumed.setTextColor(Color.parseColor("#FFFFFF"));
                 viewHolder.mTextCalBurned.setTextColor(Color.parseColor("#FFFFFF"));
-                if(Utils.getCluster(viewHolder.context).equals("velocity"))
+                if (Utils.getCluster(viewHolder.context).equals("velocity"))
                     viewHolder.mLayoutWeekly.setBackgroundColor(Color.parseColor("#2980b9"));
                 else
                     viewHolder.mLayoutWeekly.setBackgroundColor(Color.parseColor("#c0392b"));
@@ -95,10 +95,11 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
             viewHolder.mTextStart.setText(Utils.getDay(mList.get(position).getStartDate()));
             viewHolder.mTextEnd.setText(Utils.getDay(mList.get(position).getEndDate()));
             viewHolder.mTextMonth.setText(Utils.getMonth(mList.get(position).getEndDate()));
+
             viewHolder.mTextCalConsumed.setText("Calories Consumed this week: " +
-                    mList.get(position).getConsumedCalories()+"");
+                    Utils.roundOneDecimal(mList.get(position).getConsumedCalories()) + "");
             viewHolder.mTextCalBurned.setText("Calories Burned this week: " +
-                    mList.get(position).getBurnedCalories()+"");
+                    Utils.roundOneDecimal(mList.get(position).getBurnedCalories()) + "");
 
         } catch (ParseException e) {
             Log.e(LOG_TAG, "Parse Exception");

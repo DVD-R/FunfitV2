@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,13 +64,18 @@ public class MonthlyShackFragment extends Fragment {
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
         mRecyclerView.addItemDecoration(new DarkDividerItemDecoration(getActivity()));
 
-        fetchMeals();
+        fetchRunAndMeals();
 
         return v;
     }
 
 
-    public void fetchMeals() {
+    boolean isMealReady, isRunReady;
+    List<Monthly> monthlyMeal, monthlyRun;
+
+    public void fetchRunAndMeals() {
+        isMealReady = false;
+        isRunReady = false;
         Firebase mFirebaseMeals = new Firebase(Constants.FIREBASE_URL_MEALS)
                 .child(mUserPref.getString(Constants.PROFILE_EMAIL, ""));
 
@@ -77,8 +83,9 @@ public class MonthlyShackFragment extends Fragment {
 
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                List<Monthly> monthly = new ArrayList<Monthly>();
+                monthlyMeal = new ArrayList<Monthly>();
                 int lastMonth = 0;
+                int lastYear = 0;
                 double calories = 0;
                 for (DataSnapshot daySnapshot : snapshot.getChildren()) {
                     for (DataSnapshot postSnapshot : daySnapshot.getChildren()) {
@@ -88,23 +95,92 @@ public class MonthlyShackFragment extends Fragment {
                     }
                     try {
                         int latestMonth = Utils.getMonthOfYear(daySnapshot.getKey());
+                        int latestYear = Utils.getYear(daySnapshot.getKey());
                         if (latestMonth != lastMonth) {
-                            monthly.add(new Monthly(Utils.getMonth(daySnapshot.getKey()),
+                            monthlyMeal.add(new Monthly(Utils.getMonth(daySnapshot.getKey()),
                                     Utils.getYear(daySnapshot.getKey()),
                                     calories,
-                                    calories));
+                                    0));
+
+                            calories = 0;
+                        } else if (latestMonth == lastMonth && lastYear != latestYear) {
+                            monthlyMeal.add(new Monthly(Utils.getMonth(daySnapshot.getKey()),
+                                    Utils.getYear(daySnapshot.getKey()),
+                                    calories,
+                                    0));
 
                             calories = 0;
                         }
                         lastMonth = latestMonth;
+                        lastYear = latestYear;
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                 }
 
-                if (monthly.size() != 0) {
-                    displayList(monthly);
+                isMealReady = true;
+
+                if (monthlyMeal.size() != 0 && (isMealReady == true && isRunReady == true)) {
+                    displayList(monthlyMeal, monthlyRun);
                 }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+
+        Firebase mFirebaseRuns = new Firebase(Constants.FIREBASE_URL_RUNS)
+                .child(mUserPref.getString(Constants.PROFILE_EMAIL, ""));
+
+        mFirebaseRuns.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                monthlyRun = new ArrayList<Monthly>();
+                int lastMonth = 0;
+                int lastYear = 0;
+                double calories = 0;
+                for (DataSnapshot daySnapshot : snapshot.getChildren()) {
+                    double weight = Utils.checkWeight(mUserPref.getString(Constants.PROFILE_WEIGHT, ""));
+                    calories += Utils.getCaloriesBurned(weight,
+                            Long.parseLong(daySnapshot.child("time").getValue() + ""),
+                            Double.parseDouble(daySnapshot.child("distance").getValue() + ""));
+
+                    try {
+                        int latestMonth = Utils.getMonthOfYear(daySnapshot.getKey());
+                        int latestYear = Utils.getYear(daySnapshot.getKey());
+                        if (latestMonth != lastMonth) {
+                            monthlyRun.add(new Monthly(
+                                    Utils.getMonth(daySnapshot.getKey()),
+                                    Utils.getYear(daySnapshot.getKey()),
+                                    0,
+                                    calories));
+
+                            calories = 0;
+                        } else if (latestMonth == lastMonth && lastYear != latestYear) {
+                            monthlyMeal.add(new Monthly(Utils.getMonth(daySnapshot.getKey()),
+                                    Utils.getYear(daySnapshot.getKey()),
+                                    calories,
+                                    0));
+
+                            calories = 0;
+                        }
+                        lastMonth = latestMonth;
+                        lastYear = latestYear;
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                isRunReady = true;
+
+                if (monthlyRun.size() != 0 && (isMealReady == true && isRunReady == true)) {
+                    displayList(monthlyMeal, monthlyRun);
+                }
+
             }
 
             @Override
@@ -114,8 +190,22 @@ public class MonthlyShackFragment extends Fragment {
         });
     }
 
-    private void displayList(List<Monthly> monthly) {
-        mAdapter = new MonthlyAdapter(monthly);
+    private void displayList(List<Monthly> monthlyMeal, List<Monthly> monthlyRun) {
+        for (int x = 0; x < monthlyMeal.size(); x++) {
+            for (int y = 0; y < monthlyRun.size(); y++) {
+                if (monthlyMeal.get(x).getMonth().equals(monthlyRun.get(y).getMonth())
+                        && (monthlyMeal.get(x).getYear() == monthlyRun.get(y).getYear())) {
+                    monthlyMeal.get(x).setBurnedCalories(monthlyRun.get(y).getBurnedCalories());
+                    monthlyRun.remove(y);
+                    --y;
+                    Log.v(LOG_TAG, "removed");
+                }
+            }
+        }
+        for (int y = 0; y < monthlyRun.size(); y++) {
+            monthlyMeal.add(monthlyRun.get(y));
+        }
+        mAdapter = new MonthlyAdapter(monthlyMeal);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -135,7 +225,7 @@ public class MonthlyShackFragment extends Fragment {
     }
 
     @OnClick(R.id.fab_switch)
-    public void onFabSwitchClick(){
+    public void onFabSwitchClick() {
         FragmentTransaction trans = getFragmentManager()
                 .beginTransaction();
         trans.replace(R.id.root_frame, new MealPlanFragment());

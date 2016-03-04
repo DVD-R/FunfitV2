@@ -86,10 +86,11 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
         }
         viewHolder.mTextMonth.setText(mList.get(position).getMonth());
         viewHolder.mTextYear.setText(mList.get(position).getYear() + "");
+
         viewHolder.mTextCalConsumed.setText("Calories Consumed this month: " +
-                mList.get(position).getConsumedCalories() + "");
+                Utils.roundOneDecimal(mList.get(position).getConsumedCalories()) + "");
         viewHolder.mTextCalBurned.setText("Calories Burned this month: " +
-                mList.get(position).getBurnedCalories() + "");
+                Utils.roundOneDecimal(mList.get(position).getBurnedCalories()) + "");
     }
 
     @Override

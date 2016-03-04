@@ -14,8 +14,10 @@ public final class Constants {
 
     public static final String FIREBASE_LOCATION_USERS = "users";
     public static final String FIREBASE_LOCATION_MEALS = "meals";
+    public static final String FIREBASE_LOCATION_RUNS = "runs";
     public static final String FIREBASE_URL_USERS = FIREBASE_URL + "/" + FIREBASE_LOCATION_USERS;
     public static final String FIREBASE_URL_MEALS = FIREBASE_URL + "/" + FIREBASE_LOCATION_MEALS;
+    public static final String FIREBASE_URL_RUNS = FIREBASE_URL + "/" + FIREBASE_LOCATION_RUNS;
 
     public static final String GOOGLE_PROVIDER = "google";
     public static final String KEY_GOOGLE_EMAIL = "GOOGLE_EMAIL";

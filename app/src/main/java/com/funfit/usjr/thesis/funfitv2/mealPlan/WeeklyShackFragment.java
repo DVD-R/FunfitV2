@@ -63,14 +63,10 @@ public class WeeklyShackFragment extends Fragment {
     private SharedPreferences mUserPref;
 
     //MEAL
-    private static final String MEALROOT = "Link";
-    Weekly weekly;
-    WeeklyService weeklyService;
+    private static final String MEALROOT = "https://funfitv2-backend.herokuapp.com";
+    MealModel mealModel;
+    MealService mealService;
 
-    //RUN
-    private static final String RUNROOT = "Link";
-    RunModel runModel;
-    RunService runService;
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -226,16 +222,16 @@ public class WeeklyShackFragment extends Fragment {
         });
     }
 
-    class MealLoadAsyntask extends AsyncTask<Void, Void, Weekly> {
+    class WeeklyLoadAsyntask extends AsyncTask<Void, Void, MealModel> {
         @Override
-        protected Weekly doInBackground(Void... params) {
-            MealSetup();
-            return weekly;
+        protected MealModel doInBackground(Void... params) {
+            WeeklySetup();
+            return mealModel;
         }
 
     }
 
-    public void MealSetup(){
+    public void WeeklySetup(){
 
         RestAdapter.Builder builder = new RestAdapter.Builder()
                 .setEndpoint(MEALROOT)
@@ -243,47 +239,11 @@ public class WeeklyShackFragment extends Fragment {
                 .setLogLevel(RestAdapter.LogLevel.FULL);
 
         RestAdapter restAdapter = builder.build();
-        weeklyService = restAdapter.create(WeeklyService.class);
-        weeklyService.getWeekly(new Callback<List<Weekly>>() {
+        mealService = restAdapter.create(MealService.class);
+
+        mealService.getMeal("USER ID", new Callback<List<MealModel>>() {
             @Override
-            public void success(List<Weekly> weeklies, Response response) {
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-    }
-
-    class RunLoadAsyntask extends AsyncTask<Void, Void, RunModel> {
-        @Override
-        protected RunModel doInBackground(Void... params) {
-            RunSetup();
-            return runModel;
-        }
-
-    }
-
-    public void RunSetup(){
-
-        RestAdapter.Builder builder = new RestAdapter.Builder()
-                .setEndpoint(RUNROOT)
-                .setClient(new OkClient(new OkHttpClient()))
-                .setLogLevel(RestAdapter.LogLevel.FULL);
-
-        RestAdapter restAdapter = builder.build();
-        runService = restAdapter.create(RunService.class);
-
-        SendRun sendRun = new SendRun();
-        sendRun.setCalories(2);
-        sendRun.setTime(2);
-        sendRun.setDistance(2);
-
-        runService.postRun(sendRun, new Callback<RunCallback>() {
-            @Override
-            public void success(RunCallback runCallback, Response response) {
+            public void success(List<MealModel> mealModels, Response response) {
 
             }
 

@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FunfitV2.001.iml" filepath="$PROJECT_DIR$/FunfitV2.001.iml" />
       <module fileurl="file://$PROJECT_DIR$/FunfitV2_4.iml" filepath="$PROJECT_DIR$/FunfitV2_4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FunfitV2_5.iml" filepath="$PROJECT_DIR$/FunfitV2_5.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/funfitv2wear/funfitv2wear.iml" filepath="$PROJECT_DIR$/funfitv2wear/funfitv2wear.iml" />
       <module fileurl="file://$PROJECT_DIR$/funfitwear/funfitwear.iml" filepath="$PROJECT_DIR$/funfitwear/funfitwear.iml" />

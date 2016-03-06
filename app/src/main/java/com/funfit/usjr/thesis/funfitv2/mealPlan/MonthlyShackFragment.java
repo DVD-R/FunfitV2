@@ -54,6 +54,8 @@ public class MonthlyShackFragment extends Fragment {
         LINEAR_LAYOUT_MANAGER
     }
 
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -242,4 +244,7 @@ public class MonthlyShackFragment extends Fragment {
         trans.addToBackStack(null);
         trans.commit();
     }
+
+
+
 }

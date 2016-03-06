@@ -634,4 +634,50 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
         }
     }
+
+    SaveRun saveRun;
+    RunService runService;
+    ResponseStatus responseStatus;
+    private static final String RUNROOT = "https://funfitv2-backend.herokuapp.com";
+
+    class RunLoadAsyntask extends AsyncTask<Void, Void, SaveRun> {
+        @Override
+        protected SaveRun doInBackground(Void... params) {
+            setup();
+            return saveRun;
+        }
+
+    }
+
+    public void setup() {
+
+        RestAdapter.Builder builder = new RestAdapter.Builder()
+                .setEndpoint(RUNROOT)
+                .setClient(new OkClient(new OkHttpClient()))
+                .setLogLevel(RestAdapter.LogLevel.FULL);
+
+        RestAdapter restAdapter = builder.build();
+        runService = restAdapter.create(RunService.class);
+        SaveRun saveRun = new SaveRun();
+
+        saveRun.setDate("2");
+        saveRun.setTime(2);
+        saveRun.setDistance(2);
+        saveRun.setRunId(2);
+        saveRun.setUserId(2);
+
+        runService.postRun(saveRun, new Callback<ResponseStatus>() {
+            @Override
+            public void success(ResponseStatus responseStatus, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+
+    }
+
 }

@@ -14,6 +14,7 @@ import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -94,15 +95,28 @@ public class MonthlyGraphActivity extends AppCompatActivity {
 
         String[] dateRange = getMonthDateRanges(month, year);
 
-        List<DataPoint> pts = new ArrayList<>();
+        List<DataPoint> consumedPts = new ArrayList<>();
+        List<DataPoint> burnedPts = new ArrayList<>();
         for(int x=0;x<dateRange.length;x++) {
-            double consumed = getConsumed(monthlyConsumedDay,
+            double consumed = getCalories(monthlyConsumedDay,
                     monthlyConsumedValue, dateRange[x], year);
-            pts.add(new DataPoint(x, consumed));
+            consumedPts.add(new DataPoint(x, consumed));
+
+            double burned = getCalories(monthlyBurnedDay,
+                    monthlyBurnedValue, dateRange[x], year);
+            burnedPts.add(new DataPoint(x, burned));
         }
 
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(pts.toArray(new DataPoint[0]));
-        mGraph.addSeries(series);
+        LineGraphSeries<DataPoint> consumedSeries = new LineGraphSeries<DataPoint>(consumedPts.toArray(new DataPoint[0]));
+        LineGraphSeries<DataPoint> burnedSeries = new LineGraphSeries<DataPoint>(burnedPts.toArray(new DataPoint[0]));
+        consumedSeries.setColor(Color.parseColor("#2980b9"));
+        consumedSeries.setTitle("Calories Consumed");
+        burnedSeries.setColor(Color.parseColor("#c0392b"));
+        burnedSeries.setTitle("Calories Burned");
+        mGraph.addSeries(consumedSeries);
+        mGraph.addSeries(burnedSeries);
+        mGraph.getLegendRenderer().setVisible(true);
+        mGraph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
 
         StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(mGraph);
         staticLabelsFormatter.setHorizontalLabels(dateRange);
@@ -127,13 +141,11 @@ public class MonthlyGraphActivity extends AppCompatActivity {
         return null;
     }
 
-    private double getConsumed(int[] monthlyConsumedDay, double[] monthlyConsumedValue, String day, int year) {
+    private double getCalories(int[] monthlyDay, double[] monthlyValue, String day, int year) {
         try {
-            for (int x = 0; x < monthlyConsumedDay.length; x++) {
-                Log.v(LOG_TAG,Utils.getDateFromWeekNumber(monthlyConsumedDay[x], year) + " : " + day);
-                if (Utils.getDateFromWeekNumber(monthlyConsumedDay[x], year).equals(day)) {
-                    Log.v(LOG_TAG,"YES!");
-                    return monthlyConsumedValue[x];
+            for (int x = 0; x < monthlyDay.length; x++) {
+                if (Utils.getDateFromWeekNumber(monthlyDay[x], year).equals(day)) {
+                    return monthlyValue[x];
                 }
             }
         } catch (NullPointerException e) {

@@ -132,9 +132,13 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     private ArrayList<LatLng> getAllLocation;
     private ArrayList<LatLng> saveLocation = null;
     float getDistanceInMeters = 0;
+    float totalDistanceInMeters = 0;
     private SharedPreferences userData, rdi;
 
     ProgressDialog pd;
+
+    boolean checker = false;
+    float distance = 0;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_maps, container, false);
@@ -216,8 +220,8 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             List<LatLng> oval = PolyUtil.decode(territory.getEncoded_polyline());
 
             LatLng end = null;
-            for (LatLng lng: oval){
-                end = new LatLng(lng.latitude,lng.longitude);
+            for (LatLng lng : oval) {
+                end = new LatLng(lng.latitude, lng.longitude);
 
                 if (territory.getStatus().equals("uncharted") && territory.getFaction_description() == null) {
                     if (distanceCalculation.distanceLocation(start, end) < 1000) {
@@ -337,7 +341,88 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
     @Override
     public void onLocationChanged(Location location) {
+        long totalTime = 0;
+        totalTime = totalTime + location.getTime();
 
+        Log.i("Time", "Time " + totalTime);
+
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+        polylineOptions = new PolylineOptions();
+        polylineOptions.color(Color.GREEN);
+        polylineOptions.width(4);
+        arrayPoints.add(latLng);
+        polylineOptions.addAll(arrayPoints);
+        myMap.addPolyline(polylineOptions);
+
+
+        List<LatLng> oval = null;
+
+        try {
+
+            for (Territory territory : listTerritories) {
+                oval = PolyUtil.decode(territory.getEncoded_polyline());
+            }
+
+            for (Territory territory : listTerritories) {
+                oval = PolyUtil.decode(territory.getEncoded_polyline());
+
+                LatLng end = null;
+
+                for (LatLng lng : oval) {
+                    end = new LatLng(lng.latitude, lng.longitude);
+
+                    getDistanceInMeters = distanceCalculation.distanceLocation(latLng, end);
+                    Log.i("ilhanan", "distance: " + getDistanceInMeters);
+
+                    Log.i("Check:", latLng + ":" + end);
+
+                    if (getDistanceInMeters < 50) {
+
+                        double containLat = lng.latitude;
+                        double containLong = lng.longitude;
+
+                        LatLng containLocation = new LatLng(containLat, containLong);
+
+                        if (saveLocation.contains(containLocation)) {
+                            if (saveLocation.size() > 4) {
+                                Log.i("testCapture", "first index " + saveLocation.get(0));
+                                Log.i("testCapture", "last index " + end);
+//                        Log.i("testCapture", " size: "+saveLocation.get(saveLocation.size()));
+                                if (saveLocation.get(0).equals(end)) {
+                                    Log.i("id", territory.getId() + "");
+                                    territoryId = territory.getId();
+                                    mapsFragmentPresenter.captureTerritory();
+
+                                    for(int x = 0; arrayPoints.size() - 1 > x; x++){
+                                        LatLng first = new LatLng(arrayPoints.get(x).latitude,arrayPoints.get(x).longitude);
+                                        LatLng second = new LatLng(arrayPoints.get(x+1).latitude,arrayPoints.get(x+1).longitude);
+                                        distance = distanceCalculation.distanceLocation(first,second);
+                                        totalDistanceInMeters = totalDistanceInMeters + distance;
+                                    }
+//                                    totalDistanceInMeters
+
+                                    Log.i("testCapture", "YES!! Captured");
+                                    Log.i("testCapture", "Total Distance: "+totalDistanceInMeters);
+                                    Log.i("testCapture", "Total Time: "+totalTime);
+                                }
+                            }
+                        } else {
+                            double getLat = lng.latitude;
+                            double getLong = lng.longitude;
+
+                            LatLng convertSaveLocation = new LatLng(getLat, getLong);
+
+                            saveLocation.add(convertSaveLocation);
+                            Log.i("testCapture", "inner " + lng);
+                        }
+                    }
+
+                }
+            }
+        } catch (Exception e) {
+
+        }
     }
 
     private boolean isGooglePlayServicesAvailable() {
@@ -460,6 +545,12 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
     @Override
     public void onMapClick(LatLng latLng) {
+        long totalTime = 0;
+        totalTime = totalTime + location.getTime();
+
+        Log.i("Time", "Time " + totalTime);
+
+//        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
         polylineOptions = new PolylineOptions();
         polylineOptions.color(Color.GREEN);
@@ -471,53 +562,70 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 
         List<LatLng> oval = null;
 
-        for (Territory territory : listTerritories) {
-            oval = PolyUtil.decode(territory.getEncoded_polyline());
-        }
+        try {
 
             for (Territory territory : listTerritories) {
-            oval = PolyUtil.decode(territory.getEncoded_polyline());
+                oval = PolyUtil.decode(territory.getEncoded_polyline());
+            }
 
-            LatLng end = null;
+            for (Territory territory : listTerritories) {
+                oval = PolyUtil.decode(territory.getEncoded_polyline());
 
-            for (LatLng lng : oval) {
-                end = new LatLng(lng.latitude, lng.longitude);
+                LatLng end = null;
 
-                getDistanceInMeters = distanceCalculation.distanceLocation(latLng, end);
-                Log.i("ilhanan", "distance: " + getDistanceInMeters);
+                for (LatLng lng : oval) {
+                    end = new LatLng(lng.latitude, lng.longitude);
 
-                Log.i("Check:", latLng + ":" +end);
+                    getDistanceInMeters = distanceCalculation.distanceLocation(latLng, end);
+                    Log.i("ilhanan", "distance: " + getDistanceInMeters);
 
-                if (getDistanceInMeters < 50) {
+                    Log.i("Check:", latLng + ":" + end);
 
-                    double containLat = lng.latitude;
-                    double containLong = lng.longitude;
+                    if (getDistanceInMeters < 50) {
 
-                    LatLng containLocation = new LatLng(containLat, containLong);
+                        double containLat = lng.latitude;
+                        double containLong = lng.longitude;
 
-                    if (saveLocation.contains(containLocation)) {
-                        if (saveLocation.size() > 4) {
-                            Log.i("testCapture", "first index " + saveLocation.get(0));
-                            Log.i("testCapture", "last index " + end);
+                        LatLng containLocation = new LatLng(containLat, containLong);
+
+                        if (saveLocation.contains(containLocation)) {
+                            if (saveLocation.size() > 4) {
+                                Log.i("testCapture", "first index " + saveLocation.get(0));
+                                Log.i("testCapture", "last index " + end);
 //                        Log.i("testCapture", " size: "+saveLocation.get(saveLocation.size()));
-                            if (saveLocation.get(0).equals(end)) {
-                                Log.i("id", territory.getId()+"");
-                                territoryId = territory.getId();
-                                mapsFragmentPresenter.captureTerritory();
-                                Log.i("testCapture", "YES!! Captured");
+                                if (saveLocation.get(0).equals(end)) {
+                                    Log.i("id", territory.getId() + "");
+                                    territoryId = territory.getId();
+                                    mapsFragmentPresenter.captureTerritory();
+
+                                    for(int x = 0; arrayPoints.size() - 1 > x; x++){
+                                        LatLng first = new LatLng(arrayPoints.get(x).latitude,arrayPoints.get(x).longitude);
+                                        LatLng second = new LatLng(arrayPoints.get(x+1).latitude,arrayPoints.get(x+1).longitude);
+                                        distance = distanceCalculation.distanceLocation(first,second);
+                                        totalDistanceInMeters = totalDistanceInMeters + distance;
+                                    }
+//                                    totalDistanceInMeters
+
+                                    Log.i("testCapture", "YES!! Captured");
+                                    Log.i("testCapture", "Total Distance: "+totalDistanceInMeters);
+                                    Log.i("testCapture", "Total Time: "+totalTime);
+                                }
                             }
+                        } else {
+                            double getLat = lng.latitude;
+                            double getLong = lng.longitude;
+
+                            LatLng convertSaveLocation = new LatLng(getLat, getLong);
+
+                            saveLocation.add(convertSaveLocation);
+                            Log.i("testCapture", "inner " + lng);
                         }
-                    } else {
-                        double getLat = lng.latitude;
-                        double getLong = lng.longitude;
-
-                        LatLng convertSaveLocation = new LatLng(getLat, getLong);
-
-                        saveLocation.add(convertSaveLocation);
-                        Log.i("testCapture", "inner " + lng);
                     }
+
                 }
             }
+        } catch (Exception e) {
+
         }
     }
 }

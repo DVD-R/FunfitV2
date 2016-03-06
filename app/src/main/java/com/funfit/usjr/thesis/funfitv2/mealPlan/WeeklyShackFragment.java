@@ -1,6 +1,7 @@
 package com.funfit.usjr.thesis.funfitv2.mealPlan;
 
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -26,10 +27,16 @@ import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.adapter.ViewPagerAdapter;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.Meal;
+import com.funfit.usjr.thesis.funfitv2.model.RunCallback;
+import com.funfit.usjr.thesis.funfitv2.model.RunModel;
+import com.funfit.usjr.thesis.funfitv2.model.SendRun;
 import com.funfit.usjr.thesis.funfitv2.model.Weekly;
+import com.funfit.usjr.thesis.funfitv2.services.RunService;
+import com.funfit.usjr.thesis.funfitv2.services.WeeklyService;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.viewmods.DarkDividerItemDecoration;
 import com.funfit.usjr.thesis.funfitv2.viewmods.DividerItemDecoration;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,6 +49,11 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.OkClient;
+import retrofit.client.Response;
 
 /**
  * Created by Dj on 3/3/2016.
@@ -59,6 +71,16 @@ public class WeeklyShackFragment extends Fragment {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
+
+    //MEAL
+    private static final String MEALROOT = "Link";
+    Weekly weekly;
+    WeeklyService weeklyService;
+
+    //RUN
+    private static final String RUNROOT = "Link";
+    RunModel runModel;
+    RunService runService;
 
     @Nullable
     @Override
@@ -85,6 +107,7 @@ public class WeeklyShackFragment extends Fragment {
     public void fetchRunAndMeals() {
         isMealReady = false;
         isRunReady = false;
+
         Firebase mFirebaseMeals = new Firebase(Constants.FIREBASE_URL_MEALS)
                 .child(mUserPref.getString(Constants.PROFILE_EMAIL, ""));
 
@@ -197,6 +220,75 @@ public class WeeklyShackFragment extends Fragment {
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+    }
+
+
+    class MealLoadAsyntask extends AsyncTask<Void, Void, Weekly> {
+        @Override
+        protected Weekly doInBackground(Void... params) {
+            MealSetup();
+            return weekly;
+        }
+
+    }
+
+    public void MealSetup(){
+
+        RestAdapter.Builder builder = new RestAdapter.Builder()
+                .setEndpoint(MEALROOT)
+                .setClient(new OkClient(new OkHttpClient()))
+                .setLogLevel(RestAdapter.LogLevel.FULL);
+
+        RestAdapter restAdapter = builder.build();
+        weeklyService = restAdapter.create(WeeklyService.class);
+        weeklyService.getWeekly(new Callback<List<Weekly>>() {
+            @Override
+            public void success(List<Weekly> weeklies, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+    class RunLoadAsyntask extends AsyncTask<Void, Void, RunModel> {
+        @Override
+        protected RunModel doInBackground(Void... params) {
+            RunSetup();
+            return runModel;
+        }
+
+    }
+
+    public void RunSetup(){
+
+        RestAdapter.Builder builder = new RestAdapter.Builder()
+                .setEndpoint(RUNROOT)
+                .setClient(new OkClient(new OkHttpClient()))
+                .setLogLevel(RestAdapter.LogLevel.FULL);
+
+        RestAdapter restAdapter = builder.build();
+        runService = restAdapter.create(RunService.class);
+
+        SendRun sendRun = new SendRun();
+        sendRun.setCalories(2);
+        sendRun.setTime(2);
+        sendRun.setDistance(2);
+
+        runService.postRun(sendRun, new Callback<RunCallback>() {
+            @Override
+            public void success(RunCallback runCallback, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
 
             }
         });

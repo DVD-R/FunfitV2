@@ -18,7 +18,10 @@ import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,7 +29,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Dj on 3/6/2016.
  */
-public class MonthlyGraphActivity  extends AppCompatActivity {
+public class MonthlyGraphActivity extends AppCompatActivity {
     private static final String LOG_TAG = MonthlyGraphActivity.class.getSimpleName();
     @Bind(R.id.text_month)
     TextView mTextMonth;
@@ -44,9 +47,10 @@ public class MonthlyGraphActivity  extends AppCompatActivity {
     GraphView mGraph;
 
     boolean isFirst;
-    String month, year;
+    String month;
+    int year;
     double calConsumed, calBurned;
-    private String[] monthlyConsumedDay, monthlyBurnedDay;
+    private int[] monthlyConsumedDay, monthlyBurnedDay;
     private double[] monthlyConsumedValue, monthlyBurnedValue;
 
     @Override
@@ -61,11 +65,11 @@ public class MonthlyGraphActivity  extends AppCompatActivity {
         Intent i = getIntent();
         isFirst = i.getBooleanExtra(Constants.IS_FIRST, false);
         month = i.getStringExtra(Constants.MONTH);
-        year = i.getStringExtra(Constants.YEAR);
+        year = i.getIntExtra(Constants.YEAR, 0);
         calConsumed = i.getDoubleExtra(Constants.CAL_CONSUMED, 0);
         calBurned = i.getDoubleExtra(Constants.CAL_BURNED, 0);
-        monthlyConsumedDay = i.getStringArrayExtra(Constants.CONSUMED_TIME);
-        monthlyBurnedDay = i.getStringArrayExtra(Constants.BURNED_TIME);
+        monthlyConsumedDay = i.getIntArrayExtra(Constants.CONSUMED_TIME);
+        monthlyBurnedDay = i.getIntArrayExtra(Constants.BURNED_TIME);
         monthlyConsumedValue = i.getDoubleArrayExtra(Constants.CONSUMED_VALUE);
         monthlyBurnedValue = i.getDoubleArrayExtra(Constants.BURNED_VALUE);
 
@@ -81,39 +85,54 @@ public class MonthlyGraphActivity  extends AppCompatActivity {
         }
 
         mTextMonth.setText(month);
-        mTextYear.setText(year);
+        mTextYear.setText(year + "");
         mTextCalConsumed.setText(calConsumed + "");
         mTextCalBurned.setText(calBurned + "");
 
         mTextCalConsumed.setText("Calories Consumed this week: " + calConsumed);
         mTextCalBurned.setText("Calories Burned this week: " + calBurned);
 
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[]{
-                new DataPoint(0, getConsumed(monthlyConsumedDay, monthlyConsumedValue, "Jan")),
-                new DataPoint(1, getConsumed(monthlyConsumedDay, monthlyConsumedValue, "Feb")),
-                new DataPoint(2, getConsumed(monthlyConsumedDay, monthlyConsumedValue, "Mar")),
-                new DataPoint(3, getConsumed(monthlyConsumedDay, monthlyConsumedValue, "Apr")),
-                new DataPoint(4, getConsumed(monthlyConsumedDay, monthlyConsumedValue, "May")),
-                new DataPoint(5, getConsumed(monthlyConsumedDay, monthlyConsumedValue, "Jun")),
-                new DataPoint(6, getConsumed(monthlyConsumedDay, monthlyConsumedValue, "Jul")),
-                new DataPoint(7, getConsumed(monthlyConsumedDay, monthlyConsumedValue, "Aug")),
-                new DataPoint(8, getConsumed(monthlyConsumedDay, monthlyConsumedValue, "Sep")),
-                new DataPoint(9, getConsumed(monthlyConsumedDay, monthlyConsumedValue, "Oct")),
-                new DataPoint(10, getConsumed(monthlyConsumedDay, monthlyConsumedValue, "Nov")),
-                new DataPoint(11, getConsumed(monthlyConsumedDay, monthlyConsumedValue, "Dec"))
-        });
+        String[] dateRange = getMonthDateRanges(month, year);
+
+        List<DataPoint> pts = new ArrayList<>();
+        for(int x=0;x<dateRange.length;x++) {
+            double consumed = getConsumed(monthlyConsumedDay,
+                    monthlyConsumedValue, dateRange[x], year);
+            pts.add(new DataPoint(x, consumed));
+        }
+
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(pts.toArray(new DataPoint[0]));
         mGraph.addSeries(series);
 
         StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(mGraph);
-        staticLabelsFormatter.setHorizontalLabels(new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"});
+        staticLabelsFormatter.setHorizontalLabels(dateRange);
         mGraph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
     }
 
-    private double getConsumed(String[] monthlyConsumedDay, double[] monthlyConsumedValue, String day) {
+    private String[] getMonthDateRanges(String month, int year) {
+        try {
+            int[] weekNos = Utils.getWeeksOfMonth(month, year);
+            List<String> weekStr = new ArrayList<>();
+            for (int x = 0; x < weekNos.length; x++) {
+                if (x == 0)
+                    weekStr.add(Utils.getDateFromWeekNumber(weekNos[x], year));
+                else if (!weekStr.get(weekStr.size() - 1).equals(Utils.getDateFromWeekNumber(weekNos[x], year)))
+                    weekStr.add(Utils.getDateFromWeekNumber(weekNos[x], year));
+            }
+
+            return weekStr.toArray(new String[0]);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private double getConsumed(int[] monthlyConsumedDay, double[] monthlyConsumedValue, String day, int year) {
         try {
             for (int x = 0; x < monthlyConsumedDay.length; x++) {
-                if (monthlyConsumedDay[x].equals(day)) {
+                Log.v(LOG_TAG,Utils.getDateFromWeekNumber(monthlyConsumedDay[x], year) + " : " + day);
+                if (Utils.getDateFromWeekNumber(monthlyConsumedDay[x], year).equals(day)) {
+                    Log.v(LOG_TAG,"YES!");
                     return monthlyConsumedValue[x];
                 }
             }

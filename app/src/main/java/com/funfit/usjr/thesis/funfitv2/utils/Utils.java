@@ -115,6 +115,40 @@ public class Utils {
         return Integer.parseInt((String) android.text.format.DateFormat.format("MM", sd));
     }
 
+    public static int[] getWeeksOfMonth(String sMonth, int year) throws ParseException {
+        Date monthDate = new SimpleDateFormat("MMM", Locale.ENGLISH).parse(sMonth);
+        Calendar mCal = Calendar.getInstance();
+        mCal.setTime(monthDate);
+        int month = mCal.get(Calendar.MONTH);
+
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+
+        int ndays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        int weeks[] = new int[ndays];
+        for (int i = 0; i < ndays; i++)
+        {
+            weeks[i] = cal.get(Calendar.WEEK_OF_YEAR);
+            cal.add(Calendar.DATE, 1);
+        }
+        return weeks;
+    }
+
+    public static String getDateFromWeekNumber(int no, int year){
+        String date;
+        Calendar now = Calendar.getInstance();
+        now.set(Calendar.YEAR,year);
+        now.set(Calendar.WEEK_OF_YEAR,no);
+
+        date = new SimpleDateFormat("dd").format(now.getTime());
+
+        now.set(Calendar.DAY_OF_WEEK, 7);
+        return date + " - " + new SimpleDateFormat("dd").format(now.getTime());
+    }
+
     public static double checkWeight(String weight) {
         String[] data = weight.split(" ");
         if(data[1].equals("kg")){

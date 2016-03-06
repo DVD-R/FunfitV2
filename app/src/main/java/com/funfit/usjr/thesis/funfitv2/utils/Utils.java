@@ -45,6 +45,13 @@ public class Utils {
         return calendar.get(Calendar.DAY_OF_WEEK);
     }
 
+    public static String getDayOfWeek(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        SimpleDateFormat w = new SimpleDateFormat("EEE", Locale.US);
+        Date sd = sdf.parse(date);
+        return (String) w.format(sd);
+    }
+
     public static String getCurrentDate(){
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         return sdf.format(new Date());

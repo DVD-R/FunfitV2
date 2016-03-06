@@ -129,7 +129,26 @@
             android:label="@string/leaderBoard"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity android:name=".notificationEvents.QRScannerActivity" />
+
+        <activity
+            android:name=".mealPlan.WeeklyGraphActivity"
+            android:parentActivityName=".main.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeLight">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".main.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".mealPlan.MonthlyGraphActivity"
+            android:parentActivityName=".main.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeLight">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".main.MainActivity" />
+        </activity>
 
         <receiver
             android:name=".receiver.GcmBroadcastReceiver"

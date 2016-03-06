@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.util.Util;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -20,12 +21,14 @@ import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.Monthly;
+import com.funfit.usjr.thesis.funfitv2.model.MonthlyCal;
 import com.funfit.usjr.thesis.funfitv2.model.Weekly;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.viewmods.DarkDividerItemDecoration;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -71,7 +74,8 @@ public class MonthlyShackFragment extends Fragment {
 
 
     boolean isMealReady, isRunReady;
-    List<Monthly> monthlyMeal, monthlyRun;
+    List<MonthlyCal> monthlyMeal, monthlyRun;
+    HashMap<Integer, Double> monthlyConsumed, monthlyBurned;
 
     public void fetchRunAndMeals() {
         isMealReady = false;
@@ -83,33 +87,36 @@ public class MonthlyShackFragment extends Fragment {
 
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                monthlyMeal = new ArrayList<Monthly>();
+                monthlyMeal = new ArrayList<MonthlyCal>();
+                monthlyConsumed = new HashMap<Integer, Double>();
                 int lastMonth = 0;
                 int lastYear = 0;
                 double calories = 0;
                 for (DataSnapshot daySnapshot : snapshot.getChildren()) {
                     for (DataSnapshot postSnapshot : daySnapshot.getChildren()) {
                         for (DataSnapshot finSnapshot : postSnapshot.getChildren()) {
-                            calories += Double.parseDouble(finSnapshot.child("calories").getValue() + "");
+                            try {
+                                calories += Double.parseDouble(finSnapshot.child("calories").getValue() + "");
+                                monthlyConsumed.put(Utils.getWeekOfYear(Utils.getLastDay(daySnapshot.getKey())),
+                                        Double.parseDouble(finSnapshot.child("calories").getValue() + ""));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                     try {
                         int latestMonth = Utils.getMonthOfYear(daySnapshot.getKey());
                         int latestYear = Utils.getYear(daySnapshot.getKey());
-                        if (latestMonth != lastMonth) {
-                            monthlyMeal.add(new Monthly(Utils.getMonth(daySnapshot.getKey()),
+                        if (latestMonth != lastMonth || (latestMonth == lastMonth && lastYear != latestYear)) {
+                            monthlyMeal.add(new MonthlyCal(Utils.getMonth(daySnapshot.getKey()),
                                     Utils.getYear(daySnapshot.getKey()),
                                     calories,
-                                    0));
+                                    0,
+                                    monthlyConsumed,
+                                    null));
 
                             calories = 0;
-                        } else if (latestMonth == lastMonth && lastYear != latestYear) {
-                            monthlyMeal.add(new Monthly(Utils.getMonth(daySnapshot.getKey()),
-                                    Utils.getYear(daySnapshot.getKey()),
-                                    calories,
-                                    0));
-
-                            calories = 0;
+                            monthlyConsumed.clear();
                         }
                         lastMonth = latestMonth;
                         lastYear = latestYear;
@@ -139,34 +146,37 @@ public class MonthlyShackFragment extends Fragment {
 
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                monthlyRun = new ArrayList<Monthly>();
+                monthlyRun = new ArrayList<MonthlyCal>();
+                monthlyBurned = new HashMap<Integer, Double>();
                 int lastMonth = 0;
                 int lastYear = 0;
                 double calories = 0;
                 for (DataSnapshot daySnapshot : snapshot.getChildren()) {
-                    double weight = Utils.checkWeight(mUserPref.getString(Constants.PROFILE_WEIGHT, ""));
-                    calories += Utils.getCaloriesBurned(weight,
-                            Long.parseLong(daySnapshot.child("time").getValue() + ""),
-                            Double.parseDouble(daySnapshot.child("distance").getValue() + ""));
+                    for (DataSnapshot postSnapshot : daySnapshot.getChildren()) {
+                        try {
+                            double weight = Utils.checkWeight(mUserPref.getString(Constants.PROFILE_WEIGHT, ""));
+                            calories += Utils.getCaloriesBurned(weight,
+                                    Long.parseLong(postSnapshot.child("time").getValue() + ""),
+                                    Double.parseDouble(postSnapshot.child("distance").getValue() + ""));
+                            monthlyBurned.put(Utils.getWeekOfYear(Utils.getLastDay(daySnapshot.getKey())), calories);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
                     try {
                         int latestMonth = Utils.getMonthOfYear(daySnapshot.getKey());
                         int latestYear = Utils.getYear(daySnapshot.getKey());
-                        if (latestMonth != lastMonth) {
-                            monthlyRun.add(new Monthly(
-                                    Utils.getMonth(daySnapshot.getKey()),
+                        if (latestMonth != lastMonth || (latestMonth == lastMonth && lastYear != latestYear)) {
+                            monthlyRun.add(new MonthlyCal(Utils.getMonth(daySnapshot.getKey()),
                                     Utils.getYear(daySnapshot.getKey()),
                                     0,
-                                    calories));
-
-                            calories = 0;
-                        } else if (latestMonth == lastMonth && lastYear != latestYear) {
-                            monthlyMeal.add(new Monthly(Utils.getMonth(daySnapshot.getKey()),
-                                    Utils.getYear(daySnapshot.getKey()),
                                     calories,
-                                    0));
+                                    null,
+                                    monthlyBurned));
 
                             calories = 0;
+                            monthlyBurned.clear();
                         }
                         lastMonth = latestMonth;
                         lastYear = latestYear;
@@ -190,7 +200,7 @@ public class MonthlyShackFragment extends Fragment {
         });
     }
 
-    private void displayList(List<Monthly> monthlyMeal, List<Monthly> monthlyRun) {
+    private void displayList(List<MonthlyCal> monthlyMeal, List<MonthlyCal> monthlyRun) {
         for (int x = 0; x < monthlyMeal.size(); x++) {
             for (int y = 0; y < monthlyRun.size(); y++) {
                 if (monthlyMeal.get(x).getMonth().equals(monthlyRun.get(y).getMonth())
@@ -198,7 +208,6 @@ public class MonthlyShackFragment extends Fragment {
                     monthlyMeal.get(x).setBurnedCalories(monthlyRun.get(y).getBurnedCalories());
                     monthlyRun.remove(y);
                     --y;
-                    Log.v(LOG_TAG, "removed");
                 }
             }
         }

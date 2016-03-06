@@ -206,6 +206,8 @@ public class MonthlyShackFragment extends Fragment {
                 if (monthlyMeal.get(x).getMonth().equals(monthlyRun.get(y).getMonth())
                         && (monthlyMeal.get(x).getYear() == monthlyRun.get(y).getYear())) {
                     monthlyMeal.get(x).setBurnedCalories(monthlyRun.get(y).getBurnedCalories());
+                    monthlyMeal.get(x).setMonthlyBurnedValue(monthlyRun.get(y).getMonthlyBurnedValue());
+                    monthlyMeal.get(x).setMonthlyBurnedWeek(monthlyRun.get(y).getMonthlyBurnedWeek());
                     monthlyRun.remove(y);
                     --y;
                 }

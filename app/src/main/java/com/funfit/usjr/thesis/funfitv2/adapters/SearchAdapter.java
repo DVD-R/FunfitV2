@@ -115,7 +115,7 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
         this.foodList = foodList;
         this.activityContext = activityContext;
         this.mealTime = mealTime;
-        fatSecretGetPresenter = new FatSecretGetPresenter(this);
+        fatSecretGetPresenter = new FatSecretGetPresenter(this, activityContext);
     }
 
     @Override

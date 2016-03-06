@@ -1,17 +1,23 @@
 package com.funfit.usjr.thesis.funfitv2.fatSecretImplementation;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.funfit.usjr.thesis.funfitv2.mealPlan.MealFirebaseHelper;
+import com.funfit.usjr.thesis.funfitv2.mealPlan.MealDbHelper;
+import com.funfit.usjr.thesis.funfitv2.mealPlan.RequestMeal;
+import com.funfit.usjr.thesis.funfitv2.mealPlan.ResponseMeal;
+import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
 import com.funfit.usjr.thesis.funfitv2.model.Meal;
+import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.views.ISearchAdapterView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,21 +27,24 @@ public class FatSecretGetPresenter {
     private ISearchAdapterView iSearchAdapterView;
     private FatSecretGet fatSecretGet;
     private FoodServing foodServing;
-    private MealFirebaseHelper mealFirebaseHelper;
+    private MealDbHelper mealDbHelper;
     private boolean flag;
-    public FatSecretGetPresenter(ISearchAdapterView iSearchAdapterView){
-            this.iSearchAdapterView = iSearchAdapterView;
-            fatSecretGet = new FatSecretGet();
-            mealFirebaseHelper = new MealFirebaseHelper(iSearchAdapterView.getContext());
+    private Context context;
+
+    public FatSecretGetPresenter(ISearchAdapterView iSearchAdapterView, Context context) {
+        this.iSearchAdapterView = iSearchAdapterView;
+        fatSecretGet = new FatSecretGet();
+        mealDbHelper = new MealDbHelper(context);
+        this.context = context;
     }
 
-    public void searchFoodWithServings(boolean flag){
+    public void searchFoodWithServings(boolean flag) {
         this.flag = flag;
         DoInBackGround();
     }
 
-    private void DoInBackGround(){
-        AsyncTask<Void,Void,FoodServing> doInBackGround = new AsyncTask<Void, Void, FoodServing>() {
+    private void DoInBackGround() {
+        AsyncTask<Void, Void, FoodServing> doInBackGround = new AsyncTask<Void, Void, FoodServing>() {
             @Override
             protected FoodServing doInBackground(Void... params) {
                 JSONObject foodItem = fatSecretGet.getFood(iSearchAdapterView.getFoodId());
@@ -71,14 +80,14 @@ public class FatSecretGetPresenter {
                                 items.setSodium(food_items.getString("sodium"));
                                 foods.add(items);
                             }
-                        if (flag) {
-                            iSearchAdapterView.sendList(foods);
-                        }else{
-                            iSearchAdapterView.setList(foods);
-                        }
+                            if (flag) {
+                                iSearchAdapterView.sendList(foods);
+                            } else {
+                                iSearchAdapterView.setList(foods);
+                            }
                         }
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     Log.e("Error", String.valueOf(e));
                     return null;
                 }
@@ -88,23 +97,24 @@ public class FatSecretGetPresenter {
         doInBackGround.execute();
     }
 
-    public void saveMeal(){
+    public void saveMeal() {
         ArrayList<FoodServing> foodServings = (ArrayList<FoodServing>) iSearchAdapterView.getList();
-        ArrayList<Meal> mealArrayList = new ArrayList<>();
-        Meal meal = null;
-        for (FoodServing foodServing1: foodServings){
-            meal = new Meal();
-            meal.setMeal_id(iSearchAdapterView.getFoodId());
-            meal.setName(iSearchAdapterView.getMealName());
-            meal.setFat(Double.parseDouble(foodServing1.getFat()));
-            meal.setCholesterol(Double.parseDouble(foodServing1.getCholesterol()));
-            meal.setSodium(Double.parseDouble(foodServing1.getSodium()));
-            meal.setCarbohydrate(Double.parseDouble(foodServing1.getCarbohydrate()));
-            meal.setProtein(Double.parseDouble(foodServing1.getProtein()));
-            meal.setCalories(Double.parseDouble(foodServing1.getCalories()));
-            meal.setCourse(iSearchAdapterView.getMealTime());
+        ArrayList<RequestMeal> mealArrayList = new ArrayList<>();
+        RequestMeal meal = null;
+        for (FoodServing foodServing1 : foodServings) {
+            meal = new RequestMeal(Utils.getCurrentDate(),
+                    Double.parseDouble(foodServing1.getCalories()),
+                    Double.parseDouble(foodServing1.getCarbohydrate()),
+                    Double.parseDouble(foodServing1.getCholesterol()),
+                    iSearchAdapterView.getMealTime(),
+                    Double.parseDouble(foodServing1.getFat()),
+                    iSearchAdapterView.getMealName(),
+                    Double.parseDouble(foodServing1.getProtein()),
+                    Double.parseDouble(foodServing1.getSodium()),
+                    Integer.parseInt(context.getSharedPreferences(Constants.RDI_PREF_ID, context.MODE_PRIVATE)
+                            .getString(Constants.UID,""))) ;
         }
-            mealArrayList.add(meal);
-            mealFirebaseHelper.saveMeal(mealArrayList);
+        mealArrayList.add(meal);
+        mealDbHelper.saveMeal(mealArrayList);
     }
 }

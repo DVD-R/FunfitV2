@@ -57,6 +57,9 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MealPlanFragment extends Fragment implements IMealPlanFragmentView {
     private static final String TOTAL_CAL = "Total Calories: ";
@@ -163,6 +166,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
     private RecyclerView.LayoutManager mSnackLayoutManager;
     private SharedPreferences sharedRdi;
     double bkf, lch, dnr, snk;
+    long mealId = 0;
     private static List<Meal> mealList;
 
     @Nullable
@@ -174,7 +178,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
 
         sharedRdi = getActivity().getSharedPreferences(Constants.RDI_PREF_ID, getActivity().MODE_PRIVATE);
         float remCal = Float.parseFloat(sharedRdi.getString(Constants.RDI, "0"));
-        mealPlanPresenter = new MealPlanPresenter(this);
+        mealPlanPresenter = new MealPlanPresenter(this, getActivity());
         mBreakFastFlag = false;
         mLunchFlag = false;
         mDinnerFlag = false;
@@ -400,29 +404,26 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
     }
 
     @Override
-    public void setMealList(Firebase firebaseMeal) {
-        firebaseMeal.addListenerForSingleValueEvent(new ValueEventListener() {
+    public void setMealList(MealService mealService) {
+        mealService.getMeal(getContext().getSharedPreferences(Constants.RDI_PREF_ID,getContext().MODE_PRIVATE)
+                .getString(Constants.UID, ""),
+                new Callback<List<ResponseMeal>>() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
+            public void success(List<ResponseMeal> mealModels, Response response) {
                 List<Meal> mealList = new ArrayList<Meal>();
-                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
-                    for(DataSnapshot finSnapshot: postSnapshot.getChildren()) {
-                        Meal meal =
-                                new Meal(
-                                Long.parseLong(finSnapshot.child("meal_id").getValue() + ""),
-                                finSnapshot.child("name").getValue() + "",
-                                Double.parseDouble(finSnapshot.child("fat").getValue() + ""),
-                                Double.parseDouble(finSnapshot.child("sodium").getValue() + ""),
-                                Double.parseDouble(finSnapshot.child("calories").getValue() + ""),
-                                Double.parseDouble(finSnapshot.child("cholesterol").getValue() + ""),
-                                Double.parseDouble(finSnapshot.child("carbohydrate").getValue() + ""),
-                                Double.parseDouble(finSnapshot.child("protein").getValue() + ""),
-                                finSnapshot.child("course").getValue() + ""
-                        );
-                        mealList.add(meal);
-
-                        Log.v(LOG_TAG, postSnapshot.toString());
-                    }
+                for (int x = 0; x < mealModels.size(); x++) {
+                    Meal meal =
+                            new Meal(mealId,
+                                    mealModels.get(x).getName(),
+                                    mealModels.get(x).getFat(),
+                                    mealModels.get(x).getSodium(),
+                                    mealModels.get(x).getCalories(),
+                                    mealModels.get(x).getCholesterol(),
+                                    mealModels.get(x).getCarbohydrate(),
+                                    mealModels.get(x).getProtein(),
+                                    mealModels.get(x).getCourse()
+                            );
+                    mealList.add(meal);
                 }
 
                 MealPlanFragment.mealList = mealList;
@@ -431,9 +432,10 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
                     mealPlanPresenter.checkCourseValidity();
                 }
             }
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
 
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(LOG_TAG, error.toString());
             }
         });
     }
@@ -579,26 +581,26 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
 
     private void displayCalorieViews() {
         double rdi = Double.parseDouble(sharedRdi.getString(Constants.RDI, "0"));
-        double calConsumed = bkf + lch + dnr + snk ;
+        double calConsumed = bkf + lch + dnr + snk;
         double calRemaining = rdi - calConsumed;
         //Update Calorie Views in Summary
         mTextCalRdi.setText(String.format("%.2f", rdi));
         mTextCalRemaining.setText(String.format("%.2f", calRemaining));
         mTextCalConsumed.setText(String.format("%.2f", calConsumed));
 
-        if(calConsumed > rdi)
+        if (calConsumed > rdi)
             mTextCalConsumed.setTextColor(getResources().getColor(R.color.error_red));
-        if(calRemaining < 0)
+        if (calRemaining < 0)
             mTextCalRemaining.setTextColor(getResources().getColor(R.color.error_red));
     }
 
     @OnClick(R.id.fab_switch)
-    public void onFabSwitchClick(){
-            FragmentTransaction trans = getFragmentManager()
-                    .beginTransaction();
-            trans.replace(R.id.root_frame, new WeeklyShackFragment());
-            trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            trans.addToBackStack(null);
-            trans.commit();
+    public void onFabSwitchClick() {
+        FragmentTransaction trans = getFragmentManager()
+                .beginTransaction();
+        trans.replace(R.id.root_frame, new WeeklyShackFragment());
+        trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        trans.addToBackStack(null);
+        trans.commit();
     }
 }

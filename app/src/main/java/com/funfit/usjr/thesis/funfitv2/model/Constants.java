@@ -66,4 +66,6 @@ public final class Constants {
     public static final String CONSUMED_VALUE = "consumed_value";
     public static final String BURNED_TIME = "burned_time";
     public static final String BURNED_VALUE = "burned_value";
+
+    public static final String DBROOT = "https://funfitv2-backend.herokuapp.com";
 }

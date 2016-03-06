@@ -11,6 +11,6 @@ import retrofit.http.POST;
  */
 public interface RunService {
 
-    @POST("")
+    @POST("/saveRun")
     public void postRun(@Body SendRun sendRun, Callback<RunCallback> runCallbackCallback);
 }

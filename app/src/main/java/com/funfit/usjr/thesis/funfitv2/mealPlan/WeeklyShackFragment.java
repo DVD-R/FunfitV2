@@ -60,10 +60,9 @@ public class WeeklyShackFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private LayoutManagerType mCurrentLayoutManagerType;
     private WeeklyAdapter mAdapter;
-    private SharedPreferences mUserPref;
+    private SharedPreferences mUserPref, mRdiPref;
 
     //MEAL
-    private static final String MEALROOT = "https://funfitv2-backend.herokuapp.com";
     MealModel mealModel;
     MealService mealService;
 
@@ -79,6 +78,7 @@ public class WeeklyShackFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_shack, container, false);
         ButterKnife.bind(this, v);
         mUserPref = getActivity().getSharedPreferences(Constants.USER_PREF_ID, getActivity().MODE_PRIVATE);
+        mRdiPref = getActivity().getSharedPreferences(Constants.USER_PREF_ID, getActivity().MODE_PRIVATE);
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
@@ -217,38 +217,6 @@ public class WeeklyShackFragment extends Fragment {
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-    }
-
-    class WeeklyLoadAsyntask extends AsyncTask<Void, Void, MealModel> {
-        @Override
-        protected MealModel doInBackground(Void... params) {
-            WeeklySetup();
-            return mealModel;
-        }
-
-    }
-
-    public void WeeklySetup(){
-
-        RestAdapter.Builder builder = new RestAdapter.Builder()
-                .setEndpoint(MEALROOT)
-                .setClient(new OkClient(new OkHttpClient()))
-                .setLogLevel(RestAdapter.LogLevel.FULL);
-
-        RestAdapter restAdapter = builder.build();
-        mealService = restAdapter.create(MealService.class);
-
-        mealService.getMeal("USER ID", new Callback<List<MealModel>>() {
-            @Override
-            public void success(List<MealModel> mealModels, Response response) {
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
 
             }
         });

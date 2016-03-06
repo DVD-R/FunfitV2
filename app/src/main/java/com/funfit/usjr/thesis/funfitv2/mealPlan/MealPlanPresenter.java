@@ -1,5 +1,6 @@
 package com.funfit.usjr.thesis.funfitv2.mealPlan;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.funfit.usjr.thesis.funfitv2.model.Meal;
@@ -17,11 +18,11 @@ public class MealPlanPresenter {
     private double lunchTotalkCal;
     private double dinnerTotalkCal;
     private double snackTotalkCal;
-    private MealFirebaseHelper mealDbAdapter;
+    private MealDbHelper mealDbAdapter;
 
-    public MealPlanPresenter(IMealPlanFragmentView iMealPlanFragmentView){
+    public MealPlanPresenter(IMealPlanFragmentView iMealPlanFragmentView, Context context){
         this.iMealPlanFragmentView = iMealPlanFragmentView;
-        this.mealDbAdapter = new MealFirebaseHelper(iMealPlanFragmentView.getContext());
+        this.mealDbAdapter = new MealDbHelper(context);
     }
 
     //Collapse/Expand commands<-----------------
@@ -35,7 +36,7 @@ public class MealPlanPresenter {
     //Collapse/Expand commands<-----------------
 
     public void queryMealList(){
-        iMealPlanFragmentView.setMealList(mealDbAdapter.getFirebaseMeals());
+        iMealPlanFragmentView.setMealList(mealDbAdapter.getMealService());
     }
 
     public void checkCourseValidity(){

@@ -1,21 +1,19 @@
 package com.funfit.usjr.thesis.funfitv2.mealPlan;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.R;
-import com.funfit.usjr.thesis.funfitv2.model.Weekly;
+import com.funfit.usjr.thesis.funfitv2.model.Constants;
+import com.funfit.usjr.thesis.funfitv2.model.WeeklyCal;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 
 import java.text.ParseException;
@@ -30,7 +28,7 @@ import butterknife.ButterKnife;
 public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder> {
     private static final String LOG_TAG = WeeklyAdapter.class.getSimpleName();
 
-    List<Weekly> mList;
+    static List<WeeklyCal> mList;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.text_start)
@@ -52,7 +50,27 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(LOG_TAG, "Element " + getPosition() + " clicked.");
+                    try {
+                        Intent i = new Intent(context, WeeklyGraphActivity.class);
+                        if(getPosition() == 0)
+                            i.putExtra(Constants.IS_FIRST, true);
+                        else
+                            i.putExtra(Constants.IS_FIRST, false);
+
+                        i.putExtra(Constants.START_DAY, Utils.getDay(mList.get(getPosition()).getStartDate()));
+                        i.putExtra(Constants.END_DAY, Utils.getDay(mList.get(getPosition()).getEndDate()));
+                        i.putExtra(Constants.MONTH, Utils.getMonth(mList.get(getPosition()).getEndDate()));
+                        i.putExtra(Constants.CAL_CONSUMED, Utils.roundOneDecimal(mList.get(getPosition()).getConsumedCalories()));
+                        i.putExtra(Constants.CAL_BURNED, Utils.roundOneDecimal(mList.get(getPosition()).getBurnedCalories()));
+                        i.putExtra(Constants.CONSUMED_TIME, mList.get(getPosition()).getWeeklyConsumedDay());
+                        i.putExtra(Constants.BURNED_TIME, mList.get(getPosition()).getWeeklyBurnedDay());
+                        i.putExtra(Constants.CONSUMED_VALUE, mList.get(getPosition()).getWeeklyConsumedValue());
+                        i.putExtra(Constants.BURNED_VALUE, mList.get(getPosition()).getWeeklyBurnedValue());
+
+                        context.startActivity(i);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
             context = v.getContext();
@@ -60,7 +78,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
         }
     }
 
-    public WeeklyAdapter(List<Weekly> list) {
+    public WeeklyAdapter(List<WeeklyCal> list) {
         mList = list;
     }
 

@@ -23,19 +23,13 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
-import com.funfit.usjr.thesis.funfitv2.adapter.ViewPagerAdapter;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
-import com.funfit.usjr.thesis.funfitv2.model.Meal;
-import com.funfit.usjr.thesis.funfitv2.model.Weekly;
+import com.funfit.usjr.thesis.funfitv2.model.WeeklyCal;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.viewmods.DarkDividerItemDecoration;
-import com.funfit.usjr.thesis.funfitv2.viewmods.DividerItemDecoration;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -80,7 +74,8 @@ public class WeeklyShackFragment extends Fragment {
 
 
     boolean isMealReady, isRunReady;
-    List<Weekly> weeklyMeal, weeklyRun;
+    List<WeeklyCal> weeklyMeal, weeklyRun;
+    HashMap<String, Double> weeklyConsumed, weeklyBurned;
 
     public void fetchRunAndMeals() {
         isMealReady = false;
@@ -92,35 +87,38 @@ public class WeeklyShackFragment extends Fragment {
 
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                weeklyMeal = new ArrayList<Weekly>();
+                weeklyMeal = new ArrayList<WeeklyCal>();
+                weeklyConsumed = new HashMap<String, Double>();
                 int lastWoy = 0;
                 int lastYear = 0;
                 double calories = 0;
                 for (DataSnapshot daySnapshot : snapshot.getChildren()) {
                     for (DataSnapshot postSnapshot : daySnapshot.getChildren()) {
                         for (DataSnapshot finSnapshot : postSnapshot.getChildren()) {
-                            calories += Double.parseDouble(finSnapshot.child("calories").getValue() + "");
+                            try {
+                                calories += Double.parseDouble(finSnapshot.child("calories").getValue() + "");
+                                weeklyConsumed.put(Utils.getDayOfWeek(daySnapshot.getKey()),
+                                        Double.parseDouble(finSnapshot.child("calories").getValue() + ""));
+
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                     try {
                         int latestWoy = Utils.getWeekOfYear(daySnapshot.getKey());
                         int latestYear = Utils.getYear(daySnapshot.getKey());
-                        if (latestWoy != lastWoy) {
-                            weeklyMeal.add(new Weekly(
+                        if (latestWoy != lastWoy || (latestWoy == lastWoy && lastYear != latestYear)) {
+                            weeklyMeal.add(new WeeklyCal(
                                     Utils.getFirstDay(daySnapshot.getKey()),
                                     Utils.getLastDay(daySnapshot.getKey()),
                                     calories,
-                                    0));
+                                    0,
+                                    weeklyConsumed,
+                                    null));
 
                             calories = 0;
-                        } else if (latestWoy == lastWoy && lastYear != latestYear) {
-                            weeklyMeal.add(new Weekly(
-                                    Utils.getFirstDay(daySnapshot.getKey()),
-                                    Utils.getLastDay(daySnapshot.getKey()),
-                                    calories,
-                                    0));
-
-                            calories = 0;
+                            weeklyConsumed.clear();
                         }
                         lastWoy = latestWoy;
                         lastYear = latestYear;
@@ -150,35 +148,38 @@ public class WeeklyShackFragment extends Fragment {
 
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                weeklyRun = new ArrayList<Weekly>();
+                weeklyRun = new ArrayList<WeeklyCal>();
+                weeklyBurned = new HashMap<String, Double>();
                 int lastWoy = 0;
                 int lastYear = 0;
                 double calories = 0;
                 for (DataSnapshot daySnapshot : snapshot.getChildren()) {
-                    double weight = Utils.checkWeight(mUserPref.getString(Constants.PROFILE_WEIGHT, ""));
-                    calories += Utils.getCaloriesBurned(weight,
-                            Long.parseLong(daySnapshot.child("time").getValue() + ""),
-                            Double.parseDouble(daySnapshot.child("distance").getValue() + ""));
+                    for (DataSnapshot timeSnapshot : daySnapshot.getChildren()) {
+                        try {
+                            double weight = Utils.checkWeight(mUserPref.getString(Constants.PROFILE_WEIGHT, ""));
+                            calories += Utils.getCaloriesBurned(weight,
+                                    Long.parseLong(timeSnapshot.child("time").getValue() + ""),
+                                    Double.parseDouble(timeSnapshot.child("distance").getValue() + ""));
+                            weeklyBurned.put(Utils.getDayOfWeek(daySnapshot.getKey()), calories);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
                     try {
                         int latestWoy = Utils.getWeekOfYear(daySnapshot.getKey());
                         int latestYear = Utils.getYear(daySnapshot.getKey());
-                        if (latestWoy != lastWoy) {
-                            weeklyRun.add(new Weekly(
+                        if (latestWoy != lastWoy || (latestWoy == lastWoy && lastYear != latestYear)) {
+                            weeklyRun.add(new WeeklyCal(
                                     Utils.getFirstDay(daySnapshot.getKey()),
                                     Utils.getLastDay(daySnapshot.getKey()),
                                     0,
-                                    calories));
+                                    calories,
+                                    null,
+                                    weeklyBurned));
 
                             calories = 0;
-                        } else if (latestWoy == lastWoy && lastYear != latestYear) {
-                            weeklyRun.add(new Weekly(
-                                    Utils.getFirstDay(daySnapshot.getKey()),
-                                    Utils.getLastDay(daySnapshot.getKey()),
-                                    0,
-                                    calories));
-
-                            calories = 0;
+                            weeklyBurned.clear();
                         }
                         lastWoy = latestWoy;
                         lastYear = latestYear;
@@ -202,14 +203,16 @@ public class WeeklyShackFragment extends Fragment {
         });
     }
 
-    private void displayList(List<Weekly> weeklyMeal, List<Weekly> weeklyRun) {
+    private void displayList(List<WeeklyCal> weeklyMeal, List<WeeklyCal> weeklyRun) {
+
         for (int x = 0; x < weeklyMeal.size(); x++) {
             for (int y = 0; y < weeklyRun.size(); y++) {
                 if (weeklyMeal.get(x).getStartDate().equals(weeklyRun.get(y).getStartDate())) {
                     weeklyMeal.get(x).setBurnedCalories(weeklyRun.get(y).getBurnedCalories());
+                    weeklyMeal.get(x).setWeeklyBurnedDay(weeklyRun.get(y).getWeeklyBurnedDay());
+                    weeklyMeal.get(x).setWeeklyBurnedValue(weeklyRun.get(y).getWeeklyBurnedValue());
                     weeklyRun.remove(y);
                     --y;
-                    Log.v(LOG_TAG, "removed");
                 }
             }
         }

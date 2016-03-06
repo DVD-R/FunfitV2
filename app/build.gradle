@@ -76,4 +76,8 @@ dependencies {
 
     //Scanner
     compile 'me.dm7.barcodescanner:zxing:1.7.2'
+
+    //Graph
+    compile 'com.jjoe64:graphview:4.0.1'
+
 }

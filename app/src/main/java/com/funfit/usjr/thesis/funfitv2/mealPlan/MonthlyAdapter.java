@@ -1,6 +1,7 @@
 package com.funfit.usjr.thesis.funfitv2.mealPlan;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,7 +12,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.funfit.usjr.thesis.funfitv2.R;
+import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.Monthly;
+import com.funfit.usjr.thesis.funfitv2.model.MonthlyCal;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 
 import java.text.ParseException;
@@ -26,7 +29,7 @@ import butterknife.ButterKnife;
 public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHolder> {
     private static final String LOG_TAG = MonthlyAdapter.class.getSimpleName();
 
-    List<Monthly> mList;
+    static List<MonthlyCal> mList;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.text_month)
@@ -46,7 +49,22 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(LOG_TAG, "Element " + getPosition() + " clicked.");
+                    Intent i = new Intent(context, MonthlyGraphActivity.class);
+                    if (getPosition() == 0)
+                        i.putExtra(Constants.IS_FIRST, true);
+                    else
+                        i.putExtra(Constants.IS_FIRST, false);
+
+                    i.putExtra(Constants.MONTH, mList.get(getPosition()).getMonth());
+                    i.putExtra(Constants.YEAR, mList.get(getPosition()).getYear());
+                    i.putExtra(Constants.CAL_CONSUMED, Utils.roundOneDecimal(mList.get(getPosition()).getConsumedCalories()));
+                    i.putExtra(Constants.CAL_BURNED, Utils.roundOneDecimal(mList.get(getPosition()).getBurnedCalories()));
+                    i.putExtra(Constants.CONSUMED_TIME, mList.get(getPosition()).getMonthlyConsumedWeek());
+                    i.putExtra(Constants.BURNED_TIME, mList.get(getPosition()).getMonthlyBurnedWeek());
+                    i.putExtra(Constants.CONSUMED_VALUE, mList.get(getPosition()).getMonthlyConsumedValue());
+                    i.putExtra(Constants.BURNED_VALUE, mList.get(getPosition()).getMonthlyBurnedValue());
+
+                    context.startActivity(i);
                 }
             });
             context = v.getContext();
@@ -54,7 +72,7 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
         }
     }
 
-    public MonthlyAdapter(List<Monthly> list) {
+    public MonthlyAdapter(List<MonthlyCal> list) {
         mList = list;
     }
 

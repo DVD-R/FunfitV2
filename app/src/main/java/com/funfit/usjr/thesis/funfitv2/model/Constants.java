@@ -59,9 +59,11 @@ public final class Constants {
     public static final String START_DAY = "start_date";
     public static final String END_DAY = "end_date";
     public static final String MONTH = "month";
+    public static final String YEAR = "year";
     public static final String CAL_CONSUMED = "cal_consumed";
     public static final String CAL_BURNED = "cal_burned";
-    public static final String WEEKLY_CONSUMED = "weekly_consumed";
-    public static final String WEEKLY_BURNED = "weekly_burned";
-
+    public static final String CONSUMED_TIME = "consumed_time";
+    public static final String CONSUMED_VALUE = "consumed_value";
+    public static final String BURNED_TIME = "burned_time";
+    public static final String BURNED_VALUE = "burned_value";
 }

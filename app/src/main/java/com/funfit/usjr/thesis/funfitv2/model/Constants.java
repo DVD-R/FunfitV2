@@ -53,4 +53,14 @@ public final class Constants {
 
     public final static String SENDER_ID = "209690052574";
     public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
+    //Graph Intent
+    public static final String IS_FIRST = "is_first";
+    public static final String START_DAY = "start_date";
+    public static final String END_DAY = "end_date";
+    public static final String MONTH = "month";
+    public static final String CAL_CONSUMED = "cal_consumed";
+    public static final String CAL_BURNED = "cal_burned";
+    public static final String WEEKLY_CONSUMED = "weekly_consumed";
+    public static final String WEEKLY_BURNED = "weekly_burned";
 }

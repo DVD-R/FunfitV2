@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Chronometer;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ import com.funfit.usjr.thesis.funfitv2.model.MarkerModel;
 import com.funfit.usjr.thesis.funfitv2.model.Territory;
 import com.funfit.usjr.thesis.funfitv2.services.CapturingService;
 import com.funfit.usjr.thesis.funfitv2.services.MarkerService;
+import com.funfit.usjr.thesis.funfitv2.utils.StopWatch;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.views.IMapFragmentView;
 import com.google.android.gms.common.ConnectionResult;
@@ -140,6 +142,8 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     float distance = 0;
     float totalDistanceInMeters = 0;
 
+    StopWatch timer = new StopWatch();
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_maps, container, false);
         ButterKnife.bind(this, view);
@@ -181,8 +185,9 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         pd.show();
         mapsFragmentPresenter = new MapsFragmentPresenter(this);
 
-        return view;
 
+
+        return view;
     }
 
     @Override
@@ -328,6 +333,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
             //dialogFragment.setTargetFragment(this, REQUEST_CODE);
             if (pd != null) {
                 pd.dismiss();
+                timer.start();
             }
         } else {
             Log.e("Location Service: ", "GPS not connected!");
@@ -546,8 +552,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onMapClick(LatLng latLng) {
         long totalTime = 0;
-        totalTime = totalTime + location.getTime();
-
+        totalTime = totalTime + timer.getElapsedTimeMilli();
         Log.i("Time", "Time " + totalTime);
 
 //        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -609,6 +614,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                                     Log.i("testCapture", "YES!! Captured");
                                     Log.i("testCapture", "Total Distance: "+totalDistanceInMeters);
                                     Log.i("testCapture", "Total Time: "+totalTime);
+                                    timer.stop();
                                 }
                             }
                         } else {

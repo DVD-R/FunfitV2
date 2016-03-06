@@ -63,4 +63,5 @@ public final class Constants {
     public static final String CAL_BURNED = "cal_burned";
     public static final String WEEKLY_CONSUMED = "weekly_consumed";
     public static final String WEEKLY_BURNED = "weekly_burned";
+
 }

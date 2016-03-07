@@ -28,6 +28,7 @@ import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.Meal;
 import com.funfit.usjr.thesis.funfitv2.model.RunCallback;
 import com.funfit.usjr.thesis.funfitv2.model.RunModel;
+import com.funfit.usjr.thesis.funfitv2.model.Runs;
 import com.funfit.usjr.thesis.funfitv2.model.Weekly;
 import com.funfit.usjr.thesis.funfitv2.model.WeeklyCal;
 import com.funfit.usjr.thesis.funfitv2.services.RunService;
@@ -65,9 +66,8 @@ public class WeeklyShackFragment extends Fragment {
     private SharedPreferences mUserPref, mRdiPref;
     int mealId = 0;
 
-    //MEAL
     MealDbHelper mealDbHelper;
-
+    RunDbHelper runDbHelper;
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -88,6 +88,7 @@ public class WeeklyShackFragment extends Fragment {
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
         mRecyclerView.addItemDecoration(new DarkDividerItemDecoration(getActivity()));
         mealDbHelper = new MealDbHelper(getActivity());
+        runDbHelper = new RunDbHelper(getActivity());
 
         fetchRunAndMeals();
 
@@ -159,131 +160,62 @@ public class WeeklyShackFragment extends Fragment {
                         Log.v(LOG_TAG, error.toString());
                     }
                 });
-//        Firebase mFirebaseMeals = new Firebase(Constants.FIREBASE_URL_MEALS)
-//                .child(mUserPref.getString(Constants.PROFILE_EMAIL, ""));
-//
-//        mFirebaseMeals.addListenerForSingleValueEvent(new ValueEventListener() {
-//
-//            @Override
-//            public void onDataChange(DataSnapshot snapshot) {
-//                weeklyMeal = new ArrayList<WeeklyCal>();
-//                weeklyConsumed = new HashMap<String, Double>();
-//                int lastWoy = 0;
-//                int lastYear = 0;
-//                double calories = 0;
-//                for (DataSnapshot daySnapshot : snapshot.getChildren()) {
-//                    for (DataSnapshot postSnapshot : daySnapshot.getChildren()) {
-//                        for (DataSnapshot finSnapshot : postSnapshot.getChildren()) {
-//                            try {
-//                                calories += Double.parseDouble(finSnapshot.child("calories").getValue() + "");
-//                                weeklyConsumed.put(Utils.getDayOfWeek(daySnapshot.getKey()),
-//                                        Double.parseDouble(finSnapshot.child("calories").getValue() + ""));
-//
-//                            } catch (ParseException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }
-//                    try {
-//                        int latestWoy = Utils.getWeekOfYear(daySnapshot.getKey());
-//                        int latestYear = Utils.getYear(daySnapshot.getKey());
-//                        if (latestWoy != lastWoy || (latestWoy == lastWoy && lastYear != latestYear)) {
-//                            weeklyMeal.add(new WeeklyCal(
-//                                    Utils.getFirstDay(daySnapshot.getKey()),
-//                                    Utils.getLastDay(daySnapshot.getKey()),
-//                                    calories,
-//                                    0,
-//                                    weeklyConsumed,
-//                                    null));
-//
-//                            calories = 0;
-//                            weeklyConsumed.clear();
-//                        }
-//                        lastWoy = latestWoy;
-//                        lastYear = latestYear;
-//                    } catch (ParseException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//                isMealReady = true;
-//
-//                if (weeklyMeal.size() != 0 && (isMealReady == true && isRunReady == true)) {
-//                    displayList(weeklyMeal, weeklyRun);
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(FirebaseError firebaseError) {
-//
-//            }
-//        });
 
-        Firebase mFirebaseRuns = new Firebase(Constants.FIREBASE_URL_RUNS)
-                .child(mUserPref.getString(Constants.PROFILE_EMAIL, ""));
 
-        mFirebaseRuns.addListenerForSingleValueEvent(new
+        runDbHelper.getRunService().getRun(getContext().getSharedPreferences(Constants.RDI_PREF_ID, getContext().MODE_PRIVATE)
+                        .getString(Constants.UID, ""),
+                new Callback<List<Runs>>() {
+                    @Override
+                    public void success(List<Runs> mealModels, Response response) {
+                        weeklyRun = new ArrayList<WeeklyCal>();
+                        weeklyBurned = new HashMap<String, Double>();
+                        int lastWoy = 0;
+                        int lastYear = 0;
+                        double calories = 0;
 
-                                                             ValueEventListener() {
+                        for (int x = 0; x < mealModels.size(); x++) {
+                            try {
+                                double weight = Utils.checkWeight(mUserPref.getString(Constants.PROFILE_WEIGHT, ""));
+                                calories += Utils.getCaloriesBurned(weight,
+                                        mealModels.get(x).getTime(),
+                                        mealModels.get(x).getDistance());
+                                weeklyBurned.put(Utils.getDayOfWeek(mealModels.get(x).getDate()), calories);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
 
-                                                                 @Override
-                                                                 public void onDataChange(DataSnapshot snapshot) {
-                                                                     weeklyRun = new ArrayList<WeeklyCal>();
-                                                                     weeklyBurned = new HashMap<String, Double>();
-                                                                     int lastWoy = 0;
-                                                                     int lastYear = 0;
-                                                                     double calories = 0;
-                                                                     for (DataSnapshot daySnapshot : snapshot.getChildren()) {
-                                                                         for (DataSnapshot timeSnapshot : daySnapshot.getChildren()) {
-                                                                             try {
-                                                                                 double weight = Utils.checkWeight(mUserPref.getString(Constants.PROFILE_WEIGHT, ""));
-                                                                                 calories += Utils.getCaloriesBurned(weight,
-                                                                                         Long.parseLong(timeSnapshot.child("time").getValue() + ""),
-                                                                                         Double.parseDouble(timeSnapshot.child("distance").getValue() + ""));
-                                                                                 weeklyBurned.put(Utils.getDayOfWeek(daySnapshot.getKey()), calories);
-                                                                             } catch (ParseException e) {
-                                                                                 e.printStackTrace();
-                                                                             }
-                                                                         }
+                            try {
+                                int latestWoy = Utils.getWeekOfYear(mealModels.get(x).getDate());
+                                int latestYear = Utils.getYear(mealModels.get(x).getDate());
+                                if (latestWoy != lastWoy || (latestWoy == lastWoy && lastYear != latestYear)) {
+                                    weeklyRun.add(new WeeklyCal(
+                                            Utils.getFirstDay(mealModels.get(x).getDate()),
+                                            Utils.getLastDay(mealModels.get(x).getDate()),
+                                            0,
+                                            calories,
+                                            null,
+                                            weeklyBurned));
 
-                                                                         try {
-                                                                             int latestWoy = Utils.getWeekOfYear(daySnapshot.getKey());
-                                                                             int latestYear = Utils.getYear(daySnapshot.getKey());
-                                                                             if (latestWoy != lastWoy || (latestWoy == lastWoy && lastYear != latestYear)) {
-                                                                                 weeklyRun.add(new WeeklyCal(
-                                                                                         Utils.getFirstDay(daySnapshot.getKey()),
-                                                                                         Utils.getLastDay(daySnapshot.getKey()),
-                                                                                         0,
-                                                                                         calories,
-                                                                                         null,
-                                                                                         weeklyBurned));
+                                    calories = 0;
+                                    weeklyBurned.clear();
+                                }
+                                lastWoy = latestWoy;
+                                lastYear = latestYear;
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            isRunReady = true;
+                            if (weeklyRun.size() != 0 && (isMealReady == true && isRunReady == true)) {
+                                displayList(weeklyMeal, weeklyRun);
+                            }
+                        }
+                    }
 
-                                                                                 calories = 0;
-                                                                                 weeklyBurned.clear();
-                                                                             }
-                                                                             lastWoy = latestWoy;
-                                                                             lastYear = latestYear;
-                                                                         } catch (ParseException e) {
-                                                                             e.printStackTrace();
-                                                                         }
-                                                                     }
+                    @Override
+                    public void failure(RetrofitError error) {
 
-                                                                     isRunReady = true;
-
-                                                                     if (weeklyRun.size() != 0 && (isMealReady == true && isRunReady == true)) {
-                                                                         displayList(weeklyMeal, weeklyRun);
-                                                                     }
-
-                                                                 }
-
-                                                                 @Override
-                                                                 public void onCancelled(FirebaseError firebaseError) {
-
-                                                                 }
-                                                             }
-
-        );
+                    }
+                });
     }
 
     private void displayList(List<WeeklyCal> weeklyMeal, List<WeeklyCal> weeklyRun) {

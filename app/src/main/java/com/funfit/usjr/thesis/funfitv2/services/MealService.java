@@ -1,6 +1,8 @@
-package com.funfit.usjr.thesis.funfitv2.mealPlan;
+package com.funfit.usjr.thesis.funfitv2.services;
 
 import com.funfit.usjr.thesis.funfitv2.maps.ResponseStatus;
+import com.funfit.usjr.thesis.funfitv2.mealPlan.RequestMeal;
+import com.funfit.usjr.thesis.funfitv2.mealPlan.ResponseMeal;
 import com.funfit.usjr.thesis.funfitv2.model.RunCallback;
 import com.funfit.usjr.thesis.funfitv2.services.SendRun;
 

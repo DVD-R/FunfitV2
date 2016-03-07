@@ -22,6 +22,7 @@ import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.Monthly;
 import com.funfit.usjr.thesis.funfitv2.model.MonthlyCal;
+import com.funfit.usjr.thesis.funfitv2.model.Runs;
 import com.funfit.usjr.thesis.funfitv2.model.Weekly;
 import com.funfit.usjr.thesis.funfitv2.model.WeeklyCal;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
@@ -54,14 +55,13 @@ public class MonthlyShackFragment extends Fragment {
     private SharedPreferences mUserPref, mRdiPref;
     int mealId = 0;
 
-    //MEAL
     MealDbHelper mealDbHelper;
+    RunDbHelper runDbHelper;
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
-
 
 
     @Nullable
@@ -78,6 +78,7 @@ public class MonthlyShackFragment extends Fragment {
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
         mRecyclerView.addItemDecoration(new DarkDividerItemDecoration(getActivity()));
         mealDbHelper = new MealDbHelper(getActivity());
+        runDbHelper = new RunDbHelper(getActivity());
 
         fetchRunAndMeals();
 
@@ -149,65 +150,58 @@ public class MonthlyShackFragment extends Fragment {
                 });
 
 
-        Firebase mFirebaseRuns = new Firebase(Constants.FIREBASE_URL_RUNS)
-                .child(mUserPref.getString(Constants.PROFILE_EMAIL, ""));
+        runDbHelper.getRunService().getRun(getContext().getSharedPreferences(Constants.RDI_PREF_ID, getContext().MODE_PRIVATE)
+                        .getString(Constants.UID, ""),
+                new Callback<List<Runs>>() {
+                    @Override
+                    public void success(List<Runs> mealModels, Response response) {
+                        monthlyRun = new ArrayList<MonthlyCal>();
+                        monthlyBurned = new HashMap<Integer, Double>();
+                        int lastMonth = 0;
+                        int lastYear = 0;
+                        double calories = 0;
 
-        mFirebaseRuns.addListenerForSingleValueEvent(new ValueEventListener() {
+                        for (int x = 0; x < mealModels.size(); x++) {
+                            try {
+                                double weight = Utils.checkWeight(mUserPref.getString(Constants.PROFILE_WEIGHT, ""));
+                                calories += Utils.getCaloriesBurned(weight,
+                                        mealModels.get(x).getTime(),
+                                        mealModels.get(x).getDistance());
+                                monthlyBurned.put(Utils.getWeekOfYear(Utils.getLastDay(mealModels.get(x).getDate())), calories);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
 
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                monthlyRun = new ArrayList<MonthlyCal>();
-                monthlyBurned = new HashMap<Integer, Double>();
-                int lastMonth = 0;
-                int lastYear = 0;
-                double calories = 0;
-                for (DataSnapshot daySnapshot : snapshot.getChildren()) {
-                    for (DataSnapshot postSnapshot : daySnapshot.getChildren()) {
-                        try {
-                            double weight = Utils.checkWeight(mUserPref.getString(Constants.PROFILE_WEIGHT, ""));
-                            calories += Utils.getCaloriesBurned(weight,
-                                    Long.parseLong(postSnapshot.child("time").getValue() + ""),
-                                    Double.parseDouble(postSnapshot.child("distance").getValue() + ""));
-                            monthlyBurned.put(Utils.getWeekOfYear(Utils.getLastDay(daySnapshot.getKey())), calories);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                            try {
+                                int latestMonth = Utils.getWeekOfYear(mealModels.get(x).getDate());
+                                int latestYear = Utils.getYear(mealModels.get(x).getDate());
+                                if (latestMonth != lastMonth || (latestMonth == lastMonth && lastYear != latestYear)) {
+                                    monthlyRun.add(new MonthlyCal(Utils.getMonth(mealModels.get(x).getDate()),
+                                            Utils.getYear(mealModels.get(x).getDate()),
+                                            0,
+                                            calories,
+                                            null,
+                                            monthlyBurned));
+                                    calories = 0;
+                                    monthlyBurned.clear();
+                                }
+                                lastMonth = latestMonth;
+                                lastYear = latestYear;
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            isRunReady = true;
+                            if (monthlyRun.size() != 0 && (isMealReady == true && isRunReady == true)) {
+                                displayList(monthlyMeal, monthlyRun);
+                            }
                         }
                     }
 
-                    try {
-                        int latestMonth = Utils.getMonthOfYear(daySnapshot.getKey());
-                        int latestYear = Utils.getYear(daySnapshot.getKey());
-                        if (latestMonth != lastMonth || (latestMonth == lastMonth && lastYear != latestYear)) {
-                            monthlyRun.add(new MonthlyCal(Utils.getMonth(daySnapshot.getKey()),
-                                    Utils.getYear(daySnapshot.getKey()),
-                                    0,
-                                    calories,
-                                    null,
-                                    monthlyBurned));
+                    @Override
+                    public void failure(RetrofitError error) {
 
-                            calories = 0;
-                            monthlyBurned.clear();
-                        }
-                        lastMonth = latestMonth;
-                        lastYear = latestYear;
-                    } catch (ParseException e) {
-                        e.printStackTrace();
                     }
-                }
-
-                isRunReady = true;
-
-                if (monthlyRun.size() != 0 && (isMealReady == true && isRunReady == true)) {
-                    displayList(monthlyMeal, monthlyRun);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
+                });
     }
 
     private void displayList(List<MonthlyCal> monthlyMeal, List<MonthlyCal> monthlyRun) {
@@ -254,7 +248,6 @@ public class MonthlyShackFragment extends Fragment {
         trans.addToBackStack(null);
         trans.commit();
     }
-
 
 
 }

@@ -348,7 +348,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onLocationChanged(Location location) {
 //        long totalTime = 0;
-//        totalTime = totalTime + location.getTime();
+//        totalTime = location.getTime();
 //
 //        Log.i("Time", "Time " + totalTime);
 //
@@ -552,7 +552,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onMapClick(LatLng latLng) {
         long totalTime = 0;
-        totalTime = totalTime + timer.getElapsedTimeMilli();
+        totalTime = timer.getElapsedTimeMilli();
         Log.i("Time", "Time " + totalTime);
 
 //        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());

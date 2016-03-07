@@ -46,7 +46,7 @@ public class WeeklyCal implements Serializable {
             for (int x = 0; x < weeklyBurned.size(); x++) {
                 weeklyBurnedDay[x] = (String) weeklyBurned.keySet().toArray()[x];
                 String entrySet = weeklyBurned.entrySet().toArray()[x]+"";
-                weeklyBurnedValue[x] = Double.parseDouble(entrySet.substring(4,entrySet.length()-1));
+                weeklyBurnedValue[x] = Double.parseDouble(entrySet.split("=")[1]);
             }
         }
     }

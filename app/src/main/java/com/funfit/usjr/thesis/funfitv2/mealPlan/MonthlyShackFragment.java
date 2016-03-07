@@ -23,6 +23,7 @@ import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.Monthly;
 import com.funfit.usjr.thesis.funfitv2.model.MonthlyCal;
 import com.funfit.usjr.thesis.funfitv2.model.Weekly;
+import com.funfit.usjr.thesis.funfitv2.model.WeeklyCal;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.viewmods.DarkDividerItemDecoration;
 
@@ -34,6 +35,9 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Dj on 3/3/2016.
@@ -47,7 +51,11 @@ public class MonthlyShackFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private LayoutManagerType mCurrentLayoutManagerType;
     private MonthlyAdapter mAdapter;
-    private SharedPreferences mUserPref;
+    private SharedPreferences mUserPref, mRdiPref;
+    int mealId = 0;
+
+    //MEAL
+    MealDbHelper mealDbHelper;
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -62,12 +70,14 @@ public class MonthlyShackFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_shack, container, false);
         ButterKnife.bind(this, v);
         mUserPref = getActivity().getSharedPreferences(Constants.USER_PREF_ID, getActivity().MODE_PRIVATE);
+        mRdiPref = getActivity().getSharedPreferences(Constants.USER_PREF_ID, getActivity().MODE_PRIVATE);
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
 
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
         mRecyclerView.addItemDecoration(new DarkDividerItemDecoration(getActivity()));
+        mealDbHelper = new MealDbHelper(getActivity());
 
         fetchRunAndMeals();
 
@@ -82,63 +92,61 @@ public class MonthlyShackFragment extends Fragment {
     public void fetchRunAndMeals() {
         isMealReady = false;
         isRunReady = false;
-        Firebase mFirebaseMeals = new Firebase(Constants.FIREBASE_URL_MEALS)
-                .child(mUserPref.getString(Constants.PROFILE_EMAIL, ""));
 
-        mFirebaseMeals.addListenerForSingleValueEvent(new ValueEventListener() {
 
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                monthlyMeal = new ArrayList<MonthlyCal>();
-                monthlyConsumed = new HashMap<Integer, Double>();
-                int lastMonth = 0;
-                int lastYear = 0;
-                double calories = 0;
-                for (DataSnapshot daySnapshot : snapshot.getChildren()) {
-                    for (DataSnapshot postSnapshot : daySnapshot.getChildren()) {
-                        for (DataSnapshot finSnapshot : postSnapshot.getChildren()) {
+        mealDbHelper.getMealService().getMeal(getContext().getSharedPreferences(Constants.RDI_PREF_ID, getContext().MODE_PRIVATE)
+                        .getString(Constants.UID, ""),
+                new Callback<List<ResponseMeal>>() {
+                    @Override
+                    public void success(List<ResponseMeal> mealModels, Response response) {
+                        monthlyMeal = new ArrayList<MonthlyCal>();
+                        monthlyConsumed = new HashMap<Integer, Double>();
+                        int lastMonth = 0;
+                        int lastYear = 0;
+                        double calories = 0;
+                        for (int x = 0; x < mealModels.size(); x++) {
                             try {
-                                calories += Double.parseDouble(finSnapshot.child("calories").getValue() + "");
-                                monthlyConsumed.put(Utils.getWeekOfYear(Utils.getLastDay(daySnapshot.getKey())),
-                                        Double.parseDouble(finSnapshot.child("calories").getValue() + ""));
+                                calories += mealModels.get(x).getCalories();
+                                monthlyConsumed.put(Utils.getWeekOfYear(mealModels.get(x).getDate()),
+                                        mealModels.get(x).getCalories());
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
+
+                            try {
+                                int latestMonth = Utils.getMonthOfYear(mealModels.get(x).getDate());
+                                int latestYear = Utils.getYear(mealModels.get(x).getDate());
+                                if ((mealModels.size() - 1 == x) || (latestMonth != lastMonth ||
+                                        (latestMonth == lastMonth && lastYear != latestYear))) {
+                                    monthlyMeal.add(new MonthlyCal(Utils.getMonth(mealModels.get(x).getDate()),
+                                            Utils.getYear(mealModels.get(x).getDate()),
+                                            calories,
+                                            0,
+                                            monthlyConsumed,
+                                            null));
+
+                                    calories = 0;
+                                    monthlyConsumed.clear();
+                                }
+                                lastMonth = latestMonth;
+                                lastYear = latestYear;
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                            isMealReady = true;
+
+                            if (monthlyMeal.size() != 0 && (isMealReady == true && isRunReady == true)) {
+                                displayList(monthlyMeal, monthlyRun);
+                            }
                         }
                     }
-                    try {
-                        int latestMonth = Utils.getMonthOfYear(daySnapshot.getKey());
-                        int latestYear = Utils.getYear(daySnapshot.getKey());
-                        if (latestMonth != lastMonth || (latestMonth == lastMonth && lastYear != latestYear)) {
-                            monthlyMeal.add(new MonthlyCal(Utils.getMonth(daySnapshot.getKey()),
-                                    Utils.getYear(daySnapshot.getKey()),
-                                    calories,
-                                    0,
-                                    monthlyConsumed,
-                                    null));
 
-                            calories = 0;
-                            monthlyConsumed.clear();
-                        }
-                        lastMonth = latestMonth;
-                        lastYear = latestYear;
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.v(LOG_TAG, error.toString());
                     }
-                }
-
-                isMealReady = true;
-
-                if (monthlyMeal.size() != 0 && (isMealReady == true && isRunReady == true)) {
-                    displayList(monthlyMeal, monthlyRun);
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
+                });
 
 
         Firebase mFirebaseRuns = new Firebase(Constants.FIREBASE_URL_RUNS)

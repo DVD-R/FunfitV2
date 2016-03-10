@@ -102,7 +102,9 @@ public class FatSecretGetPresenter {
         ArrayList<RequestMeal> mealArrayList = new ArrayList<>();
         RequestMeal meal = null;
         for (FoodServing foodServing1 : foodServings) {
-            meal = new RequestMeal(Utils.getCurrentDate(),
+            meal = new RequestMeal(
+//                    "09-03-2016",
+                    Utils.getCurrentDate(),
                     Double.parseDouble(foodServing1.getCalories()),
                     Double.parseDouble(foodServing1.getCarbohydrate()),
                     Double.parseDouble(foodServing1.getCholesterol()),

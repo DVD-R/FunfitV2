@@ -73,7 +73,7 @@ public class MonthlyShackFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_shack, container, false);
         ButterKnife.bind(this, v);
         mUserPref = getActivity().getSharedPreferences(Constants.USER_PREF_ID, getActivity().MODE_PRIVATE);
-        mRdiPref = getActivity().getSharedPreferences(Constants.USER_PREF_ID, getActivity().MODE_PRIVATE);
+        mRdiPref = getActivity().getSharedPreferences(Constants.RDI_PREF_ID, getActivity().MODE_PRIVATE);
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
@@ -107,19 +107,30 @@ public class MonthlyShackFragment extends Fragment {
                         monthlyMeal = new ArrayList<MonthlyCal>();
                         monthlyConsumed = new HashMap<Integer, Double>();
                         double calories = 0;
-                        for (int x = 0; x < mealModels.size(); x++) {
-                            try {
-                                calories += mealModels.get(x).getCalories();
-                                monthlyConsumed.put(Utils.getWeekOfYear(mealModels.get(x).getDate()),
-                                        mealModels.get(x).getCalories());
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
+                        try {
+                            for (int x = 0; x < mealModels.size(); x++) {
+                                if (Utils.getYear(mealModels.get(x).getDate()) == 2016) {
+                                    calories += mealModels.get(x).getCalories();
+                                    monthlyConsumed.put(Utils.getWeekOfYear(mealModels.get(x).getDate()),
+                                            mealModels.get(x).getCalories());
 
-                            try {
-                                if (x != mealModels.size() - 1) {
-                                    if (Utils.getMonthOfYear(mealModels.get(x).getDate()) !=
-                                            Utils.getMonthOfYear(mealModels.get(x + 1).getDate())) {
+                                    if (x != mealModels.size() - 1) {
+                                        if (Utils.getMonthOfYear(mealModels.get(x).getDate()) !=
+                                                Utils.getMonthOfYear(mealModels.get(x + 1).getDate())) {
+                                            monthlyMeal.add(new MonthlyCal(Utils.getMonth(mealModels.get(x).getDate()),
+                                                    Utils.getYear(mealModels.get(x).getDate()),
+                                                    calories,
+                                                    0,
+                                                    monthlyConsumed,
+                                                    null));
+
+                                            Log.v(LOG_TAG, "c" + mealModels.get(x).getDate() + ", " + Utils.getYear(mealModels.get(x).getDate()));
+
+                                            calories = 0;
+                                            monthlyConsumed.clear();
+                                        }
+                                    }
+                                    if (x == mealModels.size() - 1) {
                                         monthlyMeal.add(new MonthlyCal(Utils.getMonth(mealModels.get(x).getDate()),
                                                 Utils.getYear(mealModels.get(x).getDate()),
                                                 calories,
@@ -127,35 +138,23 @@ public class MonthlyShackFragment extends Fragment {
                                                 monthlyConsumed,
                                                 null));
 
-                                        Log.v(LOG_TAG,"c"+mealModels.get(x).getDate()+", "+Utils.getYear(mealModels.get(x).getDate()));
+                                        Log.v(LOG_TAG, "c" + mealModels.get(x).getDate() + ", " + Utils.getYear(mealModels.get(x).getDate()));
 
                                         calories = 0;
                                         monthlyConsumed.clear();
                                     }
                                 }
-                                if (x == mealModels.size() - 1) {
-                                    monthlyMeal.add(new MonthlyCal(Utils.getMonth(mealModels.get(x).getDate()),
-                                            Utils.getYear(mealModels.get(x).getDate()),
-                                            calories,
-                                            0,
-                                            monthlyConsumed,
-                                            null));
-
-                                    Log.v(LOG_TAG,"c"+mealModels.get(x).getDate()+", "+Utils.getYear(mealModels.get(x).getDate()));
-
-                                    calories = 0;
-                                    monthlyConsumed.clear();
-                                }
-                            } catch (ParseException e) {
-                                e.printStackTrace();
                             }
-                        }
-                        isMealReady = true;
+                            isMealReady = true;
 
-                        if (monthlyMeal.size() != 0 && (isMealReady == true && isRunReady == true)) {
-                            displayList(monthlyMeal, monthlyRun);
+                            if (monthlyMeal.size() != 0 && (isMealReady == true && isRunReady == true)) {
+                                displayList(monthlyMeal, monthlyRun);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
                         }
                     }
+
 
                     @Override
                     public void failure(RetrofitError error) {
@@ -174,51 +173,49 @@ public class MonthlyShackFragment extends Fragment {
                         monthlyBurned = new HashMap<Integer, Double>();
                         double calories = 0;
 
-                        for (int x = 0; x < runModels.size(); x++) {
-                            try {
-                                double weight = Utils.checkWeight(mUserPref.getString(Constants.PROFILE_WEIGHT, ""));
-                                calories += Utils.getCaloriesBurned(weight,
-                                        runModels.get(x).getTime(),
-                                        runModels.get(x).getDistance());
-                                monthlyBurned.put(Utils.getWeekOfYear(Utils.getLastDay(runModels.get(x).getDate())), calories);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
+                        try {
+                            for (int x = 0; x < runModels.size(); x++) {
+                                if (Utils.getYear(runModels.get(x).getDate()) == 2016) {
+                                    double weight = Utils.checkWeight(mUserPref.getString(Constants.PROFILE_WEIGHT, ""));
+                                    calories += Utils.getCaloriesBurned(weight,
+                                            runModels.get(x).getTime(),
+                                            runModels.get(x).getDistance());
+                                    monthlyBurned.put(Utils.getWeekOfYear(Utils.getLastDay(runModels.get(x).getDate())), calories);
 
-                            try {
-                                if (x != runModels.size() - 1) {
-                                    if (Utils.getMonthOfYear(runModels.get(x).getDate()) !=
-                                            Utils.getMonthOfYear(runModels.get(x + 1).getDate())) {
+                                    if (x != runModels.size() - 1) {
+                                        if (Utils.getMonthOfYear(runModels.get(x).getDate()) !=
+                                                Utils.getMonthOfYear(runModels.get(x + 1).getDate())) {
+                                            monthlyRun.add(new MonthlyCal(Utils.getMonth(runModels.get(x).getDate()),
+                                                    Utils.getYear(runModels.get(x).getDate()),
+                                                    0,
+                                                    calories,
+                                                    null,
+                                                    monthlyBurned));
+                                            Log.v(LOG_TAG, "r" + runModels.get(x).getDate() + ", " + Utils.getYear(runModels.get(x).getDate()));
+                                            calories = 0;
+                                            monthlyBurned.clear();
+                                        }
+                                    }
+                                    if (x == runModels.size() - 1) {
                                         monthlyRun.add(new MonthlyCal(Utils.getMonth(runModels.get(x).getDate()),
                                                 Utils.getYear(runModels.get(x).getDate()),
                                                 0,
                                                 calories,
                                                 null,
                                                 monthlyBurned));
-                                        Log.v(LOG_TAG,"r"+runModels.get(x).getDate()+", "+Utils.getYear(runModels.get(x).getDate()));
+                                        Log.v(LOG_TAG, "r" + runModels.get(x).getDate() + ", " + Utils.getYear(runModels.get(x).getDate()));
                                         calories = 0;
                                         monthlyBurned.clear();
                                     }
                                 }
-                                if (x == runModels.size() - 1) {
-                                    monthlyRun.add(new MonthlyCal(Utils.getMonth(runModels.get(x).getDate()),
-                                            Utils.getYear(runModels.get(x).getDate()),
-                                            0,
-                                            calories,
-                                            null,
-                                            monthlyBurned));
-                                    Log.v(LOG_TAG,"r"+runModels.get(x).getDate()+", "+Utils.getYear(runModels.get(x).getDate()));
-                                    calories = 0;
-                                    monthlyBurned.clear();
-                                }
-                            } catch (ParseException e) {
-                                e.printStackTrace();
                             }
-                        }
 
-                        isRunReady = true;
-                        if (monthlyRun.size() != 0 && (isMealReady == true && isRunReady == true)) {
-                            displayList(monthlyMeal, monthlyRun);
+                            isRunReady = true;
+                            if (monthlyRun.size() != 0 && (isMealReady == true && isRunReady == true)) {
+                                displayList(monthlyMeal, monthlyRun);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
                         }
                     }
 
@@ -287,11 +284,11 @@ public class MonthlyShackFragment extends Fragment {
     private void displayList(List<MonthlyCal> monthlyMeal, List<MonthlyCal> monthlyRun) {
         for (int x = 0; x < monthlyMeal.size(); x++) {
             for (int y = 0; y < monthlyRun.size(); y++) {
-                Log.v(LOG_TAG,monthlyMeal.get(x).getMonth()+"="+monthlyRun.get(y).getMonth()+"\n"+
-                        monthlyMeal.get(x).getYear()+"="+monthlyRun.get(y).getYear());
+                Log.v(LOG_TAG, monthlyMeal.get(x).getMonth() + "=" + monthlyRun.get(y).getMonth() + "\n" +
+                        monthlyMeal.get(x).getYear() + "=" + monthlyRun.get(y).getYear());
                 if (monthlyMeal.get(x).getMonth().equals(monthlyRun.get(y).getMonth())
                         && (monthlyMeal.get(x).getYear() == monthlyRun.get(y).getYear())) {
-                    Log.v(LOG_TAG,"HIT");
+                    Log.v(LOG_TAG, "HIT");
                     monthlyMeal.get(x).setBurnedCalories(monthlyRun.get(y).getBurnedCalories());
                     monthlyMeal.get(x).setMonthlyBurnedValue(monthlyRun.get(y).getMonthlyBurnedValue());
                     monthlyMeal.get(x).setMonthlyBurnedWeek(monthlyRun.get(y).getMonthlyBurnedWeek());
@@ -303,8 +300,13 @@ public class MonthlyShackFragment extends Fragment {
         for (int y = 0; y < monthlyRun.size(); y++) {
             monthlyMeal.add(monthlyRun.get(y));
         }
-        mAdapter = new MonthlyAdapter(monthlyMeal);
-        mRecyclerView.setAdapter(mAdapter);
+        try {
+            mAdapter = new MonthlyAdapter(monthlyMeal,
+                    Double.parseDouble(mRdiPref.getString(Constants.RDI, "")));
+            mRecyclerView.setAdapter(mAdapter);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {

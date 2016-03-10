@@ -29,6 +29,7 @@ import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.Meal;
 import com.funfit.usjr.thesis.funfitv2.search.SearchActivity;
 import com.funfit.usjr.thesis.funfitv2.services.MealService;
+import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.views.IMealPlanFragmentView;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -40,6 +41,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -394,39 +396,46 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
 
     @Override
     public void setMealList(MealService mealService) {
-        mealService.getMeal(getContext().getSharedPreferences(Constants.RDI_PREF_ID,getContext().MODE_PRIVATE)
-                .getString(Constants.UID, ""),
+        mealService.getMeal(getContext().getSharedPreferences(Constants.RDI_PREF_ID, getContext().MODE_PRIVATE)
+                        .getString(Constants.UID, ""),
                 new Callback<List<ResponseMeal>>() {
-            @Override
-            public void success(List<ResponseMeal> mealModels, Response response) {
-                List<Meal> mealList = new ArrayList<Meal>();
-                for (int x = 0; x < mealModels.size(); x++) {
-                    Meal meal =
-                            new Meal(mealId,
-                                    mealModels.get(x).getName(),
-                                    mealModels.get(x).getFat(),
-                                    mealModels.get(x).getSodium(),
-                                    mealModels.get(x).getCalories(),
-                                    mealModels.get(x).getCholesterol(),
-                                    mealModels.get(x).getCarbohydrate(),
-                                    mealModels.get(x).getProtein(),
-                                    mealModels.get(x).getCourse()
-                            );
-                    mealList.add(meal);
-                }
+                    @Override
+                    public void success(List<ResponseMeal> mealModels, Response response) {
+                        List<Meal> mealList = new ArrayList<Meal>();
+                        for (int x = 0; x < mealModels.size(); x++) {
+                            try {
+                                if (Utils.getDateValue(Utils.getCurrentDate()) ==
+                                        Utils.getDateValue(mealModels.get(x).getDate())) {
+                                    Meal meal =
+                                            new Meal(mealId,
+                                                    mealModels.get(x).getName(),
+                                                    mealModels.get(x).getFat(),
+                                                    mealModels.get(x).getSodium(),
+                                                    mealModels.get(x).getCalories(),
+                                                    mealModels.get(x).getCholesterol(),
+                                                    mealModels.get(x).getCarbohydrate(),
+                                                    mealModels.get(x).getProtein(),
+                                                    mealModels.get(x).getCourse()
+                                            );
+                                    mealList.add(meal);
+                                }
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
 
-                MealPlanFragment.mealList = mealList;
+                        MealPlanFragment.mealList = mealList;
 
-                if (mealList.size() != 0) {
-                    mealPlanPresenter.checkCourseValidity();
-                }
-            }
+                        if (mealList.size() != 0) {
+                            mealPlanPresenter.checkCourseValidity();
+                        }
+                    }
 
-            @Override
-            public void failure(RetrofitError error) {
-                Log.e(LOG_TAG, error.toString());
-            }
-        });
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e(LOG_TAG, error.toString());
+                    }
+                });
     }
 
     @Override
@@ -587,7 +596,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
     public void onFabSwitchClick() {
         FragmentTransaction trans = getFragmentManager()
                 .beginTransaction();
-        trans.replace(R.id.root_frame, new WeeklyShackFragment());
+        trans.replace(R.id.root_frame, new DailyShackFragment());
         trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         trans.addToBackStack(null);
         trans.commit();

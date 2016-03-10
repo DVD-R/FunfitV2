@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 
 import java.text.DateFormat;
@@ -63,6 +62,11 @@ public class Utils {
         return sdf.parse(date);
     }
 
+    public static Date getDateVal(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
+        return sdf.parse(date);
+    }
+
     public static Date getMonthValue(String month, int year) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
         Date date = sdf.parse("01-" + month + "-" + year);
@@ -100,6 +104,20 @@ public class Utils {
         Date sd = sdf.parse(date);
 
         return Integer.parseInt((String) android.text.format.DateFormat.format("yyyy", sd));
+    }
+
+    public static int getYearNumber(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM-yyyy", Locale.US);
+        Date sd = sdf.parse(date);
+
+        return Integer.parseInt((String) android.text.format.DateFormat.format("yyyy", sd));
+    }
+
+    public static int getMonthNumber(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM-yyyy", Locale.US);
+        Date sd = sdf.parse(date);
+
+        return Integer.parseInt((String) android.text.format.DateFormat.format("MM", sd));
     }
 
     public static String getFirstDay(String date) throws ParseException {
@@ -189,5 +207,12 @@ public class Utils {
         int runId = rdi.getInt(Constants.RUNID, 100);
         rdi.edit().putInt(Constants.RUNID, runId + 1).commit();
         return runId;
+    }
+
+    public static int getDayOfMonth(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        SimpleDateFormat w = new SimpleDateFormat("F", Locale.US);
+        Date sd = sdf.parse(date);
+        return Integer.parseInt((String) w.format(sd));
     }
 }

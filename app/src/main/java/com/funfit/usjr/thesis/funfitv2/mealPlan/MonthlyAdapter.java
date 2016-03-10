@@ -18,6 +18,7 @@ import com.funfit.usjr.thesis.funfitv2.model.MonthlyCal;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.Bind;
@@ -30,6 +31,7 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
     private static final String LOG_TAG = MonthlyAdapter.class.getSimpleName();
 
     static List<MonthlyCal> mList;
+    double rmi;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.text_month)
@@ -40,6 +42,8 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
         TextView mTextCalConsumed;
         @Bind(R.id.text_cal_burned)
         TextView mTextCalBurned;
+        @Bind(R.id.text_rdi)
+        TextView mTextRdi;
         @Bind(R.id.layout_monthly)
         RelativeLayout mLayoutMonthly;
         Context context;
@@ -72,8 +76,14 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
         }
     }
 
-    public MonthlyAdapter(List<MonthlyCal> list) {
+    public MonthlyAdapter(List<MonthlyCal> list, double rdi) throws ParseException {
         mList = list;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, Utils.getYearNumber(list.get(0).getMonth() + "-" + list.get(0).getYear()));
+        calendar.set(Calendar.MONTH, Utils.getMonthNumber(list.get(0).getMonth() + "-" + list.get(0).getYear()));
+        int daysQty = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        rmi = rdi * daysQty;
     }
 
     @Override
@@ -92,16 +102,7 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        if (position == 0) {
-            viewHolder.mTextMonth.setTextColor(Color.parseColor("#FFFFFF"));
-            viewHolder.mTextYear.setTextColor(Color.parseColor("#FFFFFF"));
-            viewHolder.mTextCalConsumed.setTextColor(Color.parseColor("#FFFFFF"));
-            viewHolder.mTextCalBurned.setTextColor(Color.parseColor("#FFFFFF"));
-            if (Utils.getCluster(viewHolder.context).equals("velocity"))
-                viewHolder.mLayoutMonthly.setBackgroundColor(Color.parseColor("#2980b9"));
-            else
-                viewHolder.mLayoutMonthly.setBackgroundColor(Color.parseColor("#c0392b"));
-        }
+        double cal = mList.get(position).getConsumedCalories();
         viewHolder.mTextMonth.setText(mList.get(position).getMonth());
         viewHolder.mTextYear.setText(mList.get(position).getYear() + "");
 
@@ -109,6 +110,13 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
                 Utils.roundOneDecimal(mList.get(position).getConsumedCalories()) + "");
         viewHolder.mTextCalBurned.setText("Calories Burned this month: " +
                 Utils.roundOneDecimal(mList.get(position).getBurnedCalories()) + "");
+
+        if (rmi > cal)
+            viewHolder.mTextRdi.setText(Utils.roundOneDecimal(rmi - cal) +
+                    " Calories lacking");
+        else
+            viewHolder.mTextRdi.setText(Utils.roundOneDecimal(rmi - cal) +
+                    " Calories suffice");
     }
 
     @Override

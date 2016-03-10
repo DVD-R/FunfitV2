@@ -58,6 +58,7 @@ public final class Constants {
     public static final String IS_FIRST = "is_first";
     public static final String START_DAY = "start_date";
     public static final String END_DAY = "end_date";
+    public static final String DAY = "day";
     public static final String MONTH = "month";
     public static final String YEAR = "year";
     public static final String CAL_CONSUMED = "cal_consumed";

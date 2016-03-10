@@ -29,20 +29,19 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
     private static final String LOG_TAG = WeeklyAdapter.class.getSimpleName();
 
     static List<WeeklyCal> mList;
+    double rwi;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.text_start)
-        TextView mTextStart;
-        @Bind(R.id.text_end)
-        TextView mTextEnd;
-        @Bind(R.id.text_month)
+        @Bind(R.id.text_d)
+        TextView mTextDay;
+        @Bind(R.id.text_m)
         TextView mTextMonth;
         @Bind(R.id.text_cal_consumed)
         TextView mTextCalConsumed;
         @Bind(R.id.text_cal_burned)
         TextView mTextCalBurned;
-        @Bind(R.id.layout_weekly)
-        RelativeLayout mLayoutWeekly;
+        @Bind(R.id.text_rdi)
+        TextView mTextRdi;
         Context context;
 
         public ViewHolder(View v) {
@@ -60,6 +59,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
                         i.putExtra(Constants.START_DAY, Utils.getDay(mList.get(getPosition()).getStartDate()));
                         i.putExtra(Constants.END_DAY, Utils.getDay(mList.get(getPosition()).getEndDate()));
                         i.putExtra(Constants.MONTH, Utils.getMonth(mList.get(getPosition()).getEndDate()));
+                        i.putExtra(Constants.DAY, Utils.getDayOfMonth(mList.get(getPosition()).getEndDate())+"");
                         i.putExtra(Constants.CAL_CONSUMED, Utils.roundOneDecimal(mList.get(getPosition()).getConsumedCalories()));
                         i.putExtra(Constants.CAL_BURNED, Utils.roundOneDecimal(mList.get(getPosition()).getBurnedCalories()));
                         i.putExtra(Constants.CONSUMED_TIME, mList.get(getPosition()).getWeeklyConsumedDay());
@@ -78,8 +78,9 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
         }
     }
 
-    public WeeklyAdapter(List<WeeklyCal> list) {
+    public WeeklyAdapter(List<WeeklyCal> list, double rdi) {
         mList = list;
+        rwi = rdi*7;
     }
 
     @Override
@@ -99,14 +100,21 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         try {
-            viewHolder.mTextStart.setText(Utils.getDay(mList.get(position).getStartDate()));
-            viewHolder.mTextEnd.setText(Utils.getDay(mList.get(position).getEndDate()));
-            viewHolder.mTextMonth.setText(Utils.getMonth(mList.get(position).getEndDate()));
+            double cal = mList.get(position).getConsumedCalories();
+            viewHolder.mTextDay.setText(Utils.getDayOfMonth(mList.get(position).getEndDate())+"");
+            viewHolder.mTextMonth.setText(Utils.getMonth(mList.get(position).getEndDate())+"");
 
             viewHolder.mTextCalConsumed.setText("Calories Consumed this week: " +
                     Utils.roundOneDecimal(mList.get(position).getConsumedCalories()) + "");
             viewHolder.mTextCalBurned.setText("Calories Burned this week: " +
                     Utils.roundOneDecimal(mList.get(position).getBurnedCalories()) + "");
+
+            if (rwi > cal)
+                viewHolder.mTextRdi.setText(Utils.roundOneDecimal(rwi - cal) +
+                        " Calories lacking");
+            else
+                viewHolder.mTextRdi.setText(Utils.roundOneDecimal(rwi - cal) +
+                        " Calories suffice");
 
         } catch (ParseException e) {
             Log.e(LOG_TAG, "Parse Exception");

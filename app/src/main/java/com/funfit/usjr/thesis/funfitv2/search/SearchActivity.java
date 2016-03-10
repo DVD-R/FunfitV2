@@ -44,7 +44,6 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
     @Bind(R.id.viewpager)ViewPager mViewPager;
     @Bind(R.id.tabs)TabLayout mTabs;
     @Bind(R.id.carddemo_progressContainer)LinearLayout mProgressBarContainer;
-    private Intent intent;
     private String mealTime;
     private SearchView mSearchView;
     private FatSecretPresenter fatSecretPresenter;

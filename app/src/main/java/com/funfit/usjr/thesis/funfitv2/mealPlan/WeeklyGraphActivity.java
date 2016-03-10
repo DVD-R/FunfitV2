@@ -27,11 +27,9 @@ import butterknife.ButterKnife;
  */
 public class WeeklyGraphActivity extends AppCompatActivity {
     private static final String LOG_TAG = WeeklyGraphActivity.class.getSimpleName();
-    @Bind(R.id.text_start)
-    TextView mTextStart;
-    @Bind(R.id.text_end)
-    TextView mTextEnd;
-    @Bind(R.id.text_month)
+    @Bind(R.id.text_d)
+    TextView mTextDay;
+    @Bind(R.id.text_m)
     TextView mTextMonth;
     @Bind(R.id.text_cal_consumed)
     TextView mTextCalConsumed;
@@ -45,7 +43,7 @@ public class WeeklyGraphActivity extends AppCompatActivity {
     GraphView mGraph;
 
     boolean isFirst;
-    String start, end, month;
+    String start, end, month, day;
     double calConsumed, calBurned;
     private String[] weeklyConsumedDay, weeklyBurnedDay;
     private double[] weeklyConsumedValue, weeklyBurnedValue;
@@ -64,6 +62,7 @@ public class WeeklyGraphActivity extends AppCompatActivity {
         start = i.getStringExtra(Constants.START_DAY);
         end = i.getStringExtra(Constants.END_DAY);
         month = i.getStringExtra(Constants.MONTH);
+        day = i.getStringExtra(Constants.DAY);
         calConsumed = i.getDoubleExtra(Constants.CAL_CONSUMED, 0);
         calBurned = i.getDoubleExtra(Constants.CAL_BURNED, 0);
         weeklyConsumedDay = i.getStringArrayExtra(Constants.CONSUMED_TIME);
@@ -72,8 +71,7 @@ public class WeeklyGraphActivity extends AppCompatActivity {
         weeklyBurnedValue = i.getDoubleArrayExtra(Constants.BURNED_VALUE);
 
         if (isFirst) {
-            mTextStart.setTextColor(Color.parseColor("#FFFFFF"));
-            mTextEnd.setTextColor(Color.parseColor("#FFFFFF"));
+            mTextDay.setTextColor(Color.parseColor("#FFFFFF"));
             mTextMonth.setTextColor(Color.parseColor("#FFFFFF"));
             mTextCalConsumed.setTextColor(Color.parseColor("#FFFFFF"));
             mTextCalBurned.setTextColor(Color.parseColor("#FFFFFF"));
@@ -83,8 +81,7 @@ public class WeeklyGraphActivity extends AppCompatActivity {
                 mLayoutWeekly.setBackgroundColor(Color.parseColor("#c0392b"));
         }
 
-        mTextStart.setText(start);
-        mTextEnd.setText(end);
+        mTextDay.setText(day);
         mTextMonth.setText(month);
         mTextCalConsumed.setText(calConsumed + "");
         mTextCalBurned.setText(calBurned + "");

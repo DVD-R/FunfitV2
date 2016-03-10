@@ -1,71 +1,50 @@
 package com.funfit.usjr.thesis.funfitv2.mealPlan;
 
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.Meal;
-import com.funfit.usjr.thesis.funfitv2.model.RunCallback;
-import com.funfit.usjr.thesis.funfitv2.model.RunModel;
 import com.funfit.usjr.thesis.funfitv2.model.Runs;
-import com.funfit.usjr.thesis.funfitv2.model.Weekly;
-import com.funfit.usjr.thesis.funfitv2.model.WeeklyCal;
-import com.funfit.usjr.thesis.funfitv2.services.RunService;
-import com.funfit.usjr.thesis.funfitv2.services.SendRun;
-import com.funfit.usjr.thesis.funfitv2.services.WeeklyService;
+import com.funfit.usjr.thesis.funfitv2.model.DailyCal;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.viewmods.DarkDividerItemDecoration;
-import com.squareup.okhttp.OkHttpClient;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
-import retrofit.client.OkClient;
 import retrofit.client.Response;
 
 /**
- * Created by Dj on 3/3/2016.
+ * Created by Dj on 3/10/2016.
  */
-public class WeeklyShackFragment extends Fragment {
-    private static final String LOG_TAG = WeeklyShackFragment.class.getSimpleName();
+public class DailyShackFragment extends Fragment {
+    private static final String LOG_TAG = DailyShackFragment.class.getSimpleName();
     private static List<Meal> mealList;
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private LayoutManagerType mCurrentLayoutManagerType;
-    private WeeklyAdapter mAdapter;
+    private DailyAdapter mAdapter;
     private SharedPreferences mUserPref, mRdiPref;
     int mealId = 0;
 
@@ -100,8 +79,7 @@ public class WeeklyShackFragment extends Fragment {
 
 
     boolean isMealReady, isRunReady;
-    List<WeeklyCal> weeklyMeal, weeklyRun;
-    HashMap<String, Double> weeklyConsumed, weeklyBurned;
+    List<DailyCal> dailyMeal, dailyRun;
 
     public void fetchRunAndMeals() {
         isMealReady = false;
@@ -112,56 +90,44 @@ public class WeeklyShackFragment extends Fragment {
                     @Override
                     public void success(List<ResponseMeal> mealModels, Response response) {
                         mealModels = sortMealListByDate(mealModels);
-                        weeklyMeal = new ArrayList<WeeklyCal>();
-                        weeklyConsumed = new HashMap<String, Double>();
+                        dailyMeal = new ArrayList<DailyCal>();
                         double calories = 0;
-
                         try {
                             for (int x = 0; x < mealModels.size(); x++) {
                                 if (Utils.getYear(mealModels.get(x).getDate()) == 2016) {
                                     calories += mealModels.get(x).getCalories();
-                                    weeklyConsumed.put(Utils.getDayOfWeek(mealModels.get(x).getDate()),
-                                            mealModels.get(x).getCalories());
 
                                     if (x != mealModels.size() - 1) {
-                                        if (Utils.getWeekOfYear(mealModels.get(x).getDate()) !=
-                                                Utils.getWeekOfYear(mealModels.get(x + 1).getDate())) {
-                                            weeklyMeal.add(new WeeklyCal(
-                                                    Utils.getFirstDay(mealModels.get(x).getDate()),
-                                                    Utils.getLastDay(mealModels.get(x).getDate()),
+                                        if (!mealModels.get(x).getDate().substring(0, 2).equals(
+                                                mealModels.get(x + 1).getDate().substring(0, 2))) {
+                                            dailyMeal.add(new DailyCal(
+                                                    mealModels.get(x).getDate().substring(0, 2),
+                                                    Utils.getMonth(mealModels.get(x).getDate()),
                                                     calories,
-                                                    0,
-                                                    weeklyConsumed,
-                                                    null));
+                                                    0));
 
                                             calories = 0;
-                                            weeklyConsumed.clear();
                                         }
                                     }
                                     if (x == mealModels.size() - 1) {
-                                        weeklyMeal.add(new WeeklyCal(
-                                                Utils.getFirstDay(mealModels.get(x).getDate()),
-                                                Utils.getLastDay(mealModels.get(x).getDate()),
+                                        dailyMeal.add(new DailyCal(
+                                                mealModels.get(x).getDate().substring(0, 2),
+                                                Utils.getMonth(mealModels.get(x).getDate()),
                                                 calories,
-                                                0,
-                                                weeklyConsumed,
-                                                null));
+                                                0));
 
                                         calories = 0;
-                                        weeklyConsumed.clear();
                                     }
-
-
                                 }
                             }
                         } catch (ParseException e) {
-                            Log.v(LOG_TAG, e.toString());
+                            e.printStackTrace();
                         }
 
                         isMealReady = true;
 
-                        if (weeklyMeal.size() != 0 && (isMealReady == true && isRunReady == true)) {
-                            displayList(weeklyMeal, weeklyRun);
+                        if (dailyMeal.size() != 0 && (isMealReady == true && isRunReady == true)) {
+                            displayList(dailyMeal, dailyRun);
                         }
                     }
 
@@ -173,14 +139,12 @@ public class WeeklyShackFragment extends Fragment {
 
         );
 
-
         runDbHelper.getRunService().getRun(getContext().getSharedPreferences(Constants.RDI_PREF_ID, getContext().MODE_PRIVATE)
                         .getString(Constants.UID, ""), new Callback<List<Runs>>() {
                     @Override
                     public void success(List<Runs> runModels, Response response) {
                         runModels = sortRunListByDate(runModels);
-                        weeklyRun = new ArrayList<WeeklyCal>();
-                        weeklyBurned = new HashMap<String, Double>();
+                        dailyRun = new ArrayList<DailyCal>();
                         double calories = 0;
 
                         try {
@@ -190,43 +154,38 @@ public class WeeklyShackFragment extends Fragment {
                                     calories += Utils.getCaloriesBurned(weight,
                                             runModels.get(x).getTime(),
                                             runModels.get(x).getDistance());
-                                    weeklyBurned.put(Utils.getDayOfWeek(runModels.get(x).getDate()), calories);
 
                                     if (x != runModels.size() - 1) {
-                                        if (Utils.getWeekOfYear(runModels.get(x).getDate()) !=
-                                                Utils.getWeekOfYear(runModels.get(x + 1).getDate())) {
-                                            weeklyRun.add(new WeeklyCal(
-                                                    Utils.getFirstDay(runModels.get(x).getDate()),
-                                                    Utils.getLastDay(runModels.get(x).getDate()),
+                                        if (!runModels.get(x).getDate().substring(0, 2).equals(
+                                                runModels.get(x + 1).getDate().substring(0, 2))) {
+
+                                            dailyRun.add(new DailyCal(
+                                                    runModels.get(x).getDate().substring(0, 2),
+                                                    Utils.getMonth(runModels.get(x).getDate()),
                                                     0,
-                                                    calories,
-                                                    null,
-                                                    weeklyBurned));
+                                                    calories));
 
                                             calories = 0;
-                                            weeklyBurned.clear();
                                         }
                                     }
                                     if (x == runModels.size() - 1) {
-                                        weeklyRun.add(new WeeklyCal(
-                                                Utils.getFirstDay(runModels.get(x).getDate()),
-                                                Utils.getLastDay(runModels.get(x).getDate()),
+                                        dailyRun.add(new DailyCal(
+                                                runModels.get(x).getDate().substring(0, 2),
+                                                Utils.getMonth(runModels.get(x).getDate()),
                                                 0,
-                                                calories,
-                                                null,
-                                                weeklyBurned));
+                                                calories));
 
                                         calories = 0;
-                                        weeklyBurned.clear();
                                     }
+
                                 }
-                            }
-                            isRunReady = true;
-                            if (weeklyRun.size() != 0 && (isMealReady == true && isRunReady == true)) {
-                                displayList(weeklyMeal, weeklyRun);
                             }
                         } catch (ParseException e) {
                             e.printStackTrace();
+                        }
+                        isRunReady = true;
+                        if (dailyRun.size() != 0 && (isMealReady == true && isRunReady == true)) {
+                            displayList(dailyMeal, dailyRun);
                         }
                     }
 
@@ -275,13 +234,13 @@ public class WeeklyShackFragment extends Fragment {
         return mealModels;
     }
 
-    private List<WeeklyCal> sortCalListByDate(List<WeeklyCal> weeklyCals) {
+    private List<DailyCal> sortCalListByDate(List<DailyCal> DailyCals) {
 
-        Collections.sort(weeklyCals, new Comparator<WeeklyCal>() {
-            public int compare(WeeklyCal m1, WeeklyCal m2) {
+        Collections.sort(DailyCals, new Comparator<DailyCal>() {
+            public int compare(DailyCal m1, DailyCal m2) {
                 try {
-                    Date d1 = Utils.getDateValue(m1.getEndDate());
-                    Date d2 = Utils.getDateValue(m2.getEndDate());
+                    Date d1 = Utils.getDateVal(m1.getDay() + "-" + m1.getMonth() + "-" + "2016");
+                    Date d2 = Utils.getDateVal(m2.getDay() + "-" + m2.getMonth() + "-" + "2016");
                     return d1.compareTo(d2);
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -289,28 +248,26 @@ public class WeeklyShackFragment extends Fragment {
                 return 0;
             }
         });
-//        Collections.sort(weeklyCals, Collections.reverseOrder());
 
-        return weeklyCals;
+        return DailyCals;
     }
 
-    private void displayList(List<WeeklyCal> weeklyMeal, List<WeeklyCal> weeklyRun) {
+    private void displayList(List<DailyCal> dailyMeal, List<DailyCal> dailyRun) {
+        Log.v(LOG_TAG, "to display");
 
-        for (int x = 0; x < weeklyMeal.size(); x++) {
-            for (int y = 0; y < weeklyRun.size(); y++) {
-                if (weeklyMeal.get(x).getStartDate().equals(weeklyRun.get(y).getStartDate())) {
-                    weeklyMeal.get(x).setBurnedCalories(weeklyRun.get(y).getBurnedCalories());
-                    weeklyMeal.get(x).setWeeklyBurnedDay(weeklyRun.get(y).getWeeklyBurnedDay());
-                    weeklyMeal.get(x).setWeeklyBurnedValue(weeklyRun.get(y).getWeeklyBurnedValue());
-                    weeklyRun.remove(y);
+        for (int x = 0; x < dailyMeal.size(); x++) {
+            for (int y = 0; y < dailyRun.size(); y++) {
+                if (dailyMeal.get(x).getDay().equals(dailyRun.get(y).getDay()) && dailyMeal.get(x).getMonth().equals(dailyRun.get(y).getMonth())) {
+                    dailyMeal.get(x).setBurnedCalories(dailyRun.get(y).getBurnedCalories());
+                    dailyRun.remove(y);
                     --y;
                 }
             }
         }
-        for (int y = 0; y < weeklyRun.size(); y++) {
-            weeklyMeal.add(weeklyRun.get(y));
+        for (int y = 0; y < dailyRun.size(); y++) {
+            dailyMeal.add(dailyRun.get(y));
         }
-        mAdapter = new WeeklyAdapter(sortCalListByDate(weeklyMeal),
+        mAdapter = new DailyAdapter(sortCalListByDate(dailyMeal),
                 Double.parseDouble(mRdiPref.getString(Constants.RDI, "")));
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -334,7 +291,7 @@ public class WeeklyShackFragment extends Fragment {
     public void onFabSwitchClick() {
         FragmentTransaction trans = getFragmentManager()
                 .beginTransaction();
-        trans.replace(R.id.root_frame, new MonthlyShackFragment());
+        trans.replace(R.id.root_frame, new WeeklyShackFragment());
         trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         trans.addToBackStack(null);
         trans.commit();

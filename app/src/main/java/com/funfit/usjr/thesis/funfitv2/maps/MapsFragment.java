@@ -34,13 +34,18 @@ import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.distance.DistanceCalculation;
 import com.funfit.usjr.thesis.funfitv2.fragmentDialog.markerDialogFragment;
+import com.funfit.usjr.thesis.funfitv2.mealPlan.RunDbHelper;
 import com.funfit.usjr.thesis.funfitv2.model.CapturingModel;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.FTerritory;
 import com.funfit.usjr.thesis.funfitv2.model.MarkerModel;
+import com.funfit.usjr.thesis.funfitv2.model.RequestRun;
+import com.funfit.usjr.thesis.funfitv2.model.Runs;
 import com.funfit.usjr.thesis.funfitv2.model.Territory;
 import com.funfit.usjr.thesis.funfitv2.services.CapturingService;
 import com.funfit.usjr.thesis.funfitv2.services.MarkerService;
+import com.funfit.usjr.thesis.funfitv2.services.RunService;
+import com.funfit.usjr.thesis.funfitv2.services.SendRun;
 import com.funfit.usjr.thesis.funfitv2.utils.StopWatch;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.views.IMapFragmentView;
@@ -106,18 +111,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     private List<Territory> listTerritories;
     markerDialogFragment dialogFragment;
     private boolean flag;
-    //Populate marker from database using webservice
-    private static final String ROOT = "http://172.20.10.3:8081/funfit-backend";
-    //Send Captured Data
-    private static final String CAPTUREDROOT = "http://192.168.1.44:8081";
-    private MarkerModel markerModel;
-    private MarkerService markerService;
-    private ArrayList<MarkerModel> arrayMarker;
-    LatLng POSITION, ADDPOSITION;
-    ArrayList<Marker> markers = new ArrayList<>();
-
-    boolean mBroadcastIsRegistered;
-    private List<Territory> listTerritory;
     //Polygon checker
     ArrayList<LatLng> clickedMarker;
 
@@ -143,6 +136,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     float totalDistanceInMeters = 0;
 
     StopWatch timer = new StopWatch();
+    private RunDbHelper mRunHelper;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_maps, container, false);
@@ -151,6 +145,8 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         distanceCalculation = new DistanceCalculation();
         userData = getActivity().getSharedPreferences(Constants.USER_PREF_ID, getActivity().MODE_PRIVATE);
         rdi = getActivity().getSharedPreferences(Constants.RDI_PREF_ID, getActivity().MODE_PRIVATE);
+        rdi.edit().putString(Constants.UID,"1457565832").commit();
+        mRunHelper = new RunDbHelper(getActivity());
 
         mMapView = (MapView) view.findViewById(R.id.mapView);
         receivedMarkerPosition = new ArrayList<LatLng>();
@@ -184,8 +180,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         pd.setIndeterminate(true);
         pd.show();
         mapsFragmentPresenter = new MapsFragmentPresenter(this);
-
-
 
         return view;
     }
@@ -348,8 +342,8 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onLocationChanged(Location location) {
 //        long totalTime = 0;
-//        totalTime = location.getTime();
-//
+//        int test = 0;
+//        totalTime = timer.getElapsedTimeMilli();
 //        Log.i("Time", "Time " + totalTime);
 //
 //        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -411,6 +405,15 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 //                                    Log.i("testCapture", "YES!! Captured");
 //                                    Log.i("testCapture", "Total Distance: " + totalDistanceInMeters);
 //                                    Log.i("testCapture", "Total Time: " + totalTime);
+//                                    timer.stop();
+//
+//                                    if (test == 0) {
+//
+//                                        Log.i("testCapture", "I'm in");
+//                                        setup(Utils.getCurrentDate(), totalTime, (long)totalDistanceInMeters,
+//                                                Utils.generateRunId(rdi), Long.parseLong(rdi.getString(Constants.UID, "")));
+//                                        test = 1;
+//                                    }
 //                                }
 //                            }
 //                        } else {
@@ -423,7 +426,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
 //                            Log.i("testCapture", "inner " + lng);
 //                        }
 //                    }
-//
 //                }
 //            }
 //        } catch (Exception e) {
@@ -552,6 +554,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onMapClick(LatLng latLng) {
         long totalTime = 0;
+        int test = 0;
         totalTime = timer.getElapsedTimeMilli();
         Log.i("Time", "Time " + totalTime);
 
@@ -603,18 +606,26 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                                     territoryId = territory.getId();
                                     mapsFragmentPresenter.captureTerritory();
 
-                                    for(int x = 0; arrayPoints.size() - 1 > x; x++){
-                                        LatLng first = new LatLng(arrayPoints.get(x).latitude,arrayPoints.get(x).longitude);
-                                        LatLng second = new LatLng(arrayPoints.get(x+1).latitude,arrayPoints.get(x+1).longitude);
-                                        distance = distanceCalculation.distanceLocation(first,second);
+                                    for (int x = 0; arrayPoints.size() - 1 > x; x++) {
+                                        LatLng first = new LatLng(arrayPoints.get(x).latitude, arrayPoints.get(x).longitude);
+                                        LatLng second = new LatLng(arrayPoints.get(x + 1).latitude, arrayPoints.get(x + 1).longitude);
+                                        distance = distanceCalculation.distanceLocation(first, second);
                                         totalDistanceInMeters = totalDistanceInMeters + distance;
                                     }
 //                                    totalDistanceInMeters
 
                                     Log.i("testCapture", "YES!! Captured");
-                                    Log.i("testCapture", "Total Distance: "+totalDistanceInMeters);
-                                    Log.i("testCapture", "Total Time: "+totalTime);
+                                    Log.i("testCapture", "Total Distance: " + totalDistanceInMeters);
+                                    Log.i("testCapture", "Total Time: " + totalTime);
                                     timer.stop();
+
+                                    if (test == 0) {
+
+                                        Log.i("testCapture", "I'm in");
+                                        setup(Utils.getCurrentDate(), totalTime, (long)totalDistanceInMeters,
+                                                Utils.generateRunId(rdi), Long.parseLong(rdi.getString(Constants.UID, "")));
+                                        test = 1;
+                                    }
                                 }
                             }
                         } else {
@@ -627,7 +638,6 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                             Log.i("testCapture", "inner " + lng);
                         }
                     }
-
                 }
             }
         } catch (Exception e) {
@@ -635,49 +645,12 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         }
     }
 
-    SaveRun saveRun;
-    RunService runService;
-    ResponseStatus responseStatus;
-    private static final String RUNROOT = "https://funfitv2-backend.herokuapp.com";
+    public void setup(String date, long time, long distance, long run_id, long user_id) {
+        RequestRun sendRun = new RequestRun(run_id, date, distance, time, user_id);
 
-    class RunLoadAsyntask extends AsyncTask<Void, Void, SaveRun> {
-        @Override
-        protected SaveRun doInBackground(Void... params) {
-            setup();
-            return saveRun;
-        }
+        Log.i(LOG_TAG, "Added");
 
-    }
-
-    public void setup() {
-
-        RestAdapter.Builder builder = new RestAdapter.Builder()
-                .setEndpoint(RUNROOT)
-                .setClient(new OkClient(new OkHttpClient()))
-                .setLogLevel(RestAdapter.LogLevel.FULL);
-
-        RestAdapter restAdapter = builder.build();
-        runService = restAdapter.create(RunService.class);
-        SaveRun saveRun = new SaveRun();
-
-        saveRun.setDate("2");
-        saveRun.setTime(2);
-        saveRun.setDistance(2);
-        saveRun.setRunId(2);
-        saveRun.setUserId(2);
-
-        runService.postRun(saveRun, new Callback<ResponseStatus>() {
-            @Override
-            public void success(ResponseStatus responseStatus, Response response) {
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-
+        mRunHelper.saveRun(sendRun);
     }
 
 }

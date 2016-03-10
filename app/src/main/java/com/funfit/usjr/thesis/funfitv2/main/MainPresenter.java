@@ -62,6 +62,8 @@ public class MainPresenter {
             public void success(Rdi rdi, Response response) {
                 sharedPreferences.edit().putString(Constants.RDI, String.format("%.2f", rdi.getRdi())).apply();
                 sharedPreferences.edit().putString(Constants.UID, String.valueOf(rdi.getUserId())).apply();
+//                //TODO:DELETE THIS
+//                sharedPreferences.edit().putString(Constants.UID, "1457431580").apply();
             }
 
             @Override

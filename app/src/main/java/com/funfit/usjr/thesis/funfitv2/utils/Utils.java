@@ -21,9 +21,9 @@ import java.util.Locale;
 public class Utils {
     private static final String LOG_TAG = Utils.class.getSimpleName();
 
-    public static String getCluster(Context context){
+    public static String getCluster(Context context) {
         SharedPreferences pref = context.getSharedPreferences(Constants.USER_PREF_ID, context.MODE_PRIVATE);
-        return pref.getString(Constants.PROFILE_CLUSTER,null);
+        return pref.getString(Constants.PROFILE_CLUSTER, null);
     }
 
     public static String encodeEmail(String userEmail) {
@@ -31,16 +31,22 @@ public class Utils {
     }
 
     //weight(kg), time(millisecond), distance(cm)
-    public static double getCaloriesBurned(double weight, long time, double distance){
+    public static double getCaloriesBurned(double weight, double time, double distance) {
         //millisecond to hour
-        time = (int) ((time / (1000*60*60)) % 24);
+        double ftime = roundTwo((time / 1000) / 3600);
         //cm to km
-        distance = distance / 100000;
-        double speed = distance / time;
-        return ((0.0215 * (speed*3) - 0.1765 * (speed*2) + 0.8710 * (speed) + 1.4577) * weight * time);
+        distance = roundTwo(distance / 100000);
+        double speed = roundTwo(distance / ftime);
+        double burn = (0.0215 * Math.pow(speed, 3) - 0.1765 * Math.pow(speed, 2) + 0.8710 * speed + 1.4577) * weight * ftime;
+        return burn;
     }
 
-    public static int getCurrentDayOfWeek(){
+    public static double roundTwo(double num) {
+        DecimalFormat f = new DecimalFormat("##.00");
+        return Double.parseDouble(f.format(num));
+    }
+
+    public static int getCurrentDayOfWeek() {
         Calendar calendar = Calendar.getInstance();
         return calendar.get(Calendar.DAY_OF_WEEK);
     }
@@ -52,7 +58,18 @@ public class Utils {
         return (String) w.format(sd);
     }
 
-    public static String getCurrentDate(){
+    public static Date getDateValue(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        return sdf.parse(date);
+    }
+
+    public static Date getMonthValue(String month, int year) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
+        Date date = sdf.parse("01-" + month + "-" + year);
+        return date;
+    }
+
+    public static String getCurrentDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         return sdf.format(new Date());
     }
@@ -82,7 +99,7 @@ public class Utils {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         Date sd = sdf.parse(date);
 
-        return Integer.parseInt((String)android.text.format.DateFormat.format("yyyy", sd));
+        return Integer.parseInt((String) android.text.format.DateFormat.format("yyyy", sd));
     }
 
     public static String getFirstDay(String date) throws ParseException {
@@ -129,19 +146,18 @@ public class Utils {
 
         int ndays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
         int weeks[] = new int[ndays];
-        for (int i = 0; i < ndays; i++)
-        {
+        for (int i = 0; i < ndays; i++) {
             weeks[i] = cal.get(Calendar.WEEK_OF_YEAR);
             cal.add(Calendar.DATE, 1);
         }
         return weeks;
     }
 
-    public static String getDateFromWeekNumber(int no, int year){
+    public static String getDateFromWeekNumber(int no, int year) {
         String date;
         Calendar now = Calendar.getInstance();
-        now.set(Calendar.YEAR,year);
-        now.set(Calendar.WEEK_OF_YEAR,no);
+        now.set(Calendar.YEAR, year);
+        now.set(Calendar.WEEK_OF_YEAR, no);
 
         date = new SimpleDateFormat("dd").format(now.getTime());
 
@@ -149,17 +165,29 @@ public class Utils {
         return date + " - " + new SimpleDateFormat("dd").format(now.getTime());
     }
 
+//    public static long getTimestamp(){
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(new Date());
+//        return (long)Math.floor(calendar.getTimeInMillis()/2/2);
+//    }
+
     public static double checkWeight(String weight) {
         String[] data = weight.split(" ");
-        if(data[1].equals("kg")){
+        if (data[1].equals("kg")) {
             return Double.parseDouble(data[0]);
-        }else { //lbs
+        } else { //lbs
             return Double.parseDouble(data[0]) / 2.2;
         }
     }
 
-    public static double roundOneDecimal(double d){
+    public static double roundOneDecimal(double d) {
         DecimalFormat twoDForm = new DecimalFormat("#.#");
         return Double.valueOf(twoDForm.format(d));
+    }
+
+    public static long generateRunId(SharedPreferences rdi) {
+        int runId = rdi.getInt(Constants.RUNID, 100);
+        rdi.edit().putInt(Constants.RUNID, runId + 1).commit();
+        return runId;
     }
 }

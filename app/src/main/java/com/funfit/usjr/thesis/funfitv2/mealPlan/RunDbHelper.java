@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
+import com.funfit.usjr.thesis.funfitv2.model.RequestRun;
 import com.funfit.usjr.thesis.funfitv2.model.Runs;
 import com.funfit.usjr.thesis.funfitv2.services.MealService;
 import com.funfit.usjr.thesis.funfitv2.services.RunService;
@@ -41,21 +42,20 @@ public class RunDbHelper {
 
     }
 
-    public void saveRun(ArrayList<SendRun> runArrayList) {
+    public void saveRun(RequestRun run) {
+        Log.v(LOG_TAG, "wtf");
 
-        for (SendRun run : runArrayList) {
-            runService.postRun(run, new Callback<Runs>() {
-                @Override
-                public void success(Runs runCallback, Response response) {
-                    Log.v(LOG_TAG, response.toString());
-                }
+        runService.postRun(run, new Callback<Runs>() {
+            @Override
+            public void success(Runs runCallback, Response response) {
+                Log.v(LOG_TAG, response.toString());
+            }
 
-                @Override
-                public void failure(RetrofitError error) {
-
-                }
-            });
-        }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(LOG_TAG, error.toString());
+            }
+        });
     }
 
     public RunService getRunService() {

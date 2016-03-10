@@ -9,6 +9,12 @@ public class SendRun {
     private double distance;
     private double calories;
 
+    public SendRun(double time, double distance, double calories) {
+        this.time = time;
+        this.distance = distance;
+        this.calories = calories;
+    }
+
     public double getTime() {
         return time;
     }

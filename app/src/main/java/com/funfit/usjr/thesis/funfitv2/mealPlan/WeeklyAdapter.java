@@ -28,8 +28,8 @@ import butterknife.ButterKnife;
 public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder> {
     private static final String LOG_TAG = WeeklyAdapter.class.getSimpleName();
 
-    static List<WeeklyCal> mList;
-    double rwi;
+    private static List<WeeklyCal> mList;
+    private static double rwi;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.text_d)
@@ -66,6 +66,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
                         i.putExtra(Constants.BURNED_TIME, mList.get(getPosition()).getWeeklyBurnedDay());
                         i.putExtra(Constants.CONSUMED_VALUE, mList.get(getPosition()).getWeeklyConsumedValue());
                         i.putExtra(Constants.BURNED_VALUE, mList.get(getPosition()).getWeeklyBurnedValue());
+                        i.putExtra(Constants.RDI_LAPSE, rwi);
 
                         context.startActivity(i);
                     } catch (ParseException e) {
@@ -109,12 +110,15 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
             viewHolder.mTextCalBurned.setText("Calories Burned this week: " +
                     Utils.roundOneDecimal(mList.get(position).getBurnedCalories()) + "");
 
-            if (rwi > cal)
+            if (rwi > cal) {
                 viewHolder.mTextRdi.setText(Utils.roundOneDecimal(rwi - cal) +
                         " Calories lacking");
-            else
-                viewHolder.mTextRdi.setText(Utils.roundOneDecimal(rwi - cal) +
-                        " Calories suffice");
+                viewHolder.mTextRdi.setTextColor(Color.parseColor("#d32f2f"));
+            }
+            else {
+                viewHolder.mTextRdi.setText(Math.abs(Utils.roundOneDecimal(rwi - cal)) +
+                        " Calories exceeded");
+            }
 
         } catch (ParseException e) {
             Log.e(LOG_TAG, "Parse Exception");

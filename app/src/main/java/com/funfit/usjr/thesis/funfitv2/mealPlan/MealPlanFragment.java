@@ -163,7 +163,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_meal_plan, container, false);
+        View view = inflater.inflate(R.layout.fragment_meal_plan, container, false);
         ButterKnife.bind(this, view);
         setLayoutEnhancements();
 
@@ -403,24 +403,22 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
                     public void success(List<ResponseMeal> mealModels, Response response) {
                         List<Meal> mealList = new ArrayList<Meal>();
                         for (int x = 0; x < mealModels.size(); x++) {
-                            try {
-                                if (Utils.getDateValue(Utils.getCurrentDate()) ==
-                                        Utils.getDateValue(mealModels.get(x).getDate())) {
-                                    Meal meal =
-                                            new Meal(mealId,
-                                                    mealModels.get(x).getName(),
-                                                    mealModels.get(x).getFat(),
-                                                    mealModels.get(x).getSodium(),
-                                                    mealModels.get(x).getCalories(),
-                                                    mealModels.get(x).getCholesterol(),
-                                                    mealModels.get(x).getCarbohydrate(),
-                                                    mealModels.get(x).getProtein(),
-                                                    mealModels.get(x).getCourse()
-                                            );
-                                    mealList.add(meal);
-                                }
-                            } catch (ParseException e) {
-                                e.printStackTrace();
+                            Log.v(LOG_TAG, Utils.getCurrentDate());
+                            Log.v(LOG_TAG, mealModels.get(x).getDate());
+                            if (Utils.getCurrentDate().equals(
+                                    mealModels.get(x).getDate())) {
+                                Meal meal =
+                                        new Meal(mealId,
+                                                mealModels.get(x).getName(),
+                                                mealModels.get(x).getFat(),
+                                                mealModels.get(x).getSodium(),
+                                                mealModels.get(x).getCalories(),
+                                                mealModels.get(x).getCholesterol(),
+                                                mealModels.get(x).getCarbohydrate(),
+                                                mealModels.get(x).getProtein(),
+                                                mealModels.get(x).getCourse()
+                                        );
+                                mealList.add(meal);
                             }
                         }
 
@@ -590,15 +588,5 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
             mTextCalConsumed.setTextColor(getResources().getColor(R.color.error_red));
         if (calRemaining < 0)
             mTextCalRemaining.setTextColor(getResources().getColor(R.color.error_red));
-    }
-
-    @OnClick(R.id.fab_switch)
-    public void onFabSwitchClick() {
-        FragmentTransaction trans = getFragmentManager()
-                .beginTransaction();
-        trans.replace(R.id.root_frame, new DailyShackFragment());
-        trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        trans.addToBackStack(null);
-        trans.commit();
     }
 }

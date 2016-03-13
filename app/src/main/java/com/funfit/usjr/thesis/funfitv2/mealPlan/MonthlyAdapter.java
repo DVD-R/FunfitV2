@@ -30,8 +30,8 @@ import butterknife.ButterKnife;
 public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHolder> {
     private static final String LOG_TAG = MonthlyAdapter.class.getSimpleName();
 
-    static List<MonthlyCal> mList;
-    double rmi;
+    private static List<MonthlyCal> mList;
+    private static double rmi;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.text_month)
@@ -67,6 +67,7 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
                     i.putExtra(Constants.BURNED_TIME, mList.get(getPosition()).getMonthlyBurnedWeek());
                     i.putExtra(Constants.CONSUMED_VALUE, mList.get(getPosition()).getMonthlyConsumedValue());
                     i.putExtra(Constants.BURNED_VALUE, mList.get(getPosition()).getMonthlyBurnedValue());
+                    i.putExtra(Constants.RDI_LAPSE, rmi);
 
                     context.startActivity(i);
                 }
@@ -111,12 +112,15 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
         viewHolder.mTextCalBurned.setText("Calories Burned this month: " +
                 Utils.roundOneDecimal(mList.get(position).getBurnedCalories()) + "");
 
-        if (rmi > cal)
+        if (rmi > cal) {
             viewHolder.mTextRdi.setText(Utils.roundOneDecimal(rmi - cal) +
                     " Calories lacking");
-        else
-            viewHolder.mTextRdi.setText(Utils.roundOneDecimal(rmi - cal) +
-                    " Calories suffice");
+            viewHolder.mTextRdi.setTextColor(Color.parseColor("#d32f2f"));
+        }
+        else {
+            viewHolder.mTextRdi.setText(Math.abs(Utils.roundOneDecimal(rmi - cal)) +
+                    " Calories exceeded");
+        }
     }
 
     @Override

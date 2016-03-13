@@ -41,10 +41,12 @@ public class WeeklyGraphActivity extends AppCompatActivity {
     Toolbar mToolbar;
     @Bind(R.id.graph)
     GraphView mGraph;
+    @Bind(R.id.text_rdi)
+    TextView mTextRdi;
 
     boolean isFirst;
     String start, end, month, day;
-    double calConsumed, calBurned;
+    double calConsumed, calBurned, rdi;
     private String[] weeklyConsumedDay, weeklyBurnedDay;
     private double[] weeklyConsumedValue, weeklyBurnedValue;
 
@@ -63,6 +65,7 @@ public class WeeklyGraphActivity extends AppCompatActivity {
         end = i.getStringExtra(Constants.END_DAY);
         month = i.getStringExtra(Constants.MONTH);
         day = i.getStringExtra(Constants.DAY);
+        rdi = i.getDoubleExtra(Constants.RDI_LAPSE, 0);
         calConsumed = i.getDoubleExtra(Constants.CAL_CONSUMED, 0);
         calBurned = i.getDoubleExtra(Constants.CAL_BURNED, 0);
         weeklyConsumedDay = i.getStringArrayExtra(Constants.CONSUMED_TIME);
@@ -70,16 +73,15 @@ public class WeeklyGraphActivity extends AppCompatActivity {
         weeklyConsumedValue = i.getDoubleArrayExtra(Constants.CONSUMED_VALUE);
         weeklyBurnedValue = i.getDoubleArrayExtra(Constants.BURNED_VALUE);
 
-        if (isFirst) {
-            mTextDay.setTextColor(Color.parseColor("#FFFFFF"));
-            mTextMonth.setTextColor(Color.parseColor("#FFFFFF"));
-            mTextCalConsumed.setTextColor(Color.parseColor("#FFFFFF"));
-            mTextCalBurned.setTextColor(Color.parseColor("#FFFFFF"));
-            if (Utils.getCluster(this).equals("velocity"))
-                mLayoutWeekly.setBackgroundColor(Color.parseColor("#2980b9"));
-            else
-                mLayoutWeekly.setBackgroundColor(Color.parseColor("#c0392b"));
-        }
+        mTextDay.setTextColor(Color.parseColor("#FFFFFF"));
+        mTextMonth.setTextColor(Color.parseColor("#FFFFFF"));
+        mTextCalConsumed.setTextColor(Color.parseColor("#FFFFFF"));
+        mTextCalBurned.setTextColor(Color.parseColor("#FFFFFF"));
+        mTextRdi.setTextColor(Color.parseColor("#FFFFFF"));
+        if (Utils.getCluster(this).equals("velocity"))
+            mLayoutWeekly.setBackgroundColor(Color.parseColor("#2980b9"));
+        else
+            mLayoutWeekly.setBackgroundColor(Color.parseColor("#c0392b"));
 
         mTextDay.setText(day);
         mTextMonth.setText(month);
@@ -88,6 +90,14 @@ public class WeeklyGraphActivity extends AppCompatActivity {
 
         mTextCalConsumed.setText("Calories Consumed this week: " + calConsumed);
         mTextCalBurned.setText("Calories Burned this week: " + calBurned);
+        if (rdi > calConsumed) {
+            mTextRdi.setText(Utils.roundOneDecimal(rdi - calConsumed) +
+                    " Calories lacking");
+        } else {
+            mTextRdi.setText(Math.abs(Utils.roundOneDecimal(rdi - calConsumed)) +
+                    " Calories exceeded");
+        }
+
 
         LineGraphSeries<DataPoint> seriesConsumed = new LineGraphSeries<DataPoint>(new DataPoint[]{
                 new DataPoint(0, getConsumed(weeklyConsumedDay, weeklyConsumedValue, "Sun")),

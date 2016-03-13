@@ -1,6 +1,7 @@
 package com.funfit.usjr.thesis.funfitv2.mealPlan;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,12 +87,15 @@ public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.ViewHolder> 
                 Utils.roundOneDecimal(mList.get(position).getConsumedCalories()) + "");
         viewHolder.mTextCalBurned.setText("Calories Burned this day: " +
                 Utils.roundOneDecimal(mList.get(position).getBurnedCalories()) + "");
-        if (rdi > cal)
+        if (rdi > cal) {
             viewHolder.mTextRdi.setText(Utils.roundOneDecimal(rdi - cal) +
                     " Calories lacking");
-        else
-            viewHolder.mTextRdi.setText(Utils.roundOneDecimal(rdi - cal) +
-                    " Calories suffice");
+            viewHolder.mTextRdi.setTextColor(Color.parseColor("#d32f2f"));
+        } else {
+            viewHolder.mTextRdi.setText(Math.abs(Utils.roundOneDecimal(rdi - cal)) +
+                    " Calories exceeded");
+        }
+
     }
 
     @Override

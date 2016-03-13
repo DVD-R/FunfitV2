@@ -46,11 +46,13 @@ public class MonthlyGraphActivity extends AppCompatActivity {
     Toolbar mToolbar;
     @Bind(R.id.graph)
     GraphView mGraph;
+    @Bind(R.id.text_rdi)
+    TextView mTextRdi;
 
     boolean isFirst;
     String month;
     int year;
-    double calConsumed, calBurned;
+    double calConsumed, calBurned, rdi;
     private int[] monthlyConsumedDay, monthlyBurnedDay;
     private double[] monthlyConsumedValue, monthlyBurnedValue;
 
@@ -67,6 +69,7 @@ public class MonthlyGraphActivity extends AppCompatActivity {
         isFirst = i.getBooleanExtra(Constants.IS_FIRST, false);
         month = i.getStringExtra(Constants.MONTH);
         year = i.getIntExtra(Constants.YEAR, 0);
+        rdi = i.getDoubleExtra(Constants.RDI_LAPSE, 0);
         calConsumed = i.getDoubleExtra(Constants.CAL_CONSUMED, 0);
         calBurned = i.getDoubleExtra(Constants.CAL_BURNED, 0);
         monthlyConsumedDay = i.getIntArrayExtra(Constants.CONSUMED_TIME);
@@ -74,16 +77,15 @@ public class MonthlyGraphActivity extends AppCompatActivity {
         monthlyConsumedValue = i.getDoubleArrayExtra(Constants.CONSUMED_VALUE);
         monthlyBurnedValue = i.getDoubleArrayExtra(Constants.BURNED_VALUE);
 
-        if (isFirst) {
-            mTextMonth.setTextColor(Color.parseColor("#FFFFFF"));
-            mTextYear.setTextColor(Color.parseColor("#FFFFFF"));
-            mTextCalConsumed.setTextColor(Color.parseColor("#FFFFFF"));
-            mTextCalBurned.setTextColor(Color.parseColor("#FFFFFF"));
-            if (Utils.getCluster(this).equals("velocity"))
-                mLayoutMonthly.setBackgroundColor(Color.parseColor("#2980b9"));
-            else
-                mLayoutMonthly.setBackgroundColor(Color.parseColor("#c0392b"));
-        }
+        mTextMonth.setTextColor(Color.parseColor("#FFFFFF"));
+        mTextYear.setTextColor(Color.parseColor("#FFFFFF"));
+        mTextCalConsumed.setTextColor(Color.parseColor("#FFFFFF"));
+        mTextCalBurned.setTextColor(Color.parseColor("#FFFFFF"));
+        mTextRdi.setTextColor(Color.parseColor("#FFFFFF"));
+        if (Utils.getCluster(this).equals("velocity"))
+            mLayoutMonthly.setBackgroundColor(Color.parseColor("#2980b9"));
+        else
+            mLayoutMonthly.setBackgroundColor(Color.parseColor("#c0392b"));
 
         mTextMonth.setText(month);
         mTextYear.setText(year + "");
@@ -92,12 +94,19 @@ public class MonthlyGraphActivity extends AppCompatActivity {
 
         mTextCalConsumed.setText("Calories Consumed this week: " + calConsumed);
         mTextCalBurned.setText("Calories Burned this week: " + calBurned);
+        if (rdi > calConsumed) {
+            mTextRdi.setText(Utils.roundOneDecimal(rdi - calConsumed) +
+                    " Calories lacking");
+        } else {
+            mTextRdi.setText(Math.abs(Utils.roundOneDecimal(rdi - calConsumed)) +
+                    " Calories exceeded");
+        }
 
         String[] dateRange = getMonthDateRanges(month, year);
 
         List<DataPoint> consumedPts = new ArrayList<>();
         List<DataPoint> burnedPts = new ArrayList<>();
-        for(int x=0;x<dateRange.length;x++) {
+        for (int x = 0; x < dateRange.length; x++) {
             double consumed = getCalories(monthlyConsumedDay,
                     monthlyConsumedValue, dateRange[x], year);
             consumedPts.add(new DataPoint(x, consumed));

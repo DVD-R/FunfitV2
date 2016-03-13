@@ -24,6 +24,7 @@ import java.util.List;
  * Created by victor on 1/12/2016.
  */
 public class FatSecretGetPresenter {
+    private static final String LOG_TAG = FatSecretGetPresenter.class.getSimpleName();
     private ISearchAdapterView iSearchAdapterView;
     private FatSecretGet fatSecretGet;
     private FoodServing foodServing;
@@ -100,21 +101,36 @@ public class FatSecretGetPresenter {
     public void saveMeal() {
         ArrayList<FoodServing> foodServings = (ArrayList<FoodServing>) iSearchAdapterView.getList();
         ArrayList<RequestMeal> mealArrayList = new ArrayList<>();
+
         RequestMeal meal = null;
         for (FoodServing foodServing1 : foodServings) {
+            String date = Utils.getCurrentDate();
+            double calories = Double.parseDouble(foodServing1.getCalories());
+            double carbohydrate = Double.parseDouble(foodServing1.getCarbohydrate());
+            double cholesterol = Double.parseDouble(foodServing1.getCholesterol());
+            String course = iSearchAdapterView.getMealTime();
+            double fat = Double.parseDouble(foodServing1.getFat());
+            String name = iSearchAdapterView.getMealName();
+            double protein = Double.parseDouble(foodServing1.getProtein());
+            double sodium = Double.parseDouble(foodServing1.getSodium());
+            int userId = Integer.parseInt(context.getSharedPreferences(Constants.RDI_PREF_ID, context.MODE_PRIVATE)
+                    .getString(Constants.UID,""));
             meal = new RequestMeal(
 //                    "09-03-2016",
-                    Utils.getCurrentDate(),
-                    Double.parseDouble(foodServing1.getCalories()),
-                    Double.parseDouble(foodServing1.getCarbohydrate()),
-                    Double.parseDouble(foodServing1.getCholesterol()),
-                    iSearchAdapterView.getMealTime(),
-                    Double.parseDouble(foodServing1.getFat()),
-                    iSearchAdapterView.getMealName(),
-                    Double.parseDouble(foodServing1.getProtein()),
-                    Double.parseDouble(foodServing1.getSodium()),
-                    Integer.parseInt(context.getSharedPreferences(Constants.RDI_PREF_ID, context.MODE_PRIVATE)
-                            .getString(Constants.UID,""))) ;
+                    date,
+                    calories,
+                    carbohydrate,
+                    cholesterol,
+                    course,
+                    fat,
+                    name,
+                    protein,
+                    sodium,
+                    userId);
+
+//            Log.v(LOG_TAG, "date:"+date+"\ncalories:"+calories+"\ncarbs:"+carbohydrate+
+//            "\ncholesterol:"+cholesterol+"\ncourse:"+course+"\nfat:"+fat+"\nname:"+name+"\nprotein:"+protein
+//            +"\nsodium:"+sodium+"\nuserId:"+userId);
         }
         mealArrayList.add(meal);
         mealDbHelper.saveMeal(mealArrayList);

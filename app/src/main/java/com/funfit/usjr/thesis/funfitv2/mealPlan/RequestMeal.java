@@ -1,114 +1,127 @@
 package com.funfit.usjr.thesis.funfitv2.mealPlan;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
-public class RequestMeal implements Serializable{
+public class RequestMeal implements Serializable {
 
-	private String date;
-	private double calories;
-	private double carbohydrate;
-	private double cholesterol;
-	private String course;
-	private double fat;
-	private String name;
-	private double protein;
-	private double sodium;
-	private int userId;
-	
-	public RequestMeal(){}
+    @JsonProperty
+    private String date;
+    @JsonProperty
+    private double calories;
+    @JsonProperty
+    private double carbohydrate;
+    @JsonProperty
+    private double cholesterol;
+    @JsonProperty
+    private String course;
+    @JsonProperty
+    private double fat;
+    @JsonProperty
+    private String name;
+    @JsonProperty
+    private double protein;
+    @JsonProperty
+    private double sodium;
+    @JsonProperty
+    private int userId;
 
-	public RequestMeal(String date, double calories, double carbohydrate, double cholesterol, String course, double fat,
-			String name, double protein, double sodium, int userId) {
-		super();
-		this.date = date;
-		this.calories = calories;
-		this.carbohydrate = carbohydrate;
-		this.cholesterol = cholesterol;
-		this.course = course;
-		this.fat = fat;
-		this.name = name;
-		this.protein = protein;
-		this.sodium = sodium;
-		this.userId = userId;
-	}
+    public RequestMeal() {
+    }
 
-	public String getDate() {
-		return date;
-	}
+    public RequestMeal(String date, double calories, double carbohydrate, double cholesterol, String course, double fat,
+                       String name, double protein, double sodium, int userId) {
+        super();
+        this.date = date;
+        this.calories = calories;
+        this.carbohydrate = carbohydrate;
+        this.cholesterol = cholesterol;
+        this.course = course;
+        this.fat = fat;
+        this.name = name;
+        this.protein = protein;
+        this.sodium = sodium;
+        this.userId = userId;
+    }
 
-	public void setDate(String date) {
-		this.date = date;
-	}
+    public String getDate() {
+        return date;
+    }
 
-	public double getCalories() {
-		return calories;
-	}
+    public void setDate(String date) {
+        this.date = date;
+    }
 
-	public void setCalories(double calories) {
-		this.calories = calories;
-	}
+    public double getCalories() {
+        return calories;
+    }
 
-	public double getCarbohydrate() {
-		return carbohydrate;
-	}
+    public void setCalories(double calories) {
+        this.calories = calories;
+    }
 
-	public void setCarbohydrate(double carbohydrate) {
-		this.carbohydrate = carbohydrate;
-	}
+    public double getCarbohydrate() {
+        return carbohydrate;
+    }
 
-	public double getCholesterol() {
-		return cholesterol;
-	}
+    public void setCarbohydrate(double carbohydrate) {
+        this.carbohydrate = carbohydrate;
+    }
 
-	public void setCholesterol(double cholesterol) {
-		this.cholesterol = cholesterol;
-	}
+    public double getCholesterol() {
+        return cholesterol;
+    }
 
-	public String getCourse() {
-		return course;
-	}
+    public void setCholesterol(double cholesterol) {
+        this.cholesterol = cholesterol;
+    }
 
-	public void setCourse(String course) {
-		this.course = course;
-	}
+    public String getCourse() {
+        return course;
+    }
 
-	public double getFat() {
-		return fat;
-	}
+    public void setCourse(String course) {
+        this.course = course;
+    }
 
-	public void setFat(double fat) {
-		this.fat = fat;
-	}
+    public double getFat() {
+        return fat;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setFat(double fat) {
+        this.fat = fat;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public double getProtein() {
-		return protein;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setProtein(double protein) {
-		this.protein = protein;
-	}
+    public double getProtein() {
+        return protein;
+    }
 
-	public double getSodium() {
-		return sodium;
-	}
+    public void setProtein(double protein) {
+        this.protein = protein;
+    }
 
-	public void setSodium(double sodium) {
-		this.sodium = sodium;
-	}
+    public double getSodium() {
+        return sodium;
+    }
 
-	public int getUserId() {
-		return userId;
-	}
+    public void setSodium(double sodium) {
+        this.sodium = sodium;
+    }
 
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 }

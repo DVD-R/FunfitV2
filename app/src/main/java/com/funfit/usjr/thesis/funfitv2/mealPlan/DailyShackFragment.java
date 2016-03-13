@@ -286,14 +286,4 @@ public class DailyShackFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
     }
-
-    @OnClick(R.id.fab_switch)
-    public void onFabSwitchClick() {
-        FragmentTransaction trans = getFragmentManager()
-                .beginTransaction();
-        trans.replace(R.id.root_frame, new WeeklyShackFragment());
-        trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        trans.addToBackStack(null);
-        trans.commit();
-    }
 }

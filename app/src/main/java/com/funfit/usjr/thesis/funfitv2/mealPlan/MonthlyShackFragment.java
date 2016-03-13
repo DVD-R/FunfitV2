@@ -50,8 +50,6 @@ public class MonthlyShackFragment extends Fragment {
     private static final String LOG_TAG = MonthlyShackFragment.class.getSimpleName();
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
-    @Bind(R.id.fab_switch)
-    FloatingActionButton mFabSwitch;
     private RecyclerView.LayoutManager mLayoutManager;
     private LayoutManagerType mCurrentLayoutManagerType;
     private MonthlyAdapter mAdapter;
@@ -323,16 +321,4 @@ public class MonthlyShackFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
     }
-
-    @OnClick(R.id.fab_switch)
-    public void onFabSwitchClick() {
-        FragmentTransaction trans = getFragmentManager()
-                .beginTransaction();
-        trans.replace(R.id.root_frame, new MealPlanFragment());
-        trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        trans.addToBackStack(null);
-        trans.commit();
-    }
-
-
 }

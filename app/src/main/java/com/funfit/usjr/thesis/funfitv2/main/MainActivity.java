@@ -32,7 +32,7 @@ import com.funfit.usjr.thesis.funfitv2.maps.MapsFragment;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.leaderBoard.LeaderBoardActivity;
 import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanFragment;
-import com.funfit.usjr.thesis.funfitv2.mealPlan.RootFragment;
+import com.funfit.usjr.thesis.funfitv2.mealPlan.ShackFragment;
 import com.funfit.usjr.thesis.funfitv2.mealPlan.WeeklyShackFragment;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.ProfileRequestJson;
@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new MapsFragment(), "Arena");
-        adapter.addFragment(new RootFragment(), "Shack");
+        adapter.addFragment(new ShackFragment(), "Shack");
         viewPager.setAdapter(adapter);
     }
 

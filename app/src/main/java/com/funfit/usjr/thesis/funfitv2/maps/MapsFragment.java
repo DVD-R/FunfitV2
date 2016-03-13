@@ -145,7 +145,7 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         distanceCalculation = new DistanceCalculation();
         userData = getActivity().getSharedPreferences(Constants.USER_PREF_ID, getActivity().MODE_PRIVATE);
         rdi = getActivity().getSharedPreferences(Constants.RDI_PREF_ID, getActivity().MODE_PRIVATE);
-        rdi.edit().putString(Constants.UID, "1457565832").commit();
+//        rdi.edit().putString(Constants.UID, "1457837906").commit();
         mRunHelper = new RunDbHelper(getActivity());
 
         mMapView = (MapView) view.findViewById(R.id.mapView);

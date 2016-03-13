@@ -44,12 +44,12 @@ public class MealDbHelper {
             mealService.postMeal(meal, new Callback<ResponseMeal>() {
                 @Override
                 public void success(ResponseMeal runCallback, Response response) {
-                    Log.v(LOG_TAG, response.toString());
+                    Log.v(LOG_TAG, "SUCCESS!!!: "+response.toString());
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
-
+                    Log.v(LOG_TAG, "ERROR!!!: "+error.toString());
                 }
             });
         }

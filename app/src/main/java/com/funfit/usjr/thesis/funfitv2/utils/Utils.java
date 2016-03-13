@@ -78,6 +78,11 @@ public class Utils {
         return sdf.format(new Date());
     }
 
+    public static String getDateString(String date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        return sdf.format(date);
+    }
+
     public static int getWeekOfYear(String date) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         SimpleDateFormat w = new SimpleDateFormat("w", Locale.US);

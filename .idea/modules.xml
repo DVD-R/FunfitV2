@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FunfitV2.last.iml" filepath="$PROJECT_DIR$/FunfitV2.last.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FunfitV2_v6.iml" filepath="$PROJECT_DIR$/FunfitV2_v6.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/funfitv2wear/funfitv2wear.iml" filepath="$PROJECT_DIR$/funfitv2wear/funfitv2wear.iml" />
       <module fileurl="file://$PROJECT_DIR$/funfitwear/funfitwear.iml" filepath="$PROJECT_DIR$/funfitwear/funfitwear.iml" />

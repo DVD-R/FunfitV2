@@ -18,7 +18,7 @@ import com.funfit.usjr.thesis.funfitv2.search.SearchActivity;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
  */
 public class SearchFragment extends Fragment implements SearchActivity.DisplayList{
 
-    @Bind(R.id.recycler_view)
+    @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     private Context context;
     private RecyclerView.LayoutManager mLayoutManager;

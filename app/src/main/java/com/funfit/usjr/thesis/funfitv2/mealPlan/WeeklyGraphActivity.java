@@ -19,7 +19,7 @@ import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -27,21 +27,21 @@ import butterknife.ButterKnife;
  */
 public class WeeklyGraphActivity extends AppCompatActivity {
     private static final String LOG_TAG = WeeklyGraphActivity.class.getSimpleName();
-    @Bind(R.id.text_d)
+    @BindView(R.id.text_d)
     TextView mTextDay;
-    @Bind(R.id.text_m)
+    @BindView(R.id.text_m)
     TextView mTextMonth;
-    @Bind(R.id.text_cal_consumed)
+    @BindView(R.id.text_cal_consumed)
     TextView mTextCalConsumed;
-    @Bind(R.id.text_cal_burned)
+    @BindView(R.id.text_cal_burned)
     TextView mTextCalBurned;
-    @Bind(R.id.layout_weekly)
+    @BindView(R.id.layout_weekly)
     RelativeLayout mLayoutWeekly;
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.graph)
+    @BindView(R.id.graph)
     GraphView mGraph;
-    @Bind(R.id.text_rdi)
+    @BindView(R.id.text_rdi)
     TextView mTextRdi;
 
     boolean isFirst;

@@ -1,13 +1,9 @@
 package com.funfit.usjr.thesis.funfitv2.notificationEvents;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -24,44 +20,27 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.distance.DistanceCalculation;
-import com.funfit.usjr.thesis.funfitv2.maps.MapsFragment;
 import com.funfit.usjr.thesis.funfitv2.model.EventModel;
-import com.funfit.usjr.thesis.funfitv2.model.Events;
-import com.funfit.usjr.thesis.funfitv2.model.HistoryEventCoordinates;
-import com.funfit.usjr.thesis.funfitv2.model.Territory;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
-import com.squareup.okhttp.OkHttpClient;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.OkClient;
-import retrofit.client.Response;
 
 /**
  * Created by Dj on 1/22/2016.
@@ -85,9 +64,9 @@ public class EventDetailActivity extends AppCompatActivity implements GoogleApiC
     protected String mLastUpdateTime;
     private GoogleMap mMap;
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.fab_qr)
+    @BindView(R.id.fab_qr)
     FloatingActionButton mFabQr;
 
     private ArrayList<LatLng> arrayPoints = null;
@@ -95,11 +74,11 @@ public class EventDetailActivity extends AppCompatActivity implements GoogleApiC
     private ArrayList<LatLng> saveLocation = null;
 
     private EventModel mEvents;
-    @Bind(R.id.img_event)
+    @BindView(R.id.img_event)
     ImageView mImageEvent;
-    @Bind(R.id.txt_bounty)
+    @BindView(R.id.txt_bounty)
     TextView mTextBounty;
-    @Bind(R.id.txt_event)
+    @BindView(R.id.txt_event)
     TextView mTextEvent;
 
 
@@ -342,26 +321,26 @@ public class EventDetailActivity extends AppCompatActivity implements GoogleApiC
         mMap.addPolyline(polylineOptions);
 
 //        saveLocation
-        List<LatLng>  setOfLocations = PolyUtil.decode(mEvents.vertices);
+        List<LatLng> setOfLocations = PolyUtil.decode(mEvents.vertices);
 
-        for(int x = 0;setOfLocations.size() > x; x++){
+        for (int x = 0; setOfLocations.size() > x; x++) {
 
             getDistanceInMeters = distanceCalculation.distanceLocation(latLng, setOfLocations.get(x));
 
-            Log.i("testCapture","distance: "+getDistanceInMeters);
-            if(getDistanceInMeters < 50){
+            Log.i("testCapture", "distance: " + getDistanceInMeters);
+            if (getDistanceInMeters < 50) {
 
                 double containLat = setOfLocations.get(x).latitude;
                 double containLong = setOfLocations.get(x).longitude;
                 LatLng containLocation = new LatLng(containLat, containLong);
 
-                if(saveLocation.contains(containLocation)){
-                    if(saveLocation.size() > 4){
-                        if(saveLocation.get(0).equals(saveLocation.get(x))){
+                if (saveLocation.contains(containLocation)) {
+                    if (saveLocation.size() > 4) {
+                        if (saveLocation.get(0).equals(saveLocation.get(x))) {
                             Log.i("testCapture", "YES!! Captured");
                         }
                     }
-                }else{
+                } else {
                     double getLat = saveLocation.get(x).latitude;
                     double getLong = saveLocation.get(x).longitude;
 
@@ -378,12 +357,12 @@ public class EventDetailActivity extends AppCompatActivity implements GoogleApiC
     public void populateEvent() {
         mMap.clear();
         PolylineOptions getPolylineOptions;
-        List<LatLng>  list = PolyUtil.decode(mEvents.vertices);
-        Log.i("eventdetails",""+list.size());
+        List<LatLng> list = PolyUtil.decode(mEvents.vertices);
+        Log.i("eventdetails", "" + list.size());
 
-        for(int x = 0; list.size() > x; x++) {
+        for (int x = 0; list.size() > x; x++) {
 
-            LatLng latLng = new LatLng(list.get(x).latitude,list.get(x).longitude);
+            LatLng latLng = new LatLng(list.get(x).latitude, list.get(x).longitude);
 
             getPolylineOptions = new PolylineOptions();
             getPolylineOptions.color(Color.RED);

@@ -15,13 +15,11 @@ import android.view.MenuItem;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.history.EventHistoryActivityImpl;
 import com.funfit.usjr.thesis.funfitv2.model.EventModel;
-import com.funfit.usjr.thesis.funfitv2.model.Events;
 import com.squareup.okhttp.OkHttpClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -32,10 +30,10 @@ import retrofit.client.Response;
 /**
  * Created by Dj on 1/15/2016.
  */
-public class EventActivity extends AppCompatActivity{
-    @Bind(R.id.toolbar)
+public class EventActivity extends AppCompatActivity {
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.recycler_notification)
+    @BindView(R.id.recycler_notification)
     RecyclerView mRecyclerView;
 
     private static final String ROOT = "https://funfitv2-backend.herokuapp.com";
@@ -144,12 +142,12 @@ public class EventActivity extends AppCompatActivity{
                 mAdapter = new EventsAdapter(eventModels);
                 mRecyclerView.setAdapter(mAdapter);
 
-                Log.i("event","Success "+eventModels.get(0).eventName);
+                Log.i("event", "Success " + eventModels.get(0).eventName);
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.i("event","Failed");
+                Log.i("event", "Failed");
             }
         });
     }

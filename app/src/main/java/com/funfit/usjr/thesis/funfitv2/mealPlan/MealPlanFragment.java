@@ -5,10 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -36,16 +35,16 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit.Callback;
@@ -56,90 +55,90 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
     private static final String TOTAL_CAL = "Total Calories: ";
     private static final String LOG_TAG = MealPlanFragment.class.getSimpleName();
 
-    @Bind(R.id.container)
+    @BindView(R.id.container)
     FrameLayout piechartLayout;
-    @Bind(R.id.txt_cal_rdi)
+    @BindView(R.id.txt_cal_rdi)
     TextView mTextCalRdi;
 
     //Breakfast Resources Binding
-    @Bind(R.id.img_breakfast)
+    @BindView(R.id.img_breakfast)
     ImageView mImageBreakfast;
-    @Bind(R.id.txt_breakfast_name)
+    @BindView(R.id.txt_breakfast_name)
     TextView mTextBreakfastName;
-    @Bind(R.id.breakfast_recycler_view)
+    @BindView(R.id.breakfast_recycler_view)
     RecyclerView breakfastRecyclerView;
-    @Bind(R.id.breakfastRecyclerLayout)
+    @BindView(R.id.breakfastRecyclerLayout)
     FrameLayout breakfastRecyclerLayout;
-    @Bind(R.id.breakfastLayout)
+    @BindView(R.id.breakfastLayout)
     FrameLayout breakfastLayout;
-    @Bind(R.id.collapseImgBtn)
+    @BindView(R.id.collapseImgBtn)
     ImageButton mCollapseImgBtn;
-    @Bind(R.id.breakfastMealCountTxt)
+    @BindView(R.id.breakfastMealCountTxt)
     TextView mBreakfastMealCount;
-    @Bind(R.id.breafastTotalkCalTxt)
+    @BindView(R.id.breafastTotalkCalTxt)
     TextView mBreakFastTotalkCal;
     //Breakfast Resources Binding
 
     //Lunch Resources Binding
-    @Bind(R.id.img_lunch)
+    @BindView(R.id.img_lunch)
     ImageView mImageLunch;
-    @Bind(R.id.txt_lunch_name)
+    @BindView(R.id.txt_lunch_name)
     TextView mTextLunchName;
-    @Bind(R.id.lunchLayout)
+    @BindView(R.id.lunchLayout)
     FrameLayout mLunchLayout;
-    @Bind(R.id.lunchRecyclerLayout)
+    @BindView(R.id.lunchRecyclerLayout)
     FrameLayout mLunchRecyclerLayout;
-    @Bind(R.id.lunchCollapseImgBtn)
+    @BindView(R.id.lunchCollapseImgBtn)
     ImageButton mLunchCollapseImgBtn;
-    @Bind(R.id.lunch_recycler_view)
+    @BindView(R.id.lunch_recycler_view)
     RecyclerView mLunchRecyclerView;
-    @Bind(R.id.lunchMealCountTxt)
+    @BindView(R.id.lunchMealCountTxt)
     TextView mLunchMealCount;
-    @Bind(R.id.lunchTotalkCalTxt)
+    @BindView(R.id.lunchTotalkCalTxt)
     TextView mLunchTotalkCal;
     //Lunch Resources Binding
 
     //Dinner Resources Binding
-    @Bind(R.id.img_dinner)
+    @BindView(R.id.img_dinner)
     ImageView mImageDinner;
-    @Bind(R.id.txt_dinner_name)
+    @BindView(R.id.txt_dinner_name)
     TextView mTextDinnerName;
-    @Bind(R.id.dinnerLayout)
+    @BindView(R.id.dinnerLayout)
     FrameLayout mDinnerLayout;
-    @Bind(R.id.dinnerRecyclerLayout)
+    @BindView(R.id.dinnerRecyclerLayout)
     FrameLayout mDinnerRecyclerLayout;
-    @Bind(R.id.dinnerCollapseImgBtn)
+    @BindView(R.id.dinnerCollapseImgBtn)
     ImageButton mDinnerCollapseImgBtn;
-    @Bind(R.id.dinner_recycler_view)
+    @BindView(R.id.dinner_recycler_view)
     RecyclerView mDinnerRecyclerView;
-    @Bind(R.id.dinnerMealCountTxt)
+    @BindView(R.id.dinnerMealCountTxt)
     TextView mDinnerMealCount;
-    @Bind(R.id.dinnerTotalkCalTxt)
+    @BindView(R.id.dinnerTotalkCalTxt)
     TextView mDinnerTotalkCal;
     //Dinner Resources Binding
 
     //Snack/Others Resource Binding
-    @Bind(R.id.img_snack)
+    @BindView(R.id.img_snack)
     ImageView mImageSnack;
-    @Bind(R.id.txt_snack_name)
+    @BindView(R.id.txt_snack_name)
     TextView mTextSnackName;
-    @Bind(R.id.snackLayout)
+    @BindView(R.id.snackLayout)
     FrameLayout mSnackLayout;
-    @Bind(R.id.snackRecyclerLayout)
+    @BindView(R.id.snackRecyclerLayout)
     FrameLayout mSnackRecyclerLayout;
-    @Bind(R.id.snackCollapseImgBtn)
+    @BindView(R.id.snackCollapseImgBtn)
     ImageButton mSnackCollapseImgBtn;
-    @Bind(R.id.snack_recycler_view)
+    @BindView(R.id.snack_recycler_view)
     RecyclerView mSnackRecyclerView;
-    @Bind(R.id.snackMealCountTxt)
+    @BindView(R.id.snackMealCountTxt)
     TextView mSnackMealCount;
-    @Bind(R.id.snackTotalkCalTxt)
+    @BindView(R.id.snackTotalkCalTxt)
     TextView mSnackTotalkCal;
-    @Bind(R.id.txt_summary)
+    @BindView(R.id.txt_summary)
     TextView mTextSummary;
-    @Bind(R.id.txt_cal_consumed)
+    @BindView(R.id.txt_cal_consumed)
     TextView mTextCalConsumed;
-    @Bind(R.id.txt_cal_remaining)
+    @BindView(R.id.txt_cal_remaining)
     TextView mTextCalRemaining;
     //Snack/Others Resources Binding
 
@@ -180,13 +179,13 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
     }
 
     private void setLayoutEnhancements() {
-        Glide.with(this).load("https://igcdn-photos-e-a.akamaihd.net/hphotos-ak-xtf1/t51.2885-15/sh0.08/e35/p640x640/11377778_1678871282346140_1451965866_n.jpg")
+        Glide.with(this).load("https://78.media.tumblr.com/685b8225bc6c7b1da9e753d598ef59a8/tumblr_ox40fzA0zY1w3rvpoo1_500.jpg")
                 .crossFade().centerCrop().into(mImageBreakfast);
-        Glide.with(this).load("https://igcdn-photos-a-a.akamaihd.net/hphotos-ak-xfa1/t51.2885-15/e35/12237452_1036452903083192_2102231120_n.jpg")
+        Glide.with(this).load("https://78.media.tumblr.com/a789877a8c5ce5c0c65c739ee224fee9/tumblr_ns8qswPrkq1u7gq3uo1_500.jpg")
                 .crossFade().centerCrop().into(mImageLunch);
-        Glide.with(this).load("https://igcdn-photos-e-a.akamaihd.net/hphotos-ak-xap1/t51.2885-15/e35/12224493_553293684823468_894543425_n.jpg")
+        Glide.with(this).load("https://78.media.tumblr.com/36c764e8535a43c95565a8a7e1487a2b/tumblr_p03pw3bu6c1t9ocfzo1_500.jpg")
                 .crossFade().centerCrop().into(mImageDinner);
-        Glide.with(this).load("https://igcdn-photos-f-a.akamaihd.net/hphotos-ak-xtp1/t51.2885-15/sh0.08/e35/p640x640/12394013_723004407801613_1182819768_n.jpg")
+        Glide.with(this).load("https://floraisabelle.com/content/images/2014/Sep/gro.jpg")
                 .crossFade().centerCrop().into(mImageSnack);
         mTextBreakfastName.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "HelveticaBold.otf"));
         mTextLunchName.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "HelveticaBold.otf"));
@@ -273,7 +272,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
 
         //enable and configure
         mPieChart.setDrawHoleEnabled(true);
-        mPieChart.setHoleColorTransparent(true);
+        mPieChart.setHoleColor(Color.TRANSPARENT);
         mPieChart.setHoleRadius(7);
         mPieChart.setTransparentCircleRadius(10);
 
@@ -283,11 +282,11 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
 
         //set a chart value selected listener
         mPieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry entry, int i, Highlight highlight) {
-                if (entry == null)
-                    return;
 
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                if (e == null)
+                    return;
             }
 
             @Override
@@ -310,10 +309,10 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
     }
 
     private void addData() {
-        ArrayList<Entry> yValue = new ArrayList<Entry>();
+        List<PieEntry> yValue = new ArrayList<PieEntry>();
 
         for (int i = 0; i < yData.length; i++)
-            yValue.add(new Entry(yData[i], i));
+            yValue.add(new PieEntry(yData[i], i));
 
         ArrayList<String> xValue = new ArrayList<String>();
 
@@ -347,7 +346,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanFragmentView 
         dataSet.setColors(colors);
 
         //instantiate pie data object now
-        PieData pieData = new PieData(xValue, dataSet);
+        PieData pieData = new PieData(dataSet);
         pieData.setValueFormatter(new PercentFormatter());
 //        pieData.setValueTextSize(11f);
 //        pieData.setValueTextColor(Color.GRAY);

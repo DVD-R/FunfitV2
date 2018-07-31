@@ -1,7 +1,7 @@
 package com.funfit.usjr.thesis.funfitv2.history;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -13,14 +13,17 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.MapView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public abstract class EventHistoryActivity extends AppCompatActivity {
 
-    @Bind(R.id.historyRecycler)RecyclerView mHistoryRecycler;
-    @Bind(R.id.toolbar)Toolbar mToolbar;
+    @BindView(R.id.historyRecycler)
+    RecyclerView mHistoryRecycler;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
     protected HistoryAdapter mHistoryAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +35,7 @@ public abstract class EventHistoryActivity extends AppCompatActivity {
         configureColumn();
     }
 
-    protected void configureColumn(){
+    protected void configureColumn() {
         int columnCount = getResources().getInteger(R.integer.list_column_count);
         StaggeredGridLayoutManager staggeredGridLayoutManager =
                 new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
@@ -47,8 +50,8 @@ public abstract class EventHistoryActivity extends AppCompatActivity {
     public void onLowMemory() {
         super.onLowMemory();
 
-        if (mHistoryAdapter != null){
-            for (MapView m: mHistoryAdapter.getmMapViews()){
+        if (mHistoryAdapter != null) {
+            for (MapView m : mHistoryAdapter.getmMapViews()) {
                 m.onLowMemory();
             }
         }
@@ -57,8 +60,8 @@ public abstract class EventHistoryActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mHistoryAdapter != null){
-            for (MapView m: mHistoryAdapter.getmMapViews()){
+        if (mHistoryAdapter != null) {
+            for (MapView m : mHistoryAdapter.getmMapViews()) {
                 m.onPause();
             }
         }
@@ -70,14 +73,14 @@ public abstract class EventHistoryActivity extends AppCompatActivity {
 
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 
-        if (resultCode == ConnectionResult.SUCCESS){
+        if (resultCode == ConnectionResult.SUCCESS) {
             mHistoryRecycler.setAdapter(mHistoryAdapter);
-        }else {
+        } else {
             GooglePlayServicesUtil.getErrorDialog(resultCode, this, 1).show();
         }
 
-        if (mHistoryAdapter != null){
-            for (MapView m: mHistoryAdapter.getmMapViews()){
+        if (mHistoryAdapter != null) {
+            for (MapView m : mHistoryAdapter.getmMapViews()) {
                 m.onResume();
             }
         }
@@ -87,8 +90,8 @@ public abstract class EventHistoryActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mHistoryAdapter != null){
-            for (MapView m: mHistoryAdapter.getmMapViews()){
+        if (mHistoryAdapter != null) {
+            for (MapView m : mHistoryAdapter.getmMapViews()) {
                 m.onDestroy();
             }
         }

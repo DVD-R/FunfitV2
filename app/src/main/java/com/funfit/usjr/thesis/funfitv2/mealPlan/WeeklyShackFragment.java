@@ -1,42 +1,23 @@
 package com.funfit.usjr.thesis.funfitv2.mealPlan;
 
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.Meal;
-import com.funfit.usjr.thesis.funfitv2.model.RunCallback;
-import com.funfit.usjr.thesis.funfitv2.model.RunModel;
 import com.funfit.usjr.thesis.funfitv2.model.Runs;
-import com.funfit.usjr.thesis.funfitv2.model.Weekly;
 import com.funfit.usjr.thesis.funfitv2.model.WeeklyCal;
-import com.funfit.usjr.thesis.funfitv2.services.RunService;
-import com.funfit.usjr.thesis.funfitv2.services.SendRun;
-import com.funfit.usjr.thesis.funfitv2.services.WeeklyService;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.viewmods.DarkDividerItemDecoration;
-import com.squareup.okhttp.OkHttpClient;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -46,13 +27,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
-import retrofit.client.OkClient;
 import retrofit.client.Response;
 
 /**
@@ -61,7 +39,7 @@ import retrofit.client.Response;
 public class WeeklyShackFragment extends Fragment {
     private static final String LOG_TAG = WeeklyShackFragment.class.getSimpleName();
     private static List<Meal> mealList;
-    @Bind(R.id.recycler_view)
+    @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private LayoutManagerType mCurrentLayoutManagerType;

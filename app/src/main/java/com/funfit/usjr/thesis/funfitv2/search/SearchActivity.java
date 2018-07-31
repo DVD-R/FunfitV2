@@ -1,9 +1,7 @@
 package com.funfit.usjr.thesis.funfitv2.search;
 
-import android.app.SearchManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,10 +9,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,31 +19,34 @@ import android.widget.LinearLayout;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.fatSecretImplementation.FatSecretPresenter;
 import com.funfit.usjr.thesis.funfitv2.model.Food;
-import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.MostEatenSearchFragment;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.RecentlyEatenSearchFragment;
 import com.funfit.usjr.thesis.funfitv2.searchFragment.SearchFragment;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.views.ISearchView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SearchActivity extends AppCompatActivity implements ISearchView{
+public class SearchActivity extends AppCompatActivity implements ISearchView {
 
     private SearchFragment searchFragment;
-    @Bind(R.id.toolbar)Toolbar mToolbar;
-    @Bind(R.id.viewpager)ViewPager mViewPager;
-    @Bind(R.id.tabs)TabLayout mTabs;
-    @Bind(R.id.carddemo_progressContainer)LinearLayout mProgressBarContainer;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.viewpager)
+    ViewPager mViewPager;
+    @BindView(R.id.tabs)
+    TabLayout mTabs;
+    @BindView(R.id.carddemo_progressContainer)
+    LinearLayout mProgressBarContainer;
     private String mealTime;
     private SearchView mSearchView;
     private FatSecretPresenter fatSecretPresenter;
     private String query;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,10 +89,10 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
 
     @Override
     public void getFood(List<Food> items) {
-            (searchFragment).sendFoodList(items, mealTime);
+        (searchFragment).sendFoodList(items, mealTime);
     }
 
-    public interface DisplayList{
+    public interface DisplayList {
         public void sendFoodList(List<Food> items, String mealTime);
     }
 
@@ -163,7 +162,7 @@ public class SearchActivity extends AppCompatActivity implements ISearchView{
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 onBackPressed();
-               return false;
+                return false;
             }
         });
 

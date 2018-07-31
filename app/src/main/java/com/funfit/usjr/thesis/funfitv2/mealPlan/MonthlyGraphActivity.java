@@ -21,10 +21,9 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -32,21 +31,21 @@ import butterknife.ButterKnife;
  */
 public class MonthlyGraphActivity extends AppCompatActivity {
     private static final String LOG_TAG = MonthlyGraphActivity.class.getSimpleName();
-    @Bind(R.id.text_month)
+    @BindView(R.id.text_month)
     TextView mTextMonth;
-    @Bind(R.id.text_year)
+    @BindView(R.id.text_year)
     TextView mTextYear;
-    @Bind(R.id.text_cal_consumed)
+    @BindView(R.id.text_cal_consumed)
     TextView mTextCalConsumed;
-    @Bind(R.id.text_cal_burned)
+    @BindView(R.id.text_cal_burned)
     TextView mTextCalBurned;
-    @Bind(R.id.layout_monthly)
+    @BindView(R.id.layout_monthly)
     RelativeLayout mLayoutMonthly;
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.graph)
+    @BindView(R.id.graph)
     GraphView mGraph;
-    @Bind(R.id.text_rdi)
+    @BindView(R.id.text_rdi)
     TextView mTextRdi;
 
     boolean isFirst;

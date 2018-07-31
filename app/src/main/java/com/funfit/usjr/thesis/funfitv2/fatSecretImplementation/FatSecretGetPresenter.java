@@ -103,7 +103,9 @@ public class FatSecretGetPresenter {
         ArrayList<RequestMeal> mealArrayList = new ArrayList<>();
 
         RequestMeal meal = null;
+        Log.i("NIGGUH", "items: "+foodServings.size());
         for (FoodServing foodServing1 : foodServings) {
+            Log.i("NIGGUH", iSearchAdapterView.getMealName());
             String date = Utils.getCurrentDate();
             double calories = Double.parseDouble(foodServing1.getCalories());
             double carbohydrate = Double.parseDouble(foodServing1.getCarbohydrate());
@@ -134,5 +136,6 @@ public class FatSecretGetPresenter {
         }
         mealArrayList.add(meal);
         mealDbHelper.saveMeal(mealArrayList);
+        Log.i("NIGGUH", "Meal saved");
     }
 }

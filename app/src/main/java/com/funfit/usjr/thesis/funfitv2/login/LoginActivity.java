@@ -55,7 +55,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -79,15 +79,15 @@ public class LoginActivity extends AppCompatActivity implements
     /* Used to track user logging in/out off Facebook */
     private AccessTokenTracker mFacebookAccessTokenTracker;
 
-    @Bind(R.id.text_funfit)
+    @BindView(R.id.text_funfit)
     TextView mTextFunfit;
-    @Bind(R.id.img_login_bg)
+    @BindView(R.id.img_login_bg)
     ImageView mImageBg;
-    @Bind(R.id.login_progress)
+    @BindView(R.id.login_progress)
     ProgressBar mProgressLogin;
-    @Bind(R.id.facebookBtn)
+    @BindView(R.id.facebookBtn)
     Button mButtonFacebook;
-    @Bind(R.id.googleBtn)
+    @BindView(R.id.googleBtn)
     Button mButtonGoogle;
 
     @Override
@@ -154,7 +154,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     @OnClick(R.id.facebookBtn)
     public void loginFacebook() {
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile, user_about_me", "email, user_birthday"));
+            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email, user_birthday"));
     }
 
     @OnClick(R.id.googleBtn)
@@ -201,7 +201,7 @@ public class LoginActivity extends AppCompatActivity implements
             if(getSharedPreferences(Constants.USER_PREF_ID, MODE_PRIVATE).getString(Constants.PROFILE_EMAIL, null)!=null) {
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                        IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
 
@@ -297,13 +297,13 @@ public class LoginActivity extends AppCompatActivity implements
                         savePreferenceRegisteredUser(dataSnapshot);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();
                     }else{
                         Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.putExtra(Constants.PROFILE_IMG_URL, img_url);
                         intent.putExtra(Constants.PROFILE_EMAIL, email);
                         intent.putExtra(Constants.PROFILE_FNAME, fname);
@@ -315,7 +315,7 @@ public class LoginActivity extends AppCompatActivity implements
                 } catch (NullPointerException e) {
                     Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                            IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putExtra(Constants.PROFILE_IMG_URL, img_url);
                     intent.putExtra(Constants.PROFILE_EMAIL, email);
                     intent.putExtra(Constants.PROFILE_FNAME, fname);

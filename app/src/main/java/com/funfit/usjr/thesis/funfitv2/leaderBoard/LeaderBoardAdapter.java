@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -38,13 +38,13 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
     ItemData[] mList; // list of item from json object
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @Bind(R.id.txtName)
+        @BindView(R.id.txtName)
         TextView txtName;
-        @Bind(R.id.txtScore)
+        @BindView(R.id.txtScore)
         TextView txtScore;
-        @Bind(R.id.imgIcon)
+        @BindView(R.id.imgIcon)
         ImageView imgIcon;
-        @Bind(R.id.img_leader_status)
+        @BindView(R.id.img_leader_status)
         ImageView mImageStatus;
 
         String getId; // getId to be pass by Detailed_Game
@@ -55,7 +55,7 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
             ButterKnife.bind(this, v);
 
             ally = ContextCompat.getColorStateList(v.getContext(), R.color.velocity);
-            enemy = ContextCompat.getColorStateList(v.getContext(),R.color.impulse);
+            enemy = ContextCompat.getColorStateList(v.getContext(), R.color.impulse);
         }
 
         @Override
@@ -66,7 +66,7 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
             Log.d("here", "naa ko");
         }
 
-        public void giveMeThat(String id){
+        public void giveMeThat(String id) {
             this.getId = id; // get ViewHolder id and pass to getId
         } // get ID from clicked view
     }
@@ -79,7 +79,7 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
-        if ( viewGroup instanceof RecyclerView ) {
+        if (viewGroup instanceof RecyclerView) {
             int layoutId = -1;
             switch (viewType) {
                 // if viewType == 0 it will use the first big layout
@@ -119,7 +119,7 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
         viewHolder.txtName.setText(spanText(mList[position].getNotificationType(), mList[position].getName().length(),
                 mList[position].getName()));
 //        viewHolder.txtName.setText(mList[position].getName());
-        viewHolder.txtScore.setText(infoMessage(mList[position].getNotificationType())+mList[position].getScore());
+        viewHolder.txtScore.setText(infoMessage(mList[position].getNotificationType()) + mList[position].getScore());
 
     }
 
@@ -137,17 +137,21 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
 
 
     private int getStatusIcon(int notificationType) {
-        switch (notificationType){
-            case NOTIFICATION_ALLY_FORTIFIED: return R.drawable.ic_status_velocity;
-            case NOTIFICATION_ENEMY_ENVADE: return R.drawable.ic_status_impulse;
+        switch (notificationType) {
+            case NOTIFICATION_ALLY_FORTIFIED:
+                return R.drawable.ic_status_velocity;
+            case NOTIFICATION_ENEMY_ENVADE:
+                return R.drawable.ic_status_impulse;
         }
         return 0;
     }
 
     private String infoMessage(int notificationType) {
-        switch (notificationType){
-            case NOTIFICATION_ALLY_FORTIFIED: return "Points: ";
-            case NOTIFICATION_ENEMY_ENVADE: return "Points: ";
+        switch (notificationType) {
+            case NOTIFICATION_ALLY_FORTIFIED:
+                return "Points: ";
+            case NOTIFICATION_ENEMY_ENVADE:
+                return "Points: ";
         }
         return null;
     }
@@ -156,11 +160,15 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
         Spannable span = new SpannableString(text);
         StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD);
 
-        switch (notificationType){
-            case NOTIFICATION_ALLY_FORTIFIED: span.setSpan(new ForegroundColorSpan(ally.getDefaultColor()), 0,
-                    nameLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); break;
-            case NOTIFICATION_ENEMY_ENVADE: span.setSpan(new ForegroundColorSpan(enemy.getDefaultColor()), 0,
-                    nameLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); break;
+        switch (notificationType) {
+            case NOTIFICATION_ALLY_FORTIFIED:
+                span.setSpan(new ForegroundColorSpan(ally.getDefaultColor()), 0,
+                        nameLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                break;
+            case NOTIFICATION_ENEMY_ENVADE:
+                span.setSpan(new ForegroundColorSpan(enemy.getDefaultColor()), 0,
+                        nameLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                break;
         }
 
         span.setSpan(bss, 0, nameLength, Spannable.SPAN_INCLUSIVE_INCLUSIVE);

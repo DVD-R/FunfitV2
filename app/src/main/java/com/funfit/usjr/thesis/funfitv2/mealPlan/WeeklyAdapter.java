@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.funfit.usjr.thesis.funfitv2.R;
@@ -19,7 +18,7 @@ import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import java.text.ParseException;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -32,15 +31,15 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
     private static double rwi;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.text_d)
+        @BindView(R.id.text_d)
         TextView mTextDay;
-        @Bind(R.id.text_m)
+        @BindView(R.id.text_m)
         TextView mTextMonth;
-        @Bind(R.id.text_cal_consumed)
+        @BindView(R.id.text_cal_consumed)
         TextView mTextCalConsumed;
-        @Bind(R.id.text_cal_burned)
+        @BindView(R.id.text_cal_burned)
         TextView mTextCalBurned;
-        @Bind(R.id.text_rdi)
+        @BindView(R.id.text_rdi)
         TextView mTextRdi;
         Context context;
 
@@ -51,7 +50,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
                 public void onClick(View v) {
                     try {
                         Intent i = new Intent(context, WeeklyGraphActivity.class);
-                        if(getPosition() == 0)
+                        if (getPosition() == 0)
                             i.putExtra(Constants.IS_FIRST, true);
                         else
                             i.putExtra(Constants.IS_FIRST, false);
@@ -59,7 +58,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
                         i.putExtra(Constants.START_DAY, Utils.getDay(mList.get(getPosition()).getStartDate()));
                         i.putExtra(Constants.END_DAY, Utils.getDay(mList.get(getPosition()).getEndDate()));
                         i.putExtra(Constants.MONTH, Utils.getMonth(mList.get(getPosition()).getEndDate()));
-                        i.putExtra(Constants.DAY, Utils.getDayOfMonth(mList.get(getPosition()).getEndDate())+"");
+                        i.putExtra(Constants.DAY, Utils.getDayOfMonth(mList.get(getPosition()).getEndDate()) + "");
                         i.putExtra(Constants.CAL_CONSUMED, Utils.roundOneDecimal(mList.get(getPosition()).getConsumedCalories()));
                         i.putExtra(Constants.CAL_BURNED, Utils.roundOneDecimal(mList.get(getPosition()).getBurnedCalories()));
                         i.putExtra(Constants.CONSUMED_TIME, mList.get(getPosition()).getWeeklyConsumedDay());
@@ -81,7 +80,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
 
     public WeeklyAdapter(List<WeeklyCal> list, double rdi) {
         mList = list;
-        rwi = rdi*7;
+        rwi = rdi * 7;
     }
 
     @Override
@@ -102,8 +101,8 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         try {
             double cal = mList.get(position).getConsumedCalories();
-            viewHolder.mTextDay.setText(Utils.getDayOfMonth(mList.get(position).getEndDate())+"");
-            viewHolder.mTextMonth.setText(Utils.getMonth(mList.get(position).getEndDate())+"");
+            viewHolder.mTextDay.setText(Utils.getDayOfMonth(mList.get(position).getEndDate()) + "");
+            viewHolder.mTextMonth.setText(Utils.getMonth(mList.get(position).getEndDate()) + "");
 
             viewHolder.mTextCalConsumed.setText("Calories Consumed this week: " +
                     Utils.roundOneDecimal(mList.get(position).getConsumedCalories()) + "");
@@ -114,8 +113,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
                 viewHolder.mTextRdi.setText(Utils.roundOneDecimal(rwi - cal) +
                         " Calories lacking");
                 viewHolder.mTextRdi.setTextColor(Color.parseColor("#d32f2f"));
-            }
-            else {
+            } else {
                 viewHolder.mTextRdi.setText(Math.abs(Utils.roundOneDecimal(rwi - cal)) +
                         " Calories exceeded");
             }

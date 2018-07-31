@@ -3,49 +3,30 @@ package com.funfit.usjr.thesis.funfitv2.maps;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
-import android.os.AsyncTask;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Chronometer;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.distance.DistanceCalculation;
 import com.funfit.usjr.thesis.funfitv2.fragmentDialog.markerDialogFragment;
 import com.funfit.usjr.thesis.funfitv2.mealPlan.RunDbHelper;
 import com.funfit.usjr.thesis.funfitv2.model.CapturingModel;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
-import com.funfit.usjr.thesis.funfitv2.model.FTerritory;
-import com.funfit.usjr.thesis.funfitv2.model.MarkerModel;
 import com.funfit.usjr.thesis.funfitv2.model.RequestRun;
-import com.funfit.usjr.thesis.funfitv2.model.Runs;
 import com.funfit.usjr.thesis.funfitv2.model.Territory;
 import com.funfit.usjr.thesis.funfitv2.services.CapturingService;
-import com.funfit.usjr.thesis.funfitv2.services.MarkerService;
-import com.funfit.usjr.thesis.funfitv2.services.RunService;
-import com.funfit.usjr.thesis.funfitv2.services.SendRun;
 import com.funfit.usjr.thesis.funfitv2.utils.StopWatch;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.views.IMapFragmentView;
@@ -55,34 +36,23 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.maps.android.PolyUtil;
-import com.squareup.okhttp.OkHttpClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.OkClient;
-import retrofit.client.Response;
 
 public class MapsFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -284,9 +254,9 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
         switch (requestCode) {
 
             case CONNECTION_FAILURE_RESOLUTION_REQUEST:
-            /*
-             * If the result code is Activity.RESULT_OK, try to connect again
-			 */
+                /*
+                 * If the result code is Activity.RESULT_OK, try to connect again
+                 */
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         mGoogleApiClient.connect();
@@ -516,8 +486,8 @@ public class MapsFragment extends Fragment implements GoogleApiClient.Connection
                         CONNECTION_FAILURE_RESOLUTION_REQUEST);
                 /*
                  * Thrown if Google Play services canceled the original
-				 * PendingIntent
-				 */
+                 * PendingIntent
+                 */
             } catch (IntentSender.SendIntentException e) {
                 // Log the error
                 e.printStackTrace();

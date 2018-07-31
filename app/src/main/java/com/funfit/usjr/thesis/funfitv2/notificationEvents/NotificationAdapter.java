@@ -1,8 +1,6 @@
 package com.funfit.usjr.thesis.funfitv2.notificationEvents;
 
-import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -21,13 +19,13 @@ import com.funfit.usjr.thesis.funfitv2.model.Notification;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Created by Dj on 1/20/2016.
  */
-public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder>{
+public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
     ArrayList<Notification> mList;
 
     //Notification types
@@ -35,27 +33,27 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private static final int NOTIFICATION_ALLY_FORTIFIED = 1;
 
     //temporary var for time
-    private int time=2;
+    private int time = 2;
 
     private static ColorStateList ally;
     private static ColorStateList enemy;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
-        @Bind(R.id.img_playertwo)
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.img_playertwo)
         ImageView mImagePlayerTwo;
-        @Bind(R.id.img_status)
+        @BindView(R.id.img_status)
         ImageView mImageStatus;
-        @Bind(R.id.text_info)
+        @BindView(R.id.text_info)
         TextView mTextInfo;
-        @Bind(R.id.text_timestamp)
+        @BindView(R.id.text_timestamp)
         TextView mTextTime;
 
 
-        public ViewHolder(View itemView){
+        public ViewHolder(View itemView) {
             super(itemView);
 
-            ally = ContextCompat.getColorStateList(itemView.getContext(),R.color.velocity);
-            enemy = ContextCompat.getColorStateList(itemView.getContext(),R.color.impulse);
+            ally = ContextCompat.getColorStateList(itemView.getContext(), R.color.velocity);
+            enemy = ContextCompat.getColorStateList(itemView.getContext(), R.color.impulse);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -67,7 +65,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
     }
 
-    public NotificationAdapter(ArrayList<Notification> list){
+    public NotificationAdapter(ArrayList<Notification> list) {
         this.mList = list;
     }
 
@@ -100,17 +98,21 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     }
 
     private int getStatusIcon(int notificationType) {
-        switch (notificationType){
-            case NOTIFICATION_ALLY_FORTIFIED: return R.drawable.ic_status_velocity;
-            case NOTIFICATION_ENEMY_ENVADE: return R.drawable.ic_status_impulse;
+        switch (notificationType) {
+            case NOTIFICATION_ALLY_FORTIFIED:
+                return R.drawable.ic_status_velocity;
+            case NOTIFICATION_ENEMY_ENVADE:
+                return R.drawable.ic_status_impulse;
         }
         return 0;
     }
 
     private String infoMessage(int notificationType) {
-        switch (notificationType){
-            case NOTIFICATION_ALLY_FORTIFIED: return " has fortified your territory.";
-            case NOTIFICATION_ENEMY_ENVADE: return " has envaded your territory.";
+        switch (notificationType) {
+            case NOTIFICATION_ALLY_FORTIFIED:
+                return " has fortified your territory.";
+            case NOTIFICATION_ENEMY_ENVADE:
+                return " has envaded your territory.";
         }
         return null;
     }
@@ -119,11 +121,15 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         Spannable span = new SpannableString(text);
         StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD);
 
-        switch (notificationType){
-            case NOTIFICATION_ALLY_FORTIFIED: span.setSpan(new ForegroundColorSpan(ally.getDefaultColor()), 0,
-                    nameLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); break;
-            case NOTIFICATION_ENEMY_ENVADE: span.setSpan(new ForegroundColorSpan(enemy.getDefaultColor()), 0,
-                    nameLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); break;
+        switch (notificationType) {
+            case NOTIFICATION_ALLY_FORTIFIED:
+                span.setSpan(new ForegroundColorSpan(ally.getDefaultColor()), 0,
+                        nameLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                break;
+            case NOTIFICATION_ENEMY_ENVADE:
+                span.setSpan(new ForegroundColorSpan(enemy.getDefaultColor()), 0,
+                        nameLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                break;
         }
 
         span.setSpan(bss, 0, nameLength, Spannable.SPAN_INCLUSIVE_INCLUSIVE);

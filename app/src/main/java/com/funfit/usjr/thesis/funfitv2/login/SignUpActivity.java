@@ -1,6 +1,5 @@
 package com.funfit.usjr.thesis.funfitv2.login;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,7 +20,6 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ServerValue;
 import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
-import com.funfit.usjr.thesis.funfitv2.main.MainActivity;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.User;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
@@ -34,7 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -45,9 +43,9 @@ public class SignUpActivity extends AppCompatActivity {
     private GoogleCloudMessaging gcm;
     private String regid = "", msg = "";
 
-    @Bind(R.id.viewpager_signup)
+    @BindView(R.id.viewpager_signup)
     ViewPager mViewPager;
-    @Bind(R.id.coordinator_layout)
+    @BindView(R.id.coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
 
     @Override
@@ -131,7 +129,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                SignUpActivity.this.getSharedPreferences(Constants.USER_PREF_ID,MODE_PRIVATE)
+                SignUpActivity.this.getSharedPreferences(Constants.USER_PREF_ID, MODE_PRIVATE)
                         .edit().putString(Constants.GCM_KEY, o.toString()).commit();
                 Toast.makeText(SignUpActivity.this, o.toString(), Toast.LENGTH_LONG).show();
             }

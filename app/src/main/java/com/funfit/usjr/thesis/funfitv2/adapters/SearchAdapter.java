@@ -22,14 +22,14 @@ import com.funfit.usjr.thesis.funfitv2.views.ISearchAdapterView;
 import java.io.Serializable;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
 /**
  * Created by victor on 1/12/2016.
  */
-public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolder> implements ISearchAdapterView{
+public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> implements ISearchAdapterView {
 
     private List<Food> foodList;
     private Intent intent;
@@ -41,6 +41,7 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
     private List<FoodServing> items;
     private String mealName;
     private String mealTime;
+
     @Override
     public void sendList(List<FoodServing> items) {
         android.app.FragmentManager manager = ((Activity) context).getFragmentManager();
@@ -65,6 +66,7 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
     public void setList(List<FoodServing> items) {
         this.items = items;
         if (items != null) {
+            Log.i("NIGGUH", "Saving meal...");
             fatSecretGetPresenter.saveMeal();
         }
     }
@@ -85,8 +87,11 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.foodNameTxt)TextView foodNameTxt;
-        @Bind(R.id.selectChkBox)CheckBox mSelectChk;
+        @BindView(R.id.foodNameTxt)
+        TextView foodNameTxt;
+        @BindView(R.id.selectChkBox)
+        CheckBox mSelectChk;
+
         public ViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -98,7 +103,7 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
                     fatSecretGetPresenter.searchFoodWithServings(true);
                 }
             });
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
 
     }
@@ -111,7 +116,7 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
         return new ViewHolder(view);
     }
 
-    public SearchAdapter(List<Food> foodList, Context activityContext, String mealTime){
+    public SearchAdapter(List<Food> foodList, Context activityContext, String mealTime) {
         this.foodList = foodList;
         this.activityContext = activityContext;
         this.mealTime = mealTime;
@@ -148,17 +153,17 @@ public class SearchAdapter  extends RecyclerView.Adapter<SearchAdapter.ViewHolde
     public int getItemCount() {
         try {
             return foodList.size();
-        }catch (Exception e){
+        } catch (Exception e) {
             return 0;
         }
-   }
+    }
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-    public List<Food> getFoodList(){
+    public List<Food> getFoodList() {
         return foodList;
     }
 }

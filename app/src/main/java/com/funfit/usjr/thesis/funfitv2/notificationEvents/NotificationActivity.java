@@ -13,16 +13,16 @@ import com.funfit.usjr.thesis.funfitv2.viewmods.DividerItemDecoration;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Created by Dj on 1/15/2016.
  */
-public class NotificationActivity extends AppCompatActivity{
-    @Bind(R.id.toolbar)
+public class NotificationActivity extends AppCompatActivity {
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.recycler_notification)
+    @BindView(R.id.recycler_notification)
     RecyclerView mRecyclerView;
 
     //Notification types
@@ -74,16 +74,16 @@ public class NotificationActivity extends AppCompatActivity{
     private void fetchNotifications() {
         ArrayList<Notification> list = new ArrayList<Notification>();
 
-        list.add(new Notification(NOTIFICATION_ENEMY_ENVADE,"ViviDub",
-                "http://36.media.tumblr.com/6f6ee1b0efdcd68b0b42b3926b1813a8/tumblr_inline_ntoq4xTqIk1rzdmz3_400.jpg", null));
-        list.add(new Notification(NOTIFICATION_ALLY_FORTIFIED,"MightyElmo",
-                "http://data.whicdn.com/images/1274695/large.jpg", null));
-        list.add(new Notification(NOTIFICATION_ALLY_FORTIFIED,"Sammmmmy",
-                "http://41.media.tumblr.com/tumblr_m8d2cfhiG11rd0j11o1_r1_1280.jpg", null));
-        list.add(new Notification(NOTIFICATION_ENEMY_ENVADE,"FatCat",
-                "https://33.media.tumblr.com/a277c5fc90d5ec52b3b0122769ba9fed/tumblr_inline_n1ve4lGOBw1reu5mf.jpg", null));
-        list.add(new Notification(NOTIFICATION_ALLY_FORTIFIED,"WowDoge",
-                "http://i.imgur.com/z5k5ykt.jpg", null));
+        list.add(new Notification(NOTIFICATION_ENEMY_ENVADE, "Timothy Estrada",
+                "https://scontent.fmnl8-1.fna.fbcdn.net/v/t1.0-9/36507706_2112349905445852_5587791407449374720_n.jpg?_nc_cat=0&oh=9f122b4f5e3da9a61b1cda22fb62810a&oe=5BCFFD94", null));
+        list.add(new Notification(NOTIFICATION_ALLY_FORTIFIED, "Shea Azarcón",
+                "https://scontent.fmnl8-1.fna.fbcdn.net/v/t1.0-9/35331993_1873029966081472_6345356134462783488_n.jpg?_nc_cat=0&oh=fbf40f3b4bfe7d240d6e16ed04fbcdb9&oe=5C133A93", null));
+        list.add(new Notification(NOTIFICATION_ALLY_FORTIFIED, "Kurt Estevon Suico",
+                "https://scontent.fmnl8-1.fna.fbcdn.net/v/t1.0-9/37772651_10214966617296209_1688246073761464320_n.jpg?_nc_cat=0&oh=1291fa4c2ebc13250a80d5a5f079aaa1&oe=5C117E2D", null));
+        list.add(new Notification(NOTIFICATION_ENEMY_ENVADE, "Karl Milo Pilapil",
+                "https://scontent.fmnl8-1.fna.fbcdn.net/v/t1.0-9/35461859_10210162218406985_7532103366973849600_n.jpg?_nc_cat=0&oh=c54973c164980433186aae2d36fbce07&oe=5BD12B1C", null));
+        list.add(new Notification(NOTIFICATION_ALLY_FORTIFIED, "Ricardo Javier",
+                "https://scontent.fmnl8-1.fna.fbcdn.net/v/t1.0-9/17630078_10212235245337983_5815909305872402187_n.jpg?_nc_cat=0&oh=a9d98cd15f8ca45b39aed5f3eb43afe3&oe=5BD67F3E", null));
 
         mAdapter = new NotificationAdapter(list);
         mRecyclerView.setAdapter(mAdapter);

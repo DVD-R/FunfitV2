@@ -13,20 +13,24 @@ import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Created by victor on 1/12/2016.
  */
-public class SearchServingAdapter extends RecyclerView.Adapter<SearchServingAdapter.ViewHolder>{
+public class SearchServingAdapter extends RecyclerView.Adapter<SearchServingAdapter.ViewHolder> {
 
     private List<FoodServing> foodList;
     private int size;
     Context context;
+
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.foodNameTxt)TextView mFoodName;
-        @Bind(R.id.kCalTxt)TextView mKCal;
+        @BindView(R.id.foodNameTxt)
+        TextView mFoodName;
+        @BindView(R.id.kCalTxt)
+        TextView mKCal;
+
         public ViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -34,7 +38,7 @@ public class SearchServingAdapter extends RecyclerView.Adapter<SearchServingAdap
     }
 
 
-    public SearchServingAdapter(String foodName, List<FoodServing> foodList){
+    public SearchServingAdapter(String foodName, List<FoodServing> foodList) {
         this.foodList = foodList;
     }
 
@@ -52,8 +56,8 @@ public class SearchServingAdapter extends RecyclerView.Adapter<SearchServingAdap
         holder.mFoodName.setText(foodList.get(position).getMeasurement_description());
         Log.i("Measurement", foodList.get(1).getMeasurement_description());
         Log.i("Calories", foodList.get(1).getCalories());
-        Log.i("Carb",foodList.get(1).getCarbohydrate());
-        Log.i("Protein",foodList.get(1).getProtein());
+        Log.i("Carb", foodList.get(1).getCarbohydrate());
+        Log.i("Protein", foodList.get(1).getProtein());
     }
 
     @Override

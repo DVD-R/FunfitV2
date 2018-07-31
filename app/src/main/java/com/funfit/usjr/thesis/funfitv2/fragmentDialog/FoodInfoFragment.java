@@ -1,17 +1,12 @@
 package com.funfit.usjr.thesis.funfitv2.fragmentDialog;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -25,48 +20,51 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.fatSecretImplementation.FoodInfoPresenter;
-import com.funfit.usjr.thesis.funfitv2.model.Food;
 import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
-import com.funfit.usjr.thesis.funfitv2.searchFragment.SearchFragment;
 import com.funfit.usjr.thesis.funfitv2.views.IFoodInfoView;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-import java.io.Serializable;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * Created by victor on 1/13/2016.
  */
-public class FoodInfoFragment extends DialogFragment implements  DatePickerDialog.OnDateSetListener, IFoodInfoView{
+public class FoodInfoFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener, IFoodInfoView {
 
-    @Bind(R.id.schedDateBtn)Button mScheduleDate;
-    @Bind(R.id.foodNameTxt)TextView mFoodName;
-    @Bind(R.id.servingSizeEdt)EditText mServingSize;
-    @Bind(R.id.servingSpnr)Spinner mServingDescription;
-    @Bind(R.id.calSizeTxt)TextView mCalSize;
-    @Bind(R.id.fatSizeTxt)TextView mFatSize;
-    @Bind(R.id.carbSizeTxt)TextView mCarbSize;
-    @Bind(R.id.proteinSizeTxt)TextView mProteinSize;
+    @BindView(R.id.schedDateBtn)
+    Button mScheduleDate;
+    @BindView(R.id.foodNameTxt)
+    TextView mFoodName;
+    @BindView(R.id.servingSizeEdt)
+    EditText mServingSize;
+    @BindView(R.id.servingSpnr)
+    Spinner mServingDescription;
+    @BindView(R.id.calSizeTxt)
+    TextView mCalSize;
+    @BindView(R.id.fatSizeTxt)
+    TextView mFatSize;
+    @BindView(R.id.carbSizeTxt)
+    TextView mCarbSize;
+    @BindView(R.id.proteinSizeTxt)
+    TextView mProteinSize;
     private boolean mBroadcastInfoRegistered;
     private List<FoodServing> foodInfoList;
     private FoodInfoPresenter foodInfoPresenter;
     private List<String> mSpinnerServingItems;
     private Activity activity;
     private int mPosition;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -79,7 +77,7 @@ public class FoodInfoFragment extends DialogFragment implements  DatePickerDialo
         foodInfoPresenter = new FoodInfoPresenter(this);
 
         Calendar nowDate = Calendar.getInstance();
-        String stringDate = nowDate.get(Calendar.DAY_OF_MONTH)+"/"+nowDate.get(Calendar.MONTH)+"/"+nowDate.get(Calendar.YEAR);
+        String stringDate = nowDate.get(Calendar.DAY_OF_MONTH) + "/" + nowDate.get(Calendar.MONTH) + "/" + nowDate.get(Calendar.YEAR);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         try {
@@ -102,7 +100,7 @@ public class FoodInfoFragment extends DialogFragment implements  DatePickerDialo
     @Override
     public void onResume() {
         super.onResume();
-        if (!mBroadcastInfoRegistered){
+        if (!mBroadcastInfoRegistered) {
             activity.registerReceiver(foodInfoListReceiver, new IntentFilter(getString(R.string.broadcastInfo)));
             mBroadcastInfoRegistered = true;
         }
@@ -111,7 +109,7 @@ public class FoodInfoFragment extends DialogFragment implements  DatePickerDialo
     @Override
     public void onPause() {
         super.onPause();
-        if (mBroadcastInfoRegistered){
+        if (mBroadcastInfoRegistered) {
             getActivity().unregisterReceiver(foodInfoListReceiver);
             mBroadcastInfoRegistered = false;
         }
@@ -123,7 +121,7 @@ public class FoodInfoFragment extends DialogFragment implements  DatePickerDialo
                 android.R.layout.simple_spinner_item, mSpinnerServingItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mServingDescription.setAdapter(adapter);
-        mServingSize.setText(foodInfoList.get(0).getNumber_of_units().substring(0,1));
+        mServingSize.setText(foodInfoList.get(0).getNumber_of_units().substring(0, 1));
         mCalSize.setText(foodInfoList.get(0).getCalories());
         mFatSize.setText(foodInfoList.get(0).getFat());
         mCarbSize.setText(foodInfoList.get(0).getCarbohydrate());
@@ -158,7 +156,7 @@ public class FoodInfoFragment extends DialogFragment implements  DatePickerDialo
 
     @Override
     public void updateNutritionInfo(int position) {
-        mServingSize.setText(foodInfoList.get(position).getNumber_of_units().substring(0,1));
+        mServingSize.setText(foodInfoList.get(position).getNumber_of_units().substring(0, 1));
         mCalSize.setText(foodInfoList.get(position).getCalories());
         mFatSize.setText(foodInfoList.get(position).getFat());
         mCarbSize.setText(foodInfoList.get(position).getCarbohydrate());
@@ -178,19 +176,19 @@ public class FoodInfoFragment extends DialogFragment implements  DatePickerDialo
                 foodInfoList = (List<FoodServing>) intent.getExtras().getSerializable("broadcastList");
                 Log.i("Serving Description", foodInfoList.get(0).getMeasurement_description());
                 foodInfoPresenter.onResume();
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.e("Broadcast Error", String.valueOf(e));
             }
         }
     };
 
     @OnClick(R.id.close_imgBtn)
-    public void close(){
+    public void close() {
         dismiss();
     }
 
     @OnClick(R.id.schedDateBtn)
-    public void scheduleDate(){
+    public void scheduleDate() {
         Calendar nowDate = Calendar.getInstance();
         DatePickerDialog dpd = DatePickerDialog.newInstance(
                 this,

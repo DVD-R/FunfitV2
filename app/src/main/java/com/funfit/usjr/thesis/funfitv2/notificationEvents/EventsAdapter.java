@@ -1,33 +1,21 @@
 package com.funfit.usjr.thesis.funfitv2.notificationEvents;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.EventModel;
-import com.funfit.usjr.thesis.funfitv2.model.Events;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -39,15 +27,15 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     private static int colors[];
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.img_event)
+        @BindView(R.id.img_event)
         ImageView mImageEvent;
-        @Bind(R.id.txt_event)
+        @BindView(R.id.txt_event)
         TextView mTextEvent;
-        @Bind(R.id.txt_bounty)
+        @BindView(R.id.txt_bounty)
         TextView mTextBounty;
-        @Bind(R.id.txt_location)
+        @BindView(R.id.txt_location)
         TextView mTextLocation;
-        @Bind(R.id.card_view)
+        @BindView(R.id.card_view)
         CardView mCardView;
 
         public ViewHolder(final View itemView) {

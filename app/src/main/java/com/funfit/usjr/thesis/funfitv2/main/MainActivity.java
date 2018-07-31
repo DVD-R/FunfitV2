@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -16,24 +17,23 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.FunfitApplication;
-import com.funfit.usjr.thesis.funfitv2.login.LoginActivity;
-import com.funfit.usjr.thesis.funfitv2.maps.MapsFragment;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.leaderBoard.LeaderBoardActivity;
-import com.funfit.usjr.thesis.funfitv2.mealPlan.MealPlanFragment;
+import com.funfit.usjr.thesis.funfitv2.login.LoginActivity;
+import com.funfit.usjr.thesis.funfitv2.maps.MapsFragment;
 import com.funfit.usjr.thesis.funfitv2.mealPlan.ShackFragment;
-import com.funfit.usjr.thesis.funfitv2.mealPlan.WeeklyShackFragment;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 import com.funfit.usjr.thesis.funfitv2.model.ProfileRequestJson;
 import com.funfit.usjr.thesis.funfitv2.notificationEvents.EventActivity;
@@ -44,33 +44,24 @@ import com.funfit.usjr.thesis.funfitv2.views.IMainView;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, IMainView {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    @Bind(R.id.drawer_layout)
+    @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolBar;
-    @Bind(R.id.tabLayout)
+    @BindView(R.id.tabLayout)
     TabLayout mTabLayout;
-    @Bind(R.id.main_pager)
+    @BindView(R.id.main_pager)
     ViewPager mMainPager;
-    @Bind(R.id.navigation)
+    @BindView(R.id.navigation)
     NavigationView navigationView;
+    HeaderViewHolder mHeaderViewHolder;
 
-    @Bind(R.id.nav_layout)
-    RelativeLayout mNavLayout;
-    @Bind(R.id.txt_username)
-    TextView mTextUsername;
-    @Bind(R.id.txt_level)
-    TextView mTextLevel;
-    @Bind(R.id.img_cluster)
-    ImageView mImageCluster;
-    @Bind(R.id.img_profile)
-    ImageView mImageProfile;
     private Activity activity;
     private SharedPreferences userData, rdi;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
@@ -81,6 +72,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private MainPresenter mainPresenter;
     private ProgressDialog mProgressDialog;
     private ProfileRequestJson profileRequestJson;
+
+    protected static class HeaderViewHolder {
+
+        @BindView(R.id.nav_layout)
+        RelativeLayout mNavLayout;
+        @BindView(R.id.txt_username)
+        TextView mTextUsername;
+        @BindView(R.id.txt_level)
+        TextView mTextLevel;
+        @BindView(R.id.img_cluster)
+        ImageView mImageCluster;
+        @BindView(R.id.img_profile)
+        ImageView mImageProfile;
+
+        HeaderViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +101,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        View header = navigationView.getHeaderView(0);
+        mHeaderViewHolder = new HeaderViewHolder(header);
 
 
         setSupportActionBar(mToolBar);
@@ -113,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mainPresenter = new MainPresenter(this);
         userData = getSharedPreferences(Constants.USER_PREF_ID, MODE_PRIVATE);
         rdi = getSharedPreferences(Constants.RDI_PREF_ID, MODE_PRIVATE);
-        Log.i("check",""+rdi.getString(Constants.UID,null));
+        Log.i("check", "" + rdi.getString(Constants.UID, null));
         activity = MainActivity.this;
         setNavViews();
     }
@@ -123,16 +135,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String cluster = userData.getString(Constants.PROFILE_CLUSTER, null);
 
         if (cluster.equals("impulse")) {
-            mNavLayout.setBackground(getResources().getDrawable(R.drawable.nav_header_impulse));
-            mImageCluster.setImageResource(R.drawable.up_impulse);
+            mHeaderViewHolder.mNavLayout.setBackground(getResources().getDrawable(R.drawable.nav_header_impulse));
+            mHeaderViewHolder.mImageCluster.setImageResource(R.drawable.up_impulse);
+        } else {
+            mHeaderViewHolder.mNavLayout.setBackground(getResources().getDrawable(R.drawable.nav_header_velocity));
+            mHeaderViewHolder.mImageCluster.setImageResource(R.drawable.up_velocity);
         }
-        else {
-            mNavLayout.setBackground(getResources().getDrawable(R.drawable.nav_header_velocity));
-            mImageCluster.setImageResource(R.drawable.up_velocity);
-        }
-        mTextUsername.setText(userData.getString(Constants.PROFILE_FNAME, null));
+        mHeaderViewHolder.mTextUsername.setText(userData.getString(Constants.PROFILE_FNAME, null));
         Glide.with(this).load(userData.getString(Constants.PROFILE_IMG_URL, null))
-                .centerCrop().crossFade().into(mImageProfile);
+                .centerCrop().crossFade().into(mHeaderViewHolder.mImageProfile);
     }
 
     @Override
@@ -159,8 +170,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-            mainPresenter.setProfileRequestJson();
-            mainPresenter.onResume();
+        mainPresenter.setProfileRequestJson();
+        mainPresenter.onResume();
     }
 
     private void navigate(final int itemId) {
@@ -175,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_leaderBoard:
                 i = new Intent(this, LeaderBoardActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                        IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
                 break;
             case R.id.nav_event:
@@ -185,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 ((FunfitApplication) getApplicationContext()).logout();
                 i = new Intent(this, LoginActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                        IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 getSharedPreferences(Constants.USER_PREF_ID, Context.MODE_PRIVATE).edit().clear();
                 startActivity(i);
                 break;
@@ -215,13 +226,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public String getHeight() {
-        String [] height = userData.getString(Constants.PROFILE_HEIGHT, null).split(" ");
-        return  height[0].toString();
+        String[] height = userData.getString(Constants.PROFILE_HEIGHT, null).split(" ");
+        return height[0].toString();
     }
 
     @Override
     public String getWeight() {
-        String [] weight = userData.getString(Constants.PROFILE_WEIGHT, null).split(" ");
+        String[] weight = userData.getString(Constants.PROFILE_WEIGHT, null).split(" ");
         return weight[0].toString();
     }
 
@@ -279,7 +290,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public ProfileRequestJson getProfileRequestJson() {
         return profileRequestJson;
     }
-
 
 
     @Override

@@ -12,14 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.main.MainActivity;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -27,19 +26,19 @@ import butterknife.OnClick;
  * Created by Dj on 2/4/2016.
  */
 public class ClusterUpFragment extends Fragment {
-    @Bind(R.id.img_velocity)
+    @BindView(R.id.img_velocity)
     ImageView mImageVelocity;
-    @Bind(R.id.img_impulse)
+    @BindView(R.id.img_impulse)
     ImageView mImageImpulse;
-    @Bind(R.id.filter_impulse)
+    @BindView(R.id.filter_impulse)
     ImageView mFilterImpulse;
-    @Bind(R.id.filter_velocity)
+    @BindView(R.id.filter_velocity)
     ImageView mFilterVelocity;
-    @Bind(R.id.txt_velocity)
+    @BindView(R.id.txt_velocity)
     TextView mTextVelocity;
-    @Bind(R.id.txt_impulse)
+    @BindView(R.id.txt_impulse)
     TextView mTextImpulse;
-    @Bind(R.id.fab_forward)
+    @BindView(R.id.fab_forward)
     FloatingActionButton mFabForward;
 
     private SharedPreferences mPrefUserData;
@@ -52,9 +51,9 @@ public class ClusterUpFragment extends Fragment {
         ButterKnife.bind(this, rootView);
         mPrefUserData = getActivity().getSharedPreferences(Constants.USER_PREF_ID, getActivity().MODE_PRIVATE);
 
-        Glide.with(this).load("https://igcdn-photos-b-a.akamaihd.net/hphotos-ak-xft1/t51.2885-15/e15/11327164_866674696733105_1005355604_n.jpg")
+        Glide.with(this).load("https://instagram.fmnl8-1.fna.fbcdn.net/vp/2e8cae34c3f88b9636e2e1a04a3bdc82/5BEF21B0/t51.2885-15/e35/12145143_1084046431614431_1484889936_n.jpg")
                 .centerCrop().crossFade().into(mImageVelocity);
-        Glide.with(this).load("https://igcdn-photos-e-a.akamaihd.net/hphotos-ak-xfa1/t51.2885-15/e15/11256798_382539915278204_1079867520_n.jpg")
+        Glide.with(this).load("https://instagram.fmnl8-1.fna.fbcdn.net/vp/625eac94e629abae400a3d171c3184c7/5C08A852/t51.2885-15/e35/11377865_105948993084137_201790844_n.jpg")
                 .centerCrop().crossFade().into(mImageImpulse);
 
         mTextVelocity.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "HelveticaBold.otf"));
@@ -65,7 +64,7 @@ public class ClusterUpFragment extends Fragment {
     }
 
     @OnClick(R.id.velocity_container)
-    public void onVelocityClick(){
+    public void onVelocityClick() {
         mUserCluster = "velocity";
         mFilterVelocity.setImageResource(R.color.filter_velocity);
         mFilterImpulse.setImageResource(R.color.filter_passive);
@@ -73,7 +72,7 @@ public class ClusterUpFragment extends Fragment {
     }
 
     @OnClick(R.id.impulse_container)
-    public void onImpulseClick(){
+    public void onImpulseClick() {
         mUserCluster = "impulse";
         mFilterImpulse.setImageResource(R.color.filter_impulse);
         mFilterVelocity.setImageResource(R.color.filter_passive);
@@ -81,7 +80,7 @@ public class ClusterUpFragment extends Fragment {
     }
 
     @OnClick(R.id.fab_forward)
-    public void onClickForward(){
+    public void onClickForward() {
         mPrefUserData.edit().putString(Constants.PROFILE_CLUSTER, mUserCluster).apply();
 
         SignUpActivity.registerUserToFirebase(mPrefUserData);

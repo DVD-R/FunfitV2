@@ -16,16 +16,16 @@ import com.funfit.usjr.thesis.funfitv2.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Created by Dj on 3/10/2016.
  */
-public class ShackFragment extends Fragment{
-    @Bind(R.id.viewpager)
+public class ShackFragment extends Fragment {
+    @BindView(R.id.viewpager)
     ViewPager mViewPager;
-    @Bind(R.id.tabs)
+    @BindView(R.id.tabs)
     TabLayout mTabLayout;
 
     @Nullable
@@ -39,6 +39,7 @@ public class ShackFragment extends Fragment{
 
         return rootView;
     }
+
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(new MealPlanFragment(), "Meal");

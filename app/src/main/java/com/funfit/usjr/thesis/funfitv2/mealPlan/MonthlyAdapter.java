@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
-import com.funfit.usjr.thesis.funfitv2.model.Monthly;
 import com.funfit.usjr.thesis.funfitv2.model.MonthlyCal;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 
@@ -21,7 +19,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -34,17 +32,17 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
     private static double rmi;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.text_month)
+        @BindView(R.id.text_month)
         TextView mTextMonth;
-        @Bind(R.id.text_year)
+        @BindView(R.id.text_year)
         TextView mTextYear;
-        @Bind(R.id.text_cal_consumed)
+        @BindView(R.id.text_cal_consumed)
         TextView mTextCalConsumed;
-        @Bind(R.id.text_cal_burned)
+        @BindView(R.id.text_cal_burned)
         TextView mTextCalBurned;
-        @Bind(R.id.text_rdi)
+        @BindView(R.id.text_rdi)
         TextView mTextRdi;
-        @Bind(R.id.layout_monthly)
+        @BindView(R.id.layout_monthly)
         RelativeLayout mLayoutMonthly;
         Context context;
 
@@ -116,8 +114,7 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
             viewHolder.mTextRdi.setText(Utils.roundOneDecimal(rmi - cal) +
                     " Calories lacking");
             viewHolder.mTextRdi.setTextColor(Color.parseColor("#d32f2f"));
-        }
-        else {
+        } else {
             viewHolder.mTextRdi.setText(Math.abs(Utils.roundOneDecimal(rmi - cal)) +
                     " Calories exceeded");
         }

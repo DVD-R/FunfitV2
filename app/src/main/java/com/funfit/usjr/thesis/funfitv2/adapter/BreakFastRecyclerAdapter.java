@@ -1,9 +1,7 @@
 package com.funfit.usjr.thesis.funfitv2.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,31 +9,34 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.funfit.usjr.thesis.funfitv2.R;
-import com.funfit.usjr.thesis.funfitv2.model.FoodServing;
 import com.funfit.usjr.thesis.funfitv2.model.Meal;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Created by victor on 1/12/2016.
  */
-public class BreakFastRecyclerAdapter extends RecyclerView.Adapter<BreakFastRecyclerAdapter.ViewHolder>{
+public class BreakFastRecyclerAdapter extends RecyclerView.Adapter<BreakFastRecyclerAdapter.ViewHolder> {
 
     private List<Meal> mealList;
     private int size;
     private int position;
     Context context;
+
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.foodNameTxt)TextView mFoodName;
-        @Bind(R.id.rdiTxt)TextView mRdi;
-        @Bind(R.id.kCalTxt)TextView mKCal;
-        @Bind(R.id.search_serving_layout)LinearLayout mServingLayout;
+        @BindView(R.id.foodNameTxt)
+        TextView mFoodName;
+        @BindView(R.id.rdiTxt)
+        TextView mRdi;
+        @BindView(R.id.kCalTxt)
+        TextView mKCal;
+        @BindView(R.id.search_serving_layout)
+        LinearLayout mServingLayout;
+
         public ViewHolder(final View itemView) {
             super(itemView);
             position = getPosition();
@@ -43,7 +44,7 @@ public class BreakFastRecyclerAdapter extends RecyclerView.Adapter<BreakFastRecy
         }
     }
 
-    public BreakFastRecyclerAdapter(List<Meal> mealList){
+    public BreakFastRecyclerAdapter(List<Meal> mealList) {
         this.mealList = mealList;
     }
 
@@ -57,7 +58,7 @@ public class BreakFastRecyclerAdapter extends RecyclerView.Adapter<BreakFastRecy
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if(Utils.getCluster(context).equals("impulse"))
+        if (Utils.getCluster(context).equals("impulse"))
             holder.mServingLayout.setBackgroundColor(context.getResources().getColor(R.color.filter_impulse));
         else
             holder.mServingLayout.setBackgroundColor(context.getResources().getColor(R.color.filter_velocity));

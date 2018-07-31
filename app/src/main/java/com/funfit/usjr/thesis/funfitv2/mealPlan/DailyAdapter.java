@@ -15,7 +15,7 @@ import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -28,19 +28,19 @@ public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.ViewHolder> 
     double rdi;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.text_start)
+        @BindView(R.id.text_start)
         TextView mTextStart;
-        @Bind(R.id.text_end)
+        @BindView(R.id.text_end)
         TextView mTextEnd;
-        @Bind(R.id.text_month)
+        @BindView(R.id.text_month)
         TextView mTextMonth;
-        @Bind(R.id.text_cal_consumed)
+        @BindView(R.id.text_cal_consumed)
         TextView mTextCalConsumed;
-        @Bind(R.id.text_cal_burned)
+        @BindView(R.id.text_cal_burned)
         TextView mTextCalBurned;
-        @Bind(R.id.text_rdi)
+        @BindView(R.id.text_rdi)
         TextView mTextRdi;
-        @Bind(R.id.layout_weekly)
+        @BindView(R.id.layout_weekly)
         RelativeLayout mLayoutWeekly;
         Context context;
 

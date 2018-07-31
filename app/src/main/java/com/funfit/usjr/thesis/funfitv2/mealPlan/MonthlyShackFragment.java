@@ -3,9 +3,7 @@ package com.funfit.usjr.thesis.funfitv2.mealPlan;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,18 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.util.Util;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
-import com.funfit.usjr.thesis.funfitv2.model.Monthly;
 import com.funfit.usjr.thesis.funfitv2.model.MonthlyCal;
 import com.funfit.usjr.thesis.funfitv2.model.Runs;
-import com.funfit.usjr.thesis.funfitv2.model.Weekly;
-import com.funfit.usjr.thesis.funfitv2.model.WeeklyCal;
 import com.funfit.usjr.thesis.funfitv2.utils.Utils;
 import com.funfit.usjr.thesis.funfitv2.viewmods.DarkDividerItemDecoration;
 
@@ -36,9 +26,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -48,7 +37,7 @@ import retrofit.client.Response;
  */
 public class MonthlyShackFragment extends Fragment {
     private static final String LOG_TAG = MonthlyShackFragment.class.getSimpleName();
-    @Bind(R.id.recycler_view)
+    @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private LayoutManagerType mCurrentLayoutManagerType;

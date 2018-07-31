@@ -1,6 +1,5 @@
 package com.funfit.usjr.thesis.funfitv2.login;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -18,42 +17,42 @@ import com.bumptech.glide.Glide;
 import com.funfit.usjr.thesis.funfitv2.R;
 import com.funfit.usjr.thesis.funfitv2.model.Constants;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * Created by Dj on 2/4/2016.
  */
-public class LevelUpFragment extends Fragment{
-    @Bind(R.id.filter_sedentary)
+public class LevelUpFragment extends Fragment {
+    @BindView(R.id.filter_sedentary)
     ImageView mFilterSedentary;
-    @Bind(R.id.filter_lowactive)
+    @BindView(R.id.filter_lowactive)
     ImageView mFilterLowActive;
-    @Bind(R.id.filter_active)
+    @BindView(R.id.filter_active)
     ImageView mFilterActive;
-    @Bind(R.id.filter_veryactive)
+    @BindView(R.id.filter_veryactive)
     ImageView mFilterVeryActive;
 
-    @Bind(R.id.img_sedentary)
+    @BindView(R.id.img_sedentary)
     ImageView mImageSedentary;
-    @Bind(R.id.img_lowactive)
+    @BindView(R.id.img_lowactive)
     ImageView mImageLowActive;
-    @Bind(R.id.img_active)
+    @BindView(R.id.img_active)
     ImageView mImageActive;
-    @Bind(R.id.img_veryactive)
+    @BindView(R.id.img_veryactive)
     ImageView mImageVeryActive;
 
-    @Bind(R.id.txt_sedentary)
+    @BindView(R.id.txt_sedentary)
     TextView mTextSedentary;
-    @Bind(R.id.txt_lowactive)
+    @BindView(R.id.txt_lowactive)
     TextView mTextLowActive;
-    @Bind(R.id.txt_active)
+    @BindView(R.id.txt_active)
     TextView mTextActive;
-    @Bind(R.id.txt_veryactive)
+    @BindView(R.id.txt_veryactive)
     TextView mTextVeryActive;
 
-    @Bind(R.id.fab_forward)
+    @BindView(R.id.fab_forward)
     FloatingActionButton mFabForward;
 
     private SharedPreferences mPrefUserData;
@@ -66,13 +65,13 @@ public class LevelUpFragment extends Fragment{
         ButterKnife.bind(this, rootView);
         mPrefUserData = getActivity().getSharedPreferences(Constants.USER_PREF_ID, getActivity().MODE_PRIVATE);
 
-        Glide.with(this).load("https://igcdn-photos-d-a.akamaihd.net/hphotos-ak-xtp1/t51.2885-15/e35/11849843_458857934284187_1515928877_n.jpg")
+        Glide.with(this).load("http://media.fashionnetwork.com/m/858d/badb/6b5c/056a/3f0a/9af3/2287/3515/f45c/faa6/faa6.jpg")
                 .centerCrop().crossFade().into(mImageSedentary);
-        Glide.with(this).load("https://igcdn-photos-h-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/12132818_1637970616462087_2012634135_n.jpg")
+        Glide.with(this).load("https://3.bp.blogspot.com/-U1IGj7QIUKQ/V7bjjEAq4qI/AAAAAAAAALU/xFZzmdJp_7Q7nKICT-8zvzgH8zBtTCmlQCLcB/s1600/nike6.jpg")
                 .centerCrop().crossFade().into(mImageLowActive);
-        Glide.with(this).load("https://igcdn-photos-e-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/11373868_1472205729769212_633445881_n.jpg")
+        Glide.with(this).load("https://cached.imagescaler.hbpl.co.uk/resize/scaleWidth/815/cached.offlinehbpl.hbpl.co.uk/news/OMC/fitbitcropped-20150915075924465.jpg")
                 .centerCrop().crossFade().into(mImageActive);
-        Glide.with(this).load("https://igcdn-photos-a-a.akamaihd.net/hphotos-ak-xfa1/t51.2885-15/e15/11375943_1618372441780544_224968936_n.jpg")
+        Glide.with(this).load("https://instagram.fmnl8-1.fna.fbcdn.net/vp/57ab702bb687f2590c7856b19e27da99/5BD74DDD/t51.2885-15/e35/37262452_2060945007273657_6842814206056595456_n.jpg")
                 .centerCrop().crossFade().into(mImageVeryActive);
 
         mTextSedentary.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "HelveticaBold.otf"));
@@ -85,7 +84,7 @@ public class LevelUpFragment extends Fragment{
     }
 
     @OnClick(R.id.sedentary_container)
-    public void onSedentaryClick(){
+    public void onSedentaryClick() {
         mUserLevel = "sedentary";
         mFilterSedentary.setImageResource(R.color.filter_sedentary);
         mFilterLowActive.setImageResource(R.color.filter_passive);
@@ -96,7 +95,7 @@ public class LevelUpFragment extends Fragment{
     }
 
     @OnClick(R.id.lowactive_container)
-    public void onLowActiveClick(){
+    public void onLowActiveClick() {
         mUserLevel = "low active";
         mFilterSedentary.setImageResource(R.color.filter_passive);
         mFilterLowActive.setImageResource(R.color.filter_lowactive);
@@ -107,7 +106,7 @@ public class LevelUpFragment extends Fragment{
     }
 
     @OnClick(R.id.active_container)
-    public void onActiveClick(){
+    public void onActiveClick() {
         mUserLevel = "active";
         mFilterSedentary.setImageResource(R.color.filter_passive);
         mFilterLowActive.setImageResource(R.color.filter_passive);
@@ -118,7 +117,7 @@ public class LevelUpFragment extends Fragment{
     }
 
     @OnClick(R.id.veryactive_container)
-    public void onVeryActiveClick(){
+    public void onVeryActiveClick() {
         mUserLevel = "very active";
         mFilterSedentary.setImageResource(R.color.filter_passive);
         mFilterLowActive.setImageResource(R.color.filter_passive);
@@ -129,8 +128,8 @@ public class LevelUpFragment extends Fragment{
     }
 
     @OnClick(R.id.fab_forward)
-    public void onClickForward(){
+    public void onClickForward() {
         mPrefUserData.edit().putString(Constants.PROFILE_ACTIVITY_LEVEL, mUserLevel).apply();
-        ((ViewPager)getActivity().findViewById(R.id.viewpager_signup)).setCurrentItem(2);
+        ((ViewPager) getActivity().findViewById(R.id.viewpager_signup)).setCurrentItem(2);
     }
 }

@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,31 +25,31 @@ import com.funfit.usjr.thesis.funfitv2.model.Constants;
 
 import java.util.Calendar;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * Created by Dj on 2/4/2016.
  */
-public class SignUpFragment extends Fragment implements View.OnFocusChangeListener, RadioGroup.OnCheckedChangeListener{
-    @Bind(R.id.img_profile)
+public class SignUpFragment extends Fragment implements View.OnFocusChangeListener, RadioGroup.OnCheckedChangeListener {
+    @BindView(R.id.img_profile)
     ImageView mImageProfile;
-    @Bind(R.id.edt_fname)
+    @BindView(R.id.edt_fname)
     EditText mEditFname;
-    @Bind(R.id.edt_lname)
+    @BindView(R.id.edt_lname)
     EditText mEditLname;
-    @Bind(R.id.edt_email)
+    @BindView(R.id.edt_email)
     EditText mEditEmail;
-    @Bind(R.id.edt_dob)
+    @BindView(R.id.edt_dob)
     EditText mEditDob;
-    @Bind(R.id.edt_weight)
+    @BindView(R.id.edt_weight)
     EditText mEditWeight;
-    @Bind(R.id.edt_height)
+    @BindView(R.id.edt_height)
     EditText mEditHeight;
-    @Bind(R.id.rad_group_gender)
+    @BindView(R.id.rad_group_gender)
     RadioGroup mRadioGroup;
-    @Bind(R.id.fab_forward)
+    @BindView(R.id.fab_forward)
     FloatingActionButton mFabForward;
 
     private SharedPreferences mPrefUserData;
@@ -71,7 +70,7 @@ public class SignUpFragment extends Fragment implements View.OnFocusChangeListen
         mImageUrl = i.getStringExtra(Constants.PROFILE_IMG_URL);
         mEditFname.setText(i.getStringExtra(Constants.PROFILE_FNAME));
         mEditLname.setText(i.getStringExtra(Constants.PROFILE_LNAME));
-        if(!email.equals("null"))
+        if (!email.equals("null"))
             mEditEmail.setText(i.getStringExtra(Constants.PROFILE_EMAIL));
         Glide.with(this).load(mImageUrl)
                 .centerCrop().crossFade().into(mImageProfile);
@@ -89,20 +88,20 @@ public class SignUpFragment extends Fragment implements View.OnFocusChangeListen
         return rootView;
     }
 
-    private void checkFields(){
-        if(!mEditFname.getText().toString().isEmpty() &&
+    private void checkFields() {
+        if (!mEditFname.getText().toString().isEmpty() &&
                 !mEditLname.getText().toString().isEmpty() &&
                 !mEditEmail.getText().toString().isEmpty() &&
                 !mEditDob.getText().toString().isEmpty() &&
                 !mEditHeight.getText().toString().isEmpty() &&
-                !mEditWeight.getText().toString().isEmpty()){
+                !mEditWeight.getText().toString().isEmpty()) {
             mFabForward.show();
-        }else
+        } else
             mFabForward.hide();
     }
 
     @OnClick(R.id.edt_dob)
-    public void onClickDob(){
+    public void onClickDob() {
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
@@ -123,7 +122,7 @@ public class SignUpFragment extends Fragment implements View.OnFocusChangeListen
     }
 
     @OnClick(R.id.edt_weight)
-    public void onClickWeight(){
+    public void onClickWeight() {
         final Dialog d = new Dialog(getActivity());
         d.setTitle("Weight");
         d.setContentView(R.layout.dialog_info);
@@ -132,13 +131,12 @@ public class SignUpFragment extends Fragment implements View.OnFocusChangeListen
         final NumberPicker tp = (NumberPicker) d.findViewById(R.id.textPicker);
         tp.setMinValue(0);
         tp.setMaxValue(1);
-        tp.setDisplayedValues( mWeightUnit );
+        tp.setDisplayedValues(mWeightUnit);
 
         np.setMaxValue(250);
         np.setMinValue(90);
         np.setWrapSelectorWheel(false);
-        b1.setOnClickListener(new View.OnClickListener()
-        {
+        b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mEditWeight.setText(String.valueOf(np.getValue() + " " + mWeightUnit[tp.getValue()]));
@@ -150,7 +148,7 @@ public class SignUpFragment extends Fragment implements View.OnFocusChangeListen
     }
 
     @OnClick(R.id.edt_height)
-    public void onClickHeight(){
+    public void onClickHeight() {
         final Dialog d = new Dialog(getActivity());
         d.setTitle("Height");
         d.setContentView(R.layout.dialog_info);
@@ -159,7 +157,7 @@ public class SignUpFragment extends Fragment implements View.OnFocusChangeListen
         final NumberPicker tp = (NumberPicker) d.findViewById(R.id.textPicker);
         tp.setMinValue(0);
         tp.setMaxValue(1);
-        tp.setDisplayedValues( mHeightUnit );
+        tp.setDisplayedValues(mHeightUnit);
 
         np.setMaxValue(250);
         np.setMinValue(90);
@@ -167,22 +165,21 @@ public class SignUpFragment extends Fragment implements View.OnFocusChangeListen
         tp.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                if(newVal==1){
+                if (newVal == 1) {
                     np.setMinValue(0);
-                    np.setMaxValue(mFeetValues.length-1);
+                    np.setMaxValue(mFeetValues.length - 1);
                     np.setDisplayedValues(mFeetValues);
-                }else{
+                } else {
                     np.setDisplayedValues(null);
                     np.setMinValue(90);
                     np.setMaxValue(250);
                 }
             }
         });
-        b1.setOnClickListener(new View.OnClickListener()
-        {
+        b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(tp.getValue()==0)
+                if (tp.getValue() == 0)
                     mEditHeight.setText(String.valueOf(np.getValue()
                             + " " + mHeightUnit[tp.getValue()]));
                 else
@@ -196,20 +193,20 @@ public class SignUpFragment extends Fragment implements View.OnFocusChangeListen
     }
 
     @OnClick(R.id.fab_forward)
-    public void onClickForward(){
+    public void onClickForward() {
         mPrefUserData.edit().putString(Constants.PROFILE_FNAME, mEditFname.getText().toString()).apply();
         mPrefUserData.edit().putString(Constants.PROFILE_LNAME, mEditLname.getText().toString()).apply();
         mPrefUserData.edit().putString(Constants.PROFILE_DOB, mEditDob.getText().toString()).apply();
         mPrefUserData.edit().putString(Constants.PROFILE_EMAIL, mEditEmail.getText().toString()).apply();
         mPrefUserData.edit().putString(Constants.PROFILE_IMG_URL, mImageUrl).apply();
-        if(mRadioGroup.getCheckedRadioButtonId()==R.id.rad_btn_male)
+        if (mRadioGroup.getCheckedRadioButtonId() == R.id.rad_btn_male)
             mPrefUserData.edit().putString(Constants.PROFILE_GENDER, "male").apply();
         else
             mPrefUserData.edit().putString(Constants.PROFILE_GENDER, "female").apply();
         mPrefUserData.edit().putString(Constants.PROFILE_WEIGHT, mEditWeight.getText().toString()).apply();
         mPrefUserData.edit().putString(Constants.PROFILE_HEIGHT, mEditHeight.getText().toString()).apply();
 
-        ((ViewPager)getActivity().findViewById(R.id.viewpager_signup)).setCurrentItem(1);
+        ((ViewPager) getActivity().findViewById(R.id.viewpager_signup)).setCurrentItem(1);
     }
 
     @Override

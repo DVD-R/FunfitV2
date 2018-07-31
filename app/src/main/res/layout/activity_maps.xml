@@ -4,11 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.gms.maps.MapView
+    <com.google.android.gms.maps.MapView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/mapView"
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_uncaptured"
@@ -19,8 +18,9 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
         android:src="@drawable/world"
+        android:visibility="gone"
         app:backgroundTint="@android:color/white"
-        app:rippleColor="@android:color/transparent"/>
+        app:rippleColor="@android:color/transparent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_world_view"
@@ -31,8 +31,9 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
         android:src="@drawable/world"
+        android:visibility="gone"
         app:backgroundTint="@android:color/white"
-        app:rippleColor="@android:color/transparent"/>
+        app:rippleColor="@android:color/transparent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_impulse"
@@ -44,7 +45,7 @@
         android:layout_marginRight="@dimen/fab_margin"
         android:src="@drawable/ic_binoculars"
         app:backgroundTint="@android:color/white"
-        app:rippleColor="@android:color/transparent"/>
+        app:rippleColor="@android:color/transparent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_velocity"
@@ -52,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_fab_velocity"/>
+        android:src="@drawable/ic_fab_velocity" />
 
     <LinearLayout
         android:layout_width="match_parent"
